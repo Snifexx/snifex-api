@@ -56,7 +56,9 @@ void arena_with_cap(Arena *arena, size_t min_cap) {
 
 void arena_free(Arena *arena) { free(arena->buf); }
 
-//- Strings
+//-
+//-  Strings
+//-
 
 typedef struct string {
   char *ptr;
@@ -127,7 +129,7 @@ string str_join(Arena *arena, string a, string b) {
 }
 
 string str_fmt(Arena *arena, const char *fmt, ...) {
-  assert(fmt != NULL);
+  assert(arena != NULL && fmt != NULL);
 
   va_list args;
   va_start(args, fmt);
