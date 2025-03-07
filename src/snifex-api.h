@@ -5,7 +5,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+//-
+//- Macro utils
+//-
+
+#define TOKENPASTE(x, y) x##y
+#define TOKENPASTE2(x, y) TOKENPASTE(x, y)
+#define UNIQUE TOKENPASTE2(Unique_, __LINE__)
+
+//-
 //- Arena
+//-
 
 typedef struct arena {
   unsigned char *buf;
@@ -102,7 +112,7 @@ char *str_idx(string str, size_t i) {
 // library empty strings can have a NULL pointer.
 //
 // See `str_join` for more info
-_Bool str_eq(const string a, const string b) {
+int str_eq(const string a, const string b) {
   return a.len == b.len && (a.len == 0 || memcmp(a.ptr, b.ptr, a.len) == 0);
 }
 
@@ -172,3 +182,24 @@ string str_trim(const string str) {
   return str_slice(str, start, end);
 }
 
+//-
+//-  Numbers
+//-
+
+// TODO get sign of float
+
+#define min(t, a, b)                                                                                            \
+  ({                                                                                                            \
+    t TOKENPASTE(min0_, UNIQUE) = a;                                                                            \
+    t TOKENPASTE(min1_, UNIQUE) = b;                                                                            \
+    (TOKENPASTE(min0_,UNIQUE) < TOKENPASTE(min1_,UNIQUE) ? TOKENPASTE(min0_,UNIQUE) : TOKENPASTE(min1_,UNIQUE)); \
+  })
+
+#define max(t, a, b)                                                           \
+  ({                                                                           \
+    t TOKENPASTE(min0_, UNIQUE) = a;                                           \
+    t TOKENPASTE(min1_, UNIQUE) = b;                                           \
+    (TOKENPASTE(min0_, UNIQUE) > TOKENPASTE(min1_, UNIQUE)                     \
+         ? TOKENPASTE(min0_, UNIQUE)                                           \
+         : TOKENPASTE(min1_, UNIQUE));                                         \
+  })

@@ -16,4 +16,5 @@ This project uses C99 and I have my tests with clang (as you can see in the [Mak
 - [ ] Find first occurence of substring
 - [ ] Find last occurence of substring
 - [ ] Replace all occurrences of substring
+- [ ] Get the sign of a float/int
 - [ ] In `str_trim`: trim with all whitespaces not just `' '`
