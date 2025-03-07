@@ -186,20 +186,28 @@ string str_trim(const string str) {
 //-  Numbers
 //-
 
-// TODO get sign of float
-
-#define min(t, a, b)                                                                                            \
-  ({                                                                                                            \
-    t TOKENPASTE(min0_, UNIQUE) = a;                                                                            \
-    t TOKENPASTE(min1_, UNIQUE) = b;                                                                            \
-    (TOKENPASTE(min0_,UNIQUE) < TOKENPASTE(min1_,UNIQUE) ? TOKENPASTE(min0_,UNIQUE) : TOKENPASTE(min1_,UNIQUE)); \
+#define min(t, a, b)                                                           \
+  ({                                                                           \
+    t TOKENPASTE(min0_, UNIQUE) = a;                                           \
+    t TOKENPASTE(min1_, UNIQUE) = b;                                           \
+    (TOKENPASTE(min0_, UNIQUE) < TOKENPASTE(min1_, UNIQUE)                     \
+         ? TOKENPASTE(min0_, UNIQUE)                                           \
+         : TOKENPASTE(min1_, UNIQUE));                                         \
   })
 
 #define max(t, a, b)                                                           \
   ({                                                                           \
-    t TOKENPASTE(min0_, UNIQUE) = a;                                           \
-    t TOKENPASTE(min1_, UNIQUE) = b;                                           \
-    (TOKENPASTE(min0_, UNIQUE) > TOKENPASTE(min1_, UNIQUE)                     \
-         ? TOKENPASTE(min0_, UNIQUE)                                           \
-         : TOKENPASTE(min1_, UNIQUE));                                         \
+    t TOKENPASTE(max0_, UNIQUE) = a;                                           \
+    t TOKENPASTE(max1_, UNIQUE) = b;                                           \
+    (TOKENPASTE(max0_, UNIQUE) > TOKENPASTE(max1_, UNIQUE)                     \
+         ? TOKENPASTE(max0_, UNIQUE)                                           \
+         : TOKENPASTE(max1_, UNIQUE));                                         \
+  })
+
+#define sign(t, a)                                                             \
+  ({                                                                           \
+    t TOKENPASTE(sign_, UNIQUE) = a;                                           \
+    ((TOKENPASTE(sign_, UNIQUE) > 0)                                           \
+         ? 1                                                                   \
+         : ((TOKENPASTE(sign_, UNIQUE) < 0) ? -1 : 0));                        \
   })
