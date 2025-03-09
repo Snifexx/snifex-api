@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -170,13 +171,13 @@ string str_trim(const string str) {
   size_t start = 0;
   size_t end = str.len;
 
-  while (start < end && *str_idx(str, start) == ' ') {
+  while (start < end && isspace(*str_idx(str, start))) {
     start++;
   }
   if (start == end) {
     return (string){0};
   }
-  while (end > start && *str_idx(str, end - 1) == ' ') {
+  while (end > start && isspace(*str_idx(str, end - 1))) {
     end--;
   }
 
@@ -205,4 +206,51 @@ string str_trim(const string str) {
   ({                                                                           \
     t num = a;                                                                 \
     (num > 0 ? 1 : ((num < 0) ? -1 : 0));                                      \
+  })
+
+uint32_t ceil_powtwo(uint32_t v) {
+  v--;
+  v |= v >> 1;
+  v |= v >> 2;
+  v |= v >> 4;
+  v |= v >> 8;
+  v |= v >> 16;
+  return v + 1;
+}
+
+//-
+//-  General type Array:
+//-
+
+// Data structure that owns its own data (that is they just have to be freed).
+// They basically are an alternative `Arena`. In other words... my
+// implementation of a dynamically-growing array, I.E. ArrayList, Vector or
+// however you might call it.
+//
+
+#define Array(t)                                                               \
+  struct {                                                                     \
+    t *ptr;                                                                    \
+    size_t cap;                                                                \
+    size_t len;                                                                \
+  }
+
+#define array_create(t, init_cap)                                              \
+  ({                                                                           \
+    assert(arena != NULL);                                                     \
+                                                                               \
+    (Array(t)){                                                                \
+        .ptr = (t *)arena_alloc(arena, len),                                   \
+        .len = len,                                                            \
+    };                                                                         \
+  })
+
+#define array_allocate(t, arena, len)                                          \
+  ({                                                                           \
+    assert(arena != NULL);                                                     \
+                                                                               \
+    (Array(t)){                                                                \
+        .ptr = (t *)arena_alloc(arena, len),                                   \
+        .len = len,                                                            \
+    };                                                                         \
   })

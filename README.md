@@ -33,4 +33,5 @@ to stick to these as much as I can (ideally always).
 -  Find first occurence of substring
 -  Find last occurence of substring
 -  Replace all occurrences of substring
--  In `str_trim`: trim with all whitespaces not just `' '`
+-  Arrays: I was unsure whether to refactor string to be charstr or not. I have come to the conclusion that
+Strings are just too important to be simple arrays. Especially because arrays will be implemented as macros.
