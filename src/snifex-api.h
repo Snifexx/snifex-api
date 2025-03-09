@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 //-
@@ -18,7 +19,7 @@
 //-
 
 typedef struct arena {
-  unsigned char *buf;
+  char *buf;
   size_t cap;
   size_t top;
 } Arena;
@@ -31,7 +32,7 @@ typedef struct arena {
   })
 
 void arena_init(Arena *arena, const size_t init_cap) {
-  arena->buf = (unsigned char *)malloc(init_cap);
+  arena->buf = (char *)malloc(init_cap);
   arena->cap = init_cap;
   arena->top = 0;
   assert(arena->buf != NULL);
@@ -47,7 +48,7 @@ void *arena_alloc(Arena *arena, const size_t size) {
 
   if (top + size > arena->cap) {
     arena->cap *= 2;
-    arena->buf = (unsigned char *)realloc(arena->buf, arena->cap);
+    arena->buf = (char *)realloc(arena->buf, arena->cap);
     assert(arena->buf != NULL);
   }
 
@@ -59,7 +60,7 @@ void *arena_alloc(Arena *arena, const size_t size) {
 void arena_with_cap(Arena *arena, size_t min_cap) {
   if (arena->cap < min_cap) {
     arena->cap *= min_cap;
-    arena->buf = (unsigned char *)realloc(arena->buf, arena->cap);
+    arena->buf = (char *)realloc(arena->buf, arena->cap);
     assert(arena->buf != NULL);
   }
 }
@@ -112,7 +113,7 @@ char *str_idx(string str, size_t i) {
 // library empty strings can have a NULL pointer.
 //
 // See `str_join` for more info
-int str_eq(const string a, const string b) {
+bool str_eq(const string a, const string b) {
   return a.len == b.len && (a.len == 0 || memcmp(a.ptr, b.ptr, a.len) == 0);
 }
 
@@ -188,26 +189,20 @@ string str_trim(const string str) {
 
 #define min(t, a, b)                                                           \
   ({                                                                           \
-    t TOKENPASTE(min0_, UNIQUE) = a;                                           \
-    t TOKENPASTE(min1_, UNIQUE) = b;                                           \
-    (TOKENPASTE(min0_, UNIQUE) < TOKENPASTE(min1_, UNIQUE)                     \
-         ? TOKENPASTE(min0_, UNIQUE)                                           \
-         : TOKENPASTE(min1_, UNIQUE));                                         \
+    t min0 = a;                                                                \
+    t min1 = b;                                                                \
+    (min0 < min1 ? min0 : min1);                                               \
   })
 
 #define max(t, a, b)                                                           \
   ({                                                                           \
-    t TOKENPASTE(max0_, UNIQUE) = a;                                           \
-    t TOKENPASTE(max1_, UNIQUE) = b;                                           \
-    (TOKENPASTE(max0_, UNIQUE) > TOKENPASTE(max1_, UNIQUE)                     \
-         ? TOKENPASTE(max0_, UNIQUE)                                           \
-         : TOKENPASTE(max1_, UNIQUE));                                         \
+    t max0 = a;                                                                \
+    t max1 = b;                                                                \
+    (max0 > max1 ? max0 : max1);                                               \
   })
 
 #define sign(t, a)                                                             \
   ({                                                                           \
-    t TOKENPASTE(sign_, UNIQUE) = a;                                           \
-    ((TOKENPASTE(sign_, UNIQUE) > 0)                                           \
-         ? 1                                                                   \
-         : ((TOKENPASTE(sign_, UNIQUE) < 0) ? -1 : 0));                        \
+    t num = a;                                                                 \
+    (num > 0 ? 1 : ((num < 0) ? -1 : 0));                                      \
   })
