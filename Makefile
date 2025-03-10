@@ -1,6 +1,6 @@
 CURR_DIR = $(shell pwd)
 OUT = $(CURR_DIR)/out
-BIN_NAME = examples
+BIN_NAME = all_examples
 export OUT
 export BIN_NAME
 
@@ -10,16 +10,16 @@ DEPS =
 
 # Tests
 
-default: src/examples.c src/snifex-api.h
+release: src/all_examples.c src/snifex-api.h
 	@-rm $(OUT)/$(BIN_NAME)
-	$(CC) src/examples.c -O3 $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME) -flto
+	$(CC) src/all_examples.c -O3 $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME) -flto -DNDEBUG
 
-debug: src/examples.c src/snifex-api.h
+debug: src/all_examples.c src/snifex-api.h
 	@-rm $(OUT)/$(BIN_NAME)_debug
-	$(CC) src/examples.c -g -O0 $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)_debug \
+	$(CC) src/all_examples.c -g -O0 $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)_debug \
 		-fsanitize=address -fno-omit-frame-pointer -fstandalone-debug
 
-run: default
+run-release: release
 	$(OUT)/$(BIN_NAME)
 
 run-debug: debug

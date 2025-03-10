@@ -1,18 +1,21 @@
+#ifndef SNIFEX_API_H
+#define SNIFEX_API_H
+
 #include <assert.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 
 //-
 //- Macro utils
 //-
 
-#define TOKENPASTE(x, y) x##y
-#define TOKENPASTE2(x, y) TOKENPASTE(x, y)
+#define _PRIV_TOKENPASTE(x, y) x##y
+#define _PRIV_TOKENPASTE2(x, y) TOKENPASTE(x, y)
 #define UNIQUE TOKENPASTE2(Unique_, __LINE__)
 
 //-
@@ -81,7 +84,7 @@ typedef struct string {
   (string) { .ptr = (char *)s, .len = strlen(s) }
 #define str_is_empty(s) (str.ptr == NULL || str.len == 0)
 
-string str_allocate(Arena *arena, size_t len) {
+string str_alloc(Arena *arena, size_t len) {
   assert(arena != NULL);
 
   return (string){
@@ -120,17 +123,17 @@ bool str_eq(const string a, const string b) {
 
 // Note! Can execute memcpy(ptr, NULL, 0), where ptr is guaranteed not to be
 // NULL, which is U.B. before c2y. Clang and GCC apparently handle this
-// gratefully while MSVC does not So, to conform to c99 we check for 0-len
-// before memcpy-ing, and this isn't not really a performance issue in clang and
-// gcc since the if checking gets optimized out starting even from -O1
+// gratefully while MSVC does not so, to conform to c99 we check for 0-len
+// before memcpy-ing. This isn't not really a performance issue in release mode
+// as it should just be optimised out (and gcc/clang with -O1 surely does)
 //
-// see
+// See
 // https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
 string str_join(Arena *arena, string a, string b) {
   assert(arena != NULL);
 
   size_t new_len = a.len + b.len;
-  string buf = str_allocate(arena, new_len);
+  string buf = str_alloc(arena, new_len);
   if (a.len != 0) {
     memcpy(buf.ptr, a.ptr, a.len);
   }
@@ -152,7 +155,7 @@ string str_fmt(Arena *arena, const char *fmt, ...) {
   va_end(args_temp);
 
   arena_with_cap(arena, arena->top + needed + 0);
-  string buf = str_allocate(arena, needed);
+  string buf = str_alloc(arena, needed);
   vsprintf(buf.ptr, fmt, args);
   va_end(args);
   return buf;
@@ -227,30 +230,49 @@ uint32_t ceil_powtwo(uint32_t v) {
 // implementation of a dynamically-growing array, I.E. ArrayList, Vector or
 // however you might call it.
 //
+// The way I decided to have generic like feeling is by a `DeclareArray` macro
+// that takes in the type and declares the struct-array with the specified
+// type `t`. I decided not to pollute the symbol table so I just typedef an
+// anonymous struct, meaning you can create your struct named Array_{t} and
+// make your own alias with typedef (that must be different from Array_{t}
+// though). Refer to e
 
-#define Array(t)                                                               \
-  struct {                                                                     \
+#define Vec(t) Vec_##t
+
+#define DeclareVec(t)                                                          \
+  typedef struct {                                                             \
     t *ptr;                                                                    \
     size_t cap;                                                                \
     size_t len;                                                                \
+  } Vec(t);                                                                    \
+                                                                               \
+  Vec(t) vec_create(size_t init_cap) {                                         \
+    assert(init_cap > 0);                                                      \
+                                                                               \
+    return (Vec(t)){                                                           \
+        .ptr = (t *)malloc(init_cap * sizeof(t)),                              \
+        .cap = init_cap,                                                       \
+        .len = 0,                                                              \
+    };                                                                         \
+  }                                                                            \
+                                                                               \
+  void vec_push(Vec(t) * vec, t val) {                                         \
+    assert(vec != NULL);                                                       \
+    if (vec->cap < vec->len + 1) {                                             \
+      vec->cap *= 2;                                                           \
+      vec->ptr = (t *)realloc(vec->ptr, vec->cap * sizeof(t));                 \
+      assert(vec->ptr != NULL);                                                \
+    }                                                                          \
+    vec->ptr[vec->len] = val;                                                  \
+    vec->len += 1;                                                             \
+  }                                                                            \
+                                                                               \
+  void vec_free(Vec(t) vec) { free(vec.ptr); }                                 \
+                                                                               \
+  t *vec_idx(Vec(t) vec, size_t i) {                                           \
+    assert(i < vec.len && vec.ptr != NULL);                                    \
+    return &vec.ptr[i];                                                        \
   }
 
-#define array_create(t, init_cap)                                              \
-  ({                                                                           \
-    assert(arena != NULL);                                                     \
-                                                                               \
-    (Array(t)){                                                                \
-        .ptr = (t *)arena_alloc(arena, len),                                   \
-        .len = len,                                                            \
-    };                                                                         \
-  })
 
-#define array_allocate(t, arena, len)                                          \
-  ({                                                                           \
-    assert(arena != NULL);                                                     \
-                                                                               \
-    (Array(t)){                                                                \
-        .ptr = (t *)arena_alloc(arena, len),                                   \
-        .len = len,                                                            \
-    };                                                                         \
-  })
+#endif
