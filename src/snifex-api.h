@@ -222,7 +222,7 @@ uint32_t ceil_powtwo(uint32_t v) {
 }
 
 //-
-//-  General type Array:
+//-  General type dynamic arrays:
 //-
 
 // Data structure that owns its own data (that is they just have to be freed).
@@ -230,12 +230,12 @@ uint32_t ceil_powtwo(uint32_t v) {
 // implementation of a dynamically-growing array, I.E. ArrayList, Vector or
 // however you might call it.
 //
-// The way I decided to have generic like feeling is by a `DeclareArray` macro
-// that takes in the type and declares the struct-array with the specified
-// type `t`. I decided not to pollute the symbol table so I just typedef an
-// anonymous struct, meaning you can create your struct named Array_{t} and
-// make your own alias with typedef (that must be different from Array_{t}
-// though). Refer to e
+// The way I decided to have generic like feeling is by a `DeclareVec` macro
+// that takes in the type and declares the struct-vec with the specified
+// type `t`. I decided not to pollute the symbol table so I just used typedef 
+// on an anonymous struct, meaning you can create your struct named Array_{t}
+// and make your own alias with typedef (that must be different from Array_{t}
+// though).
 
 #define Vec(t) Vec_##t
 

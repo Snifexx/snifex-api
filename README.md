@@ -24,8 +24,6 @@ to stick to these as much as I can (ideally always).
 
     This entails never make use of normal integer types such as `int` or `long` with the only exception of `char`,
     for ASCII characters or bytes.
-
--  For generic/unknown pointers predilect the use of `void*` (or `char*` only for single byte pointer arithmetic)
     instead of `uintptr_t` or `intptr_t`. If you really have to use one of the two prefer the former.
 
 - My styling guidelines:
@@ -43,10 +41,10 @@ to stick to these as much as I can (ideally always).
 
 # TODO
 
+- ***IMPORTANT!*** Add Doxygen banners and documentation
 -  Count substring occurrences
 -  Debug API to replace malloc, realloc, etc... with macro hooks to check that all allocations are deallocated
 -  Find first occurence of substring
 -  Find last occurence of substring
 -  Replace all occurrences of substring
--  Arrays: I was unsure whether to refactor string to be charstr or not. I have come to the conclusion that
-Strings are just too important to be simple arrays. Especially because arrays will be implemented as macros.
+
