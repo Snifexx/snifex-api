@@ -4,7 +4,7 @@
 #include <string.h>
 
 void string_usage() {
-  Arena arena = arena_create(10);
+  Arena scratch = arena_create(4096);
 
   //-
   //- Creating a string
@@ -12,12 +12,12 @@ void string_usage() {
   string string_literal = strlit("Normal C string literal");
 
   // Method 1: allocating and then copying. Less safe
-  string str1 = str_alloc(&arena, string_literal.len);
+  string str1 = str_alloc(&scratch, string_literal.len);
   memcpy(str1.ptr, string_literal.ptr, string_literal.len);
 
   // Method 2: using `str_copy`. More safe
-  string str2 = str_copy(&arena, string_literal);
-  
+  string str2 = str_copy(&scratch, string_literal);
+
   //-
   //- Equality check on strings
   //-
@@ -26,11 +26,10 @@ void string_usage() {
   //-
   //- Indexing character in string
   //-
-  char* c = str_idx(str1, 3);
+  char *const c = str_idx(str1, 3);
   assert(*c == 'm');
   *c = 'a';
   assert(str_eq(str1, strlit("Noraal C string literal")));
-  
 
   //-
   //- String Utilities
@@ -38,7 +37,7 @@ void string_usage() {
   string nullStr = {0};
   assert(str_is_empty(nullStr));
 
-  string joinedStr = str_join(&arena, strlit("Test j"), strlit("oined string"));
+  string joinedStr = str_join(&scratch, strlit("Test j"), strlit("oined string"));
   assert(str_eq(joinedStr, strlit("Test joined string")));
 
   string stringSlice = str_slice(strlit("String to be sliced"), 7, 12);
@@ -47,8 +46,9 @@ void string_usage() {
   string stringTrimmed = str_trim(strlit("    To be trimmed\n\n\t"));
   assert(str_eq(stringTrimmed, strlit("To be trimmed")));
 
-  string frmStr = str_fmt(&arena, "This is a string %.*s and its size %zu", str2.len, str2.ptr, str2.len);
-  printf("%.*s", (int) frmStr.len, frmStr.ptr);
+  string frmStr = str_fmt(&scratch, "This is a string '%.*s' and its size %zu",
+                          str2.len, str2.ptr, str2.len);
+  printf("%.*s\n", (int)frmStr.len, frmStr.ptr);
 
-  arena_free(&arena);
+  arena_free(&scratch);
 }

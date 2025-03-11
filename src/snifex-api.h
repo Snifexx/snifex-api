@@ -19,58 +19,142 @@
 #define UNIQUE _PRIV_TOKENPASTE2(Unique_, __LINE__)
 
 //-
-//- Arena
+//-  Numbers
 //-
 
-typedef struct arena {
+// I use macros because I want these to be the same for all number types
+// without having 10 different implementation for each number type I use
+#define min(t, a, b)                                                           \
+  ({                                                                           \
+    t min0 = a;                                                                \
+    t min1 = b;                                                                \
+    (min0 < min1 ? min0 : min1);                                               \
+  })
+
+#define max(t, a, b)                                                           \
+  ({                                                                           \
+    t max0 = a;                                                                \
+    t max1 = b;                                                                \
+    (max0 > max1 ? max0 : max1);                                               \
+  })
+
+#define sign(t, a)                                                             \
+  ({                                                                           \
+    t num = a;                                                                 \
+    (num > 0 ? 1 : ((num < 0) ? -1 : 0));                                      \
+  })
+
+static inline bool is_power_of_two(const size_t x) {
+  return (x & (x - 1)) == 0;
+}
+
+uint32_t ceil_powtwo(uint32_t v) {
+  v--;
+  v |= v >> 1;
+  v |= v >> 2;
+  v |= v >> 4;
+  v |= v >> 8;
+  v |= v >> 16;
+  return v + 1;
+}
+
+//-
+//- Arenas
+//-
+
+typedef struct dyn_arena {
   char *buf;
   size_t cap;
   size_t top;
+} DynArena;
+
+typedef struct arena {
+  char *buf;
+  size_t size;
+  size_t top;
 } Arena;
 
-#define arena_create(init_cap)                                                 \
-  ({                                                                           \
-    Arena arena = {0};                                                         \
-    arena_init(&arena, init_cap);                                              \
-    arena;                                                                     \
-  })
+void dyn_arena_init(DynArena *const dyn_arena, const size_t init_cap) {
+  dyn_arena->buf = (char *)malloc(init_cap);
+  dyn_arena->cap = init_cap;
+  dyn_arena->top = 0;
+  assert(dyn_arena->buf != NULL);
+}
 
-void arena_init(Arena *arena, const size_t init_cap) {
-  arena->buf = (char *)malloc(init_cap);
-  arena->cap = init_cap;
+void arena_init(Arena *const arena, const size_t size) {
+  arena->buf = (char *)malloc(size);
+  arena->size = size;
   arena->top = 0;
   assert(arena->buf != NULL);
 }
 
-void *arena_alloc(Arena *arena, const size_t size) {
-  if (size == 0) {
-    return NULL;
-  }
-  size_t top = arena->top;
-  if ((((uintptr_t)arena->buf + top) & 1) == 1)
-    top += 1;
+DynArena dyn_arena_create(const size_t init_cap) {
+  DynArena dyn_arena = {0};
+  dyn_arena_init(&dyn_arena, init_cap);
+  return dyn_arena;
+}
 
-  // TODO, instead of looping allocate the amount necessary and round up to the nearest power of two
-  while (top + size > arena->cap) {
-    arena->cap *= 2;
-    arena->buf = (char *)realloc(arena->buf, arena->cap);
-    assert(arena->buf != NULL);
+Arena arena_create(const size_t init_cap) {
+  Arena arena = {0};
+  arena_init(&arena, init_cap);
+  return arena;
+}
+
+size_t dyn_arena_alloc(DynArena *const dyn_arena, const size_t size,
+                       const size_t alignment) {
+  assert(size == 0 || alignment == 0 ||
+         (alignment != 1 && !is_power_of_two(alignment)) ||
+         size % alignment != 0);
+
+  size_t top = dyn_arena->top;
+  size_t padding = (top + alignment - 1) & ~(alignment - 1);
+
+  if (top + padding + size > dyn_arena->cap) {
+    dyn_arena->cap += top + padding + size;
+    dyn_arena->cap *= 2;
+    dyn_arena->buf = (char *)realloc(dyn_arena->buf, dyn_arena->cap);
+    assert(dyn_arena->buf != NULL);
+  }
+
+  dyn_arena->top += size + padding;
+  return top;
+}
+
+void *arena_alloc(Arena *const arena, const size_t size,
+                  const size_t alignment) {
+  assert(size == 0 || alignment == 0 ||
+         (alignment != 1 && !is_power_of_two(alignment)) ||
+         size % alignment != 0);
+
+  size_t top = arena->top;
+  size_t padding = (top + alignment - 1) & ~(alignment - 1);
+
+  if (top + padding + size > arena->size) {
+    return NULL;
   }
 
   void *ret = &arena->buf[top];
-  top += size;
+  arena->top += size + padding;
   return ret;
 }
 
-void arena_reserve(Arena *arena, size_t min_cap) {
-  if (arena->cap < min_cap) {
-    arena->cap *= min_cap;
-    arena->buf = (char *)realloc(arena->buf, arena->cap);
-    assert(arena->buf != NULL);
+#define dyn_arena_idx(t, dyn_arena, idx)                                       \
+  ({                                                                           \
+    const DynArena macro_dyn_arena = dyn_arena;                                \
+    const size_t macro_idx = idx;                                              \
+    (t *)&macro_dyn_arena.buf[macro_idx];                                      \
+  })
+
+void dyn_arena_reserve(DynArena *const dyn_arena, const size_t min_cap) {
+  if (dyn_arena->cap < min_cap) {
+    dyn_arena->cap *= min_cap;
+    dyn_arena->buf = (char *)realloc(dyn_arena->buf, dyn_arena->cap);
+    assert(dyn_arena->buf != NULL);
   }
 }
 
-void arena_free(Arena *arena) { free(arena->buf); }
+void dyn_arena_free(DynArena *const dyn_arena) { free(dyn_arena->buf); }
+void arena_free(Arena *const arena) { free(arena->buf); }
 
 //-
 //-  Strings
@@ -81,34 +165,36 @@ typedef struct string {
   size_t len;
 } string;
 
-#define strlit(s)                                                              \
-  (string) { .ptr = (char *)s, .len = strlen(s) }
-#define str_is_empty(str) (str.ptr == NULL || str.len == 0)
+string strlit(const char *const s) {
+  return (string){.ptr = (char *)s, .len = strlen(s)};
+}
+bool str_is_empty(const string str) {
+  return (str.ptr == NULL || str.len == 0);
+}
 
-string str_alloc(Arena *arena, size_t len) {
+string str_alloc(Arena *const arena, const size_t len) {
   assert(arena != NULL);
 
   return (string){
-      .ptr = (char *)arena_alloc(arena, len),
+      .ptr = (char *)arena_alloc(arena, len, 1),
       .len = len,
   };
 }
 
-string str_copy(Arena *arena, string str) {
+string str_copy(Arena *const arena, const string str) {
   if (str.len == 0) {
     return str;
   }
-
   assert(arena != NULL);
 
-  char *dest = (char *)arena_alloc(arena, str.len);
+  char *dest = (char *)arena_alloc(arena, str.len, 1);
   return (string){
       .ptr = (char *)memcpy(dest, str.ptr, str.len),
       .len = str.len,
   };
 }
 
-char *str_idx(string str, size_t i) {
+char *const str_idx(const string str, const size_t i) {
   assert(i < str.len && str.ptr != NULL);
   return &str.ptr[i];
 }
@@ -130,7 +216,7 @@ bool str_eq(const string a, const string b) {
 //
 // See
 // https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
-string str_join(Arena *arena, string a, string b) {
+string str_join(Arena *const arena, const string a, const string b) {
   assert(arena != NULL);
 
   size_t new_len = a.len + b.len;
@@ -144,7 +230,7 @@ string str_join(Arena *arena, string a, string b) {
   return buf;
 }
 
-string str_fmt(Arena *arena, const char *fmt, ...) {
+string str_fmt(Arena *const arena, const char *fmt, ...) {
   assert(arena != NULL && fmt != NULL);
 
   va_list args;
@@ -155,14 +241,16 @@ string str_fmt(Arena *arena, const char *fmt, ...) {
   size_t needed = vsnprintf(NULL, 0, fmt, args_temp);
   va_end(args_temp);
 
-  arena_reserve(arena, arena->top + needed + 0);
-  string buf = str_alloc(arena, needed);
-  vsprintf(buf.ptr, fmt, args);
+  char *const buf = (char *)malloc(needed + 1);
+  vsprintf(buf, fmt, args);
+  string str = str_copy(arena, strlit(buf));
+  memcpy(str.ptr, buf, needed);
   va_end(args);
-  return buf;
+  free(buf);
+  return str;
 }
 
-string str_slice(const string str, size_t start, size_t end) {
+string str_slice(const string str, const size_t start, const size_t end) {
   assert(start < str.len && end <= str.len && start <= end);
 
   return (string){
@@ -186,40 +274,6 @@ string str_trim(const string str) {
   }
 
   return str_slice(str, start, end);
-}
-
-//-
-//-  Numbers
-//-
-
-#define min(t, a, b)                                                           \
-  ({                                                                           \
-    t min0 = a;                                                                \
-    t min1 = b;                                                                \
-    (min0 < min1 ? min0 : min1);                                               \
-  })
-
-#define max(t, a, b)                                                           \
-  ({                                                                           \
-    t max0 = a;                                                                \
-    t max1 = b;                                                                \
-    (max0 > max1 ? max0 : max1);                                               \
-  })
-
-#define sign(t, a)                                                             \
-  ({                                                                           \
-    t num = a;                                                                 \
-    (num > 0 ? 1 : ((num < 0) ? -1 : 0));                                      \
-  })
-
-uint32_t ceil_powtwo(uint32_t v) {
-  v--;
-  v |= v >> 1;
-  v |= v >> 2;
-  v |= v >> 4;
-  v |= v >> 8;
-  v |= v >> 16;
-  return v + 1;
 }
 
 //-
@@ -247,7 +301,7 @@ uint32_t ceil_powtwo(uint32_t v) {
     size_t len;                                                                \
   } Vec(t);                                                                    \
                                                                                \
-  Vec(t) vec_create(size_t init_cap) {                                         \
+  Vec(t) vec_create(const size_t init_cap) {                                   \
     assert(init_cap > 0);                                                      \
                                                                                \
     return (Vec(t)){                                                           \
@@ -257,9 +311,10 @@ uint32_t ceil_powtwo(uint32_t v) {
     };                                                                         \
   }                                                                            \
                                                                                \
-  void vec_push(Vec(t) * vec, t val) {                                         \
+  void vec_push(Vec(t) *const vec, const t val) {                              \
     assert(vec != NULL);                                                       \
-    if (vec->cap < vec->len + 1) {                                             \
+    if (vec->len + 1 > vec->cap) {                                             \
+      vec->cap += 1;                                                           \
       vec->cap *= 2;                                                           \
       vec->ptr = (t *)realloc(vec->ptr, vec->cap * sizeof(t));                 \
       assert(vec->ptr != NULL);                                                \
@@ -268,17 +323,14 @@ uint32_t ceil_powtwo(uint32_t v) {
     vec->len += 1;                                                             \
   }                                                                            \
                                                                                \
-  void vec_free(Vec(t)* vec) { free(vec->ptr); }                                 \
+  void vec_free(Vec(t) *const vec) { free(vec->ptr); }                         \
                                                                                \
-  t *vec_idx(Vec(t) vec, size_t i) {                                           \
-    assert(i < vec.len && vec.ptr != NULL);                                    \
+  t *const vec_idx(Vec(t) vec, const size_t i) {                               \
+    assert(vec.len > 0 && i < vec.len && vec.ptr != NULL);                     \
     return &vec.ptr[i];                                                        \
   }                                                                            \
                                                                                \
-  t vec_last(Vec(t) vec) {                                                     \
-    assert(vec.len > 0);                                                       \
-    return vec.ptr[vec.len - 1];                                               \
-  }                                                                            \
+  t *const vec_last(Vec(t) vec) { return vec_idx(vec, vec.len - 1); }          \
                                                                                \
   void vec_pop(Vec(t) * vec) {                                                 \
     assert(vec != NULL && vec->len > 0);                                       \

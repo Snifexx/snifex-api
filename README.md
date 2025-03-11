@@ -36,8 +36,7 @@ to stick to these as much as I can (ideally always).
     as much as possible, or otherwise use math libraries.
 
 - My styling guidelines:
-    - *snake_case* for functions, macros (that are intended to be used as funcs) and structs (that are not aliased by `typedef`);
-    - *camelCase* for variables;
+    - *snake_case* for variables, functions, macros (that are intended to be used as funcs) and structs (that are not aliased by `typedef`);
     - *CAPS_SNAKE_CASE* for constants and macros (that are intended to be used as constants OR utility macros);
     - *PascalCase* for types and macros (that are intended to be used as types) with the exception of the basic `string` type I made.
     Structs that are not aliased with `typedef` do not adhere to this and are written as snake_case, E.G. 
@@ -55,6 +54,8 @@ to stick to these as much as I can (ideally always).
         struct my_struct = { 20 };
     }
     ```
+
+
 
 - Some naming conventions:
     - When naming functions that operate on a type, that could 'feel' method-like, prefix the name with the type,

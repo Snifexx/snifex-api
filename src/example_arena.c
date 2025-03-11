@@ -2,45 +2,52 @@
 #include <assert.h>
 #include <stdint.h>
 
-void arena_usage() {
+void dyn_arena_usage() {
   size_t fitting_size = sizeof(uint16_t) + sizeof(float);
 
   //-
   //- Creating arena
   //-
-  Arena arena1;
-  arena_init(&arena1, fitting_size);
+  DynArena arena1;
+  dyn_arena_init(&arena1, fitting_size);
   // or macro:
-  Arena arena2 = arena_create(fitting_size);
+  DynArena arena2 = dyn_arena_create(fitting_size);
 
-  // NOTE: For the time being there is no alignment on powers of 2,
-  // will change in the future
   assert(arena1.cap == fitting_size && arena2.cap == fitting_size);
 
   //-
-  //- Allocate object on arena
+  //- Allocate object on arena and set it
   //-
-  uint16_t* my_int_obj = arena_alloc(&arena1, sizeof(uint16_t));
-  *my_int_obj = 10;
-  float* my_float_obj = arena_alloc(&arena1, sizeof(float));
-  *my_float_obj = 10.0;
+  size_t my_int_obj =
+      dyn_arena_alloc(&arena1, sizeof(uint16_t), sizeof(uint16_t));
+  *dyn_arena_idx(uint16_t, arena1, my_int_obj) = 10;
+  size_t my_float_obj = dyn_arena_alloc(&arena1, sizeof(float), sizeof(float));
+  *dyn_arena_idx(float, arena1, my_float_obj) = 10;
 
   //-
   //- Reserving at least x bytes in capacity
   //-
-  arena_reserve(&arena1, fitting_size + 10);
+  dyn_arena_reserve(&arena1, fitting_size + 10);
 
-  // Note: Again, for the time being, this equation is for always going to be equal.
-  // In the future, when I implement alignment on power of 2, this inequality
-  // being equal is not guaranteed, but it surely will have 'at least' 
-  // `fitting_size + 10` bytes reserved, so the statement stil holds truth.
   assert(arena1.cap >= fitting_size + 10);
-
 
   //-
   //- Freeing the arenas
   //-
-  arena_free(&arena1);
-  arena_free(&arena2);
+  dyn_arena_free(&arena1);
+  dyn_arena_free(&arena2);
 }
 
+void arena_usage() {
+  Arena arena = arena_create(4096); // I arbitrarily chose 4KB
+
+  // Everything is the same as a `DynArena` except you cannot change it's capacity, hence why it's renamed size
+  // When you allocate if it returns a null pointer, then the allocation does not fit in the arena.
+  void* successful_allocation = arena_alloc(&arena, 4000, 1);
+  assert(successful_allocation != NULL);
+  void* exceeding_allocation = arena_alloc(&arena, 97, 1);
+  assert(exceeding_allocation == NULL);
+
+
+  arena_free(&arena);
+}
