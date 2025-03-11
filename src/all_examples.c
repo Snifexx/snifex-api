@@ -5,6 +5,7 @@
 #include "./example_vector.c"
 
 int main() {
+  dyn_arena_usage();
   arena_usage();
   string_usage();
   demonstrate_unpolluted_symtable();

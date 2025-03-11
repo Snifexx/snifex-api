@@ -1,6 +1,5 @@
 #include "snifex-api.h"
 #include <assert.h>
-#include <stdio.h>
 #include <string.h>
 
 void string_usage() {
@@ -34,21 +33,36 @@ void string_usage() {
   //-
   //- String Utilities
   //-
-  string nullStr = {0};
-  assert(str_is_empty(nullStr));
+  string null_str = {0};
+  assert(str_is_empty(null_str));
 
-  string joinedStr = str_join(&scratch, strlit("Test j"), strlit("oined string"));
-  assert(str_eq(joinedStr, strlit("Test joined string")));
+  string string_concat =
+      str_concat(&scratch, strlit("Test j"), strlit("oined string"));
+  assert(str_eq(string_concat, strlit("Test joined string")));
 
-  string stringSlice = str_slice(strlit("String to be sliced"), 7, 12);
-  assert(str_eq(stringSlice, strlit("to be")));
+  string string_slice = str_slice(strlit("String to be sliced"), 7, 12);
+  assert(str_eq(string_slice, strlit("to be")));
 
-  string stringTrimmed = str_trim(strlit("    To be trimmed\n\n\t"));
-  assert(str_eq(stringTrimmed, strlit("To be trimmed")));
+  string string_trimmed = str_trim(strlit("    To be trimmed\n\n\t"));
+  assert(str_eq(string_trimmed, strlit("To be trimmed")));
 
-  string frmStr = str_fmt(&scratch, "This is a string '%.*s' and its size %zu",
-                          str2.len, str2.ptr, str2.len);
-  printf("%.*s\n", (int)frmStr.len, frmStr.ptr);
+  string fmt_str = str_fmt(&scratch, "This is a string '%.*s' and its size %zu",
+                           (int)str2.len, str2.ptr, str2.len);
+  assert(str_eq(
+      strlit("This is a string 'Normal C string literal' and its size 23"),
+      fmt_str));
+
+  // If you want to print/format a string longer than INT_MAX, you have to use
+  // `str_join`:
+  Vec(string) to_join = vec_create_string(3);
+  vec_push_string(&to_join, strlit("This is a string '"));
+  vec_push_string(&to_join, str2);
+  vec_push_string(&to_join, str_fmt(&scratch, "' and its size %zu", str2.len));
+  string string_joined = str_join(&scratch, to_join);
+  assert(str_eq(
+      strlit("This is a string 'Normal C string literal' and its size 23"),
+      string_joined));
+  vec_free_string(&to_join);
 
   arena_free(&scratch);
 }

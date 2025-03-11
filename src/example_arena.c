@@ -41,13 +41,13 @@ void dyn_arena_usage() {
 void arena_usage() {
   Arena arena = arena_create(4096); // I arbitrarily chose 4KB
 
-  // Everything is the same as a `DynArena` except you cannot change it's capacity, hence why it's renamed size
-  // When you allocate if it returns a null pointer, then the allocation does not fit in the arena.
-  void* successful_allocation = arena_alloc(&arena, 4000, 1);
+  // Everything is the same as a `DynArena` except you cannot change it's
+  // capacity, hence why it's renamed size When you allocate if it returns a
+  // null pointer, then the allocation does not fit in the arena.
+  void *successful_allocation = arena_alloc(&arena, 4000, 1);
   assert(successful_allocation != NULL);
-  void* exceeding_allocation = arena_alloc(&arena, 97, 1);
+  void *exceeding_allocation = arena_alloc(&arena, 97, 1);
   assert(exceeding_allocation == NULL);
-
 
   arena_free(&arena);
 }

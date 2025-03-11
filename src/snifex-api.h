@@ -102,9 +102,9 @@ Arena arena_create(const size_t init_cap) {
 
 size_t dyn_arena_alloc(DynArena *const dyn_arena, const size_t size,
                        const size_t alignment) {
-  assert(size == 0 || alignment == 0 ||
-         (alignment != 1 && !is_power_of_two(alignment)) ||
-         size % alignment != 0);
+  assert(!(size == 0 || alignment == 0 ||
+           (alignment != 1 && !is_power_of_two(alignment)) ||
+           size % alignment != 0));
 
   size_t top = dyn_arena->top;
   size_t padding = (top + alignment - 1) & ~(alignment - 1);
@@ -122,9 +122,11 @@ size_t dyn_arena_alloc(DynArena *const dyn_arena, const size_t size,
 
 void *arena_alloc(Arena *const arena, const size_t size,
                   const size_t alignment) {
-  assert(size == 0 || alignment == 0 ||
-         (alignment != 1 && !is_power_of_two(alignment)) ||
-         size % alignment != 0);
+  if (size == 0) {
+    return NULL;
+  }
+  assert(!(alignment == 0 || (alignment != 1 && !is_power_of_two(alignment)) ||
+           size % alignment != 0));
 
   size_t top = arena->top;
   size_t padding = (top + alignment - 1) & ~(alignment - 1);
@@ -157,6 +159,69 @@ void dyn_arena_free(DynArena *const dyn_arena) { free(dyn_arena->buf); }
 void arena_free(Arena *const arena) { free(arena->buf); }
 
 //-
+//-  General type dynamic arrays:
+//-
+
+// Data structure that owns its own data (that is they just have to be freed).
+// They basically are an alternative `Arena`. In other words... my
+// implementation of a dynamically-growing array, I.E. ArrayList, Vector or
+// however you might call it.
+//
+// The way I decided to have generic like feeling is by a `DeclareVec` macro
+// that takes in the type and declares the struct-vec with the specified
+// type `t`. I decided not to pollute the symbol table so I just used typedef
+// on an anonymous struct, meaning you can create your struct named Array_{t}
+// and make your own alias with typedef (that must be different from Array_{t}
+// though).
+
+#define Vec(t) Vec_##t
+
+#define vec_idx(vec, i)                                                        \
+  ({                                                                           \
+    const size_t macro_i = i;                                                  \
+    assert(vec.len > 0 && macro_i < vec.len && vec.ptr != NULL);               \
+    &vec.ptr[macro_i];                                                         \
+  })
+
+#define DeclareVec(t)                                                          \
+  typedef struct {                                                             \
+    t *ptr;                                                                    \
+    size_t cap;                                                                \
+    size_t len;                                                                \
+  } Vec(t);                                                                    \
+                                                                               \
+  Vec(t) vec_create_##t(const size_t init_cap) {                               \
+    assert(init_cap > 0);                                                      \
+                                                                               \
+    return (Vec(t)){                                                           \
+        .ptr = (t *)malloc(init_cap * sizeof(t)),                              \
+        .cap = init_cap,                                                       \
+        .len = 0,                                                              \
+    };                                                                         \
+  }                                                                            \
+                                                                               \
+  void vec_push_##t(Vec(t) *const vec, const t val) {                          \
+    assert(vec != NULL);                                                       \
+    if (vec->len + 1 > vec->cap) {                                             \
+      vec->cap += 1;                                                           \
+      vec->cap *= 2;                                                           \
+      vec->ptr = (t *)realloc(vec->ptr, vec->cap * sizeof(t));                 \
+      assert(vec->ptr != NULL);                                                \
+    }                                                                          \
+    vec->ptr[vec->len] = val;                                                  \
+    vec->len += 1;                                                             \
+  }                                                                            \
+                                                                               \
+  void vec_free_##t(Vec(t) *const vec) { free(vec->ptr); }                     \
+                                                                               \
+  t *const vec_last_##t(Vec(t) vec) { return vec_idx(vec, vec.len - 1); }      \
+                                                                               \
+  void vec_pop_##t(Vec(t) * vec) {                                             \
+    assert(vec != NULL && vec->len > 0);                                       \
+    vec->len -= 1;                                                             \
+  }
+
+//-
 //-  Strings
 //-
 
@@ -165,7 +230,9 @@ typedef struct string {
   size_t len;
 } string;
 
-string strlit(const char *const s) {
+DeclareVec(string);
+
+string strlit(char const *s) {
   return (string){.ptr = (char *)s, .len = strlen(s)};
 }
 bool str_is_empty(const string str) {
@@ -216,7 +283,7 @@ bool str_eq(const string a, const string b) {
 //
 // See
 // https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
-string str_join(Arena *const arena, const string a, const string b) {
+string str_concat(Arena *const arena, const string a, const string b) {
   assert(arena != NULL);
 
   size_t new_len = a.len + b.len;
@@ -226,6 +293,24 @@ string str_join(Arena *const arena, const string a, const string b) {
   }
   if (b.len != 0) {
     memcpy(buf.ptr + a.len, b.ptr, b.len);
+  }
+  return buf;
+}
+
+string str_join(Arena *const arena, Vec(string) to_join) {
+  assert(arena != NULL);
+
+  size_t new_len = 0;
+  for (size_t i = 0; i < to_join.len; i++) {
+    new_len += vec_idx(to_join, i)->len;
+  }
+  string buf = str_alloc(arena, new_len);
+
+  char *dest = buf.ptr;
+  for (size_t i = 0; i < to_join.len; i++) {
+    string str = *vec_idx(to_join, i);
+    memcpy(dest, str.ptr, str.len);
+    dest += str.len;
   }
   return buf;
 }
@@ -275,66 +360,5 @@ string str_trim(const string str) {
 
   return str_slice(str, start, end);
 }
-
-//-
-//-  General type dynamic arrays:
-//-
-
-// Data structure that owns its own data (that is they just have to be freed).
-// They basically are an alternative `Arena`. In other words... my
-// implementation of a dynamically-growing array, I.E. ArrayList, Vector or
-// however you might call it.
-//
-// The way I decided to have generic like feeling is by a `DeclareVec` macro
-// that takes in the type and declares the struct-vec with the specified
-// type `t`. I decided not to pollute the symbol table so I just used typedef
-// on an anonymous struct, meaning you can create your struct named Array_{t}
-// and make your own alias with typedef (that must be different from Array_{t}
-// though).
-
-#define Vec(t) Vec_##t
-
-#define DeclareVec(t)                                                          \
-  typedef struct {                                                             \
-    t *ptr;                                                                    \
-    size_t cap;                                                                \
-    size_t len;                                                                \
-  } Vec(t);                                                                    \
-                                                                               \
-  Vec(t) vec_create(const size_t init_cap) {                                   \
-    assert(init_cap > 0);                                                      \
-                                                                               \
-    return (Vec(t)){                                                           \
-        .ptr = (t *)malloc(init_cap * sizeof(t)),                              \
-        .cap = init_cap,                                                       \
-        .len = 0,                                                              \
-    };                                                                         \
-  }                                                                            \
-                                                                               \
-  void vec_push(Vec(t) *const vec, const t val) {                              \
-    assert(vec != NULL);                                                       \
-    if (vec->len + 1 > vec->cap) {                                             \
-      vec->cap += 1;                                                           \
-      vec->cap *= 2;                                                           \
-      vec->ptr = (t *)realloc(vec->ptr, vec->cap * sizeof(t));                 \
-      assert(vec->ptr != NULL);                                                \
-    }                                                                          \
-    vec->ptr[vec->len] = val;                                                  \
-    vec->len += 1;                                                             \
-  }                                                                            \
-                                                                               \
-  void vec_free(Vec(t) *const vec) { free(vec->ptr); }                         \
-                                                                               \
-  t *const vec_idx(Vec(t) vec, const size_t i) {                               \
-    assert(vec.len > 0 && i < vec.len && vec.ptr != NULL);                     \
-    return &vec.ptr[i];                                                        \
-  }                                                                            \
-                                                                               \
-  t *const vec_last(Vec(t) vec) { return vec_idx(vec, vec.len - 1); }          \
-                                                                               \
-  void vec_pop(Vec(t) * vec) {                                                 \
-    assert(vec != NULL && vec->len > 0);                                       \
-    vec->len -= 1;                                                             \
-  }
 
 #endif
