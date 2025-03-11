@@ -50,7 +50,8 @@ void *arena_alloc(Arena *arena, const size_t size) {
   if ((((uintptr_t)arena->buf + top) & 1) == 1)
     top += 1;
 
-  if (top + size > arena->cap) {
+  // TODO, instead of looping allocate the amount necessary and round up to the nearest power of two
+  while (top + size > arena->cap) {
     arena->cap *= 2;
     arena->buf = (char *)realloc(arena->buf, arena->cap);
     assert(arena->buf != NULL);
@@ -82,7 +83,7 @@ typedef struct string {
 
 #define strlit(s)                                                              \
   (string) { .ptr = (char *)s, .len = strlen(s) }
-#define str_is_empty(s) (str.ptr == NULL || str.len == 0)
+#define str_is_empty(str) (str.ptr == NULL || str.len == 0)
 
 string str_alloc(Arena *arena, size_t len) {
   assert(arena != NULL);
