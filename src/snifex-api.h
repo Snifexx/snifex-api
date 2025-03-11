@@ -15,8 +15,8 @@
 //-
 
 #define _PRIV_TOKENPASTE(x, y) x##y
-#define _PRIV_TOKENPASTE2(x, y) TOKENPASTE(x, y)
-#define UNIQUE TOKENPASTE2(Unique_, __LINE__)
+#define _PRIV_TOKENPASTE2(x, y) _PRIV_TOKENPASTE(x, y)
+#define UNIQUE _PRIV_TOKENPASTE2(Unique_, __LINE__)
 
 //-
 //- Arena
@@ -62,7 +62,7 @@ void *arena_alloc(Arena *arena, const size_t size) {
   return ret;
 }
 
-void arena_with_cap(Arena *arena, size_t min_cap) {
+void arena_reserve(Arena *arena, size_t min_cap) {
   if (arena->cap < min_cap) {
     arena->cap *= min_cap;
     arena->buf = (char *)realloc(arena->buf, arena->cap);
@@ -155,7 +155,7 @@ string str_fmt(Arena *arena, const char *fmt, ...) {
   size_t needed = vsnprintf(NULL, 0, fmt, args_temp);
   va_end(args_temp);
 
-  arena_with_cap(arena, arena->top + needed + 0);
+  arena_reserve(arena, arena->top + needed + 0);
   string buf = str_alloc(arena, needed);
   vsprintf(buf.ptr, fmt, args);
   va_end(args);
@@ -233,7 +233,7 @@ uint32_t ceil_powtwo(uint32_t v) {
 //
 // The way I decided to have generic like feeling is by a `DeclareVec` macro
 // that takes in the type and declares the struct-vec with the specified
-// type `t`. I decided not to pollute the symbol table so I just used typedef 
+// type `t`. I decided not to pollute the symbol table so I just used typedef
 // on an anonymous struct, meaning you can create your struct named Array_{t}
 // and make your own alias with typedef (that must be different from Array_{t}
 // though).
@@ -268,12 +268,21 @@ uint32_t ceil_powtwo(uint32_t v) {
     vec->len += 1;                                                             \
   }                                                                            \
                                                                                \
-  void vec_free(Vec(t) vec) { free(vec.ptr); }                                 \
+  void vec_free(Vec(t)* vec) { free(vec->ptr); }                                 \
                                                                                \
   t *vec_idx(Vec(t) vec, size_t i) {                                           \
     assert(i < vec.len && vec.ptr != NULL);                                    \
     return &vec.ptr[i];                                                        \
+  }                                                                            \
+                                                                               \
+  t vec_last(Vec(t) vec) {                                                     \
+    assert(vec.len > 0);                                                       \
+    return vec.ptr[vec.len - 1];                                               \
+  }                                                                            \
+                                                                               \
+  void vec_pop(Vec(t) * vec) {                                                 \
+    assert(vec != NULL && vec->len > 0);                                       \
+    vec->len -= 1;                                                             \
   }
-
 
 #endif
