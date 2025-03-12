@@ -10,7 +10,7 @@ void dyn_arena_usage() {
   //-
   DynArena arena1;
   dyn_arena_init(&arena1, fitting_size);
-  // or macro:
+  // or:
   DynArena arena2 = dyn_arena_create(fitting_size);
 
   assert(arena1.cap == fitting_size && arena2.cap == fitting_size);
@@ -20,9 +20,24 @@ void dyn_arena_usage() {
   //-
   size_t my_int_obj =
       dyn_arena_alloc(&arena1, sizeof(uint16_t), sizeof(uint16_t));
+
+#ifdef __GNUC__
   *dyn_arena_idx(uint16_t, arena1, my_int_obj) = 10;
+#else
+  uint16_t *ptr;
+  dyn_arena_idx(uint16_t, ptr, arena1, my_int_obj);
+  *ptr = 10;
+#endif
+
   size_t my_float_obj = dyn_arena_alloc(&arena1, sizeof(float), sizeof(float));
+
+#ifdef __GNUC__
   *dyn_arena_idx(float, arena1, my_float_obj) = 10;
+#else
+  float *ptr;
+  dyn_arena_idx(float, ptr, arena1, my_float_obj);
+  *ptr = 10;
+#endif
 
   //-
   //- Reserving at least x bytes in capacity
@@ -42,7 +57,7 @@ void arena_usage() {
   Arena arena = arena_create(4096); // I arbitrarily chose 4KB
 
   // Everything is the same as a `DynArena` except you cannot change it's
-  // capacity, hence why it's renamed size When you allocate if it returns a
+  // capacity, hence why it's renamed size. When you allocate if it returns a
   // null pointer, then the allocation does not fit in the arena.
   void *successful_allocation = arena_alloc(&arena, 4000, 1);
   assert(successful_allocation != NULL);

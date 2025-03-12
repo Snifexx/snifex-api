@@ -13,10 +13,16 @@ void demonstrate_unpolluted_symtable() {
   Vec(uint16_t) intVec = vec_create_uint16_t(sizeof(uint16_t));
   vec_push_uint16_t(&intVec, 12);
 
-  my_Vec_uint16_t my_dynArr = {102};
+  my_Vec_uint16_t my_vec = {102};
 
+#ifdef __GNUC__
   assert(*vec_idx(intVec, 0) == 12);
-  assert(my_dynArr.different_struct == 102);
+#else
+  Vec(uint16_t) * ptr;
+  vec_idx(intVec, ptr, 0);
+  assert(*ptr == 12);
+#endif
+  assert(my_vec.different_struct == 102);
 
   vec_free_uint16_t(&intVec);
 }
@@ -36,7 +42,13 @@ void vector_usage() {
   vec_push_uint16_t(&intVec, 456);
   assert(intVec.cap == 4); // capacity gets doubled after pushing
 
+#ifdef __GNUC__
   uint16_t indexedElem = *vec_idx(intVec, intVec.len - 1);
+#else
+  uint16_t *ptr;
+  vec_idx(intVec, intVec.len - 1);
+  uint16_t indexedElem = *ptr;
+#endif
   uint16_t lastElem = *vec_last_uint16_t(intVec);
   vec_pop_uint16_t(&intVec);
   vec_pop_uint16_t(&intVec);
@@ -48,4 +60,18 @@ void vector_usage() {
   //- Freeing the vector
   //-
   vec_free_uint16_t(&intVec);
+}
+
+void vector_macro_init() {
+#ifdef __GNUC__
+  Vec(uint16_t) vec = vec_from(uint16_t, 10, 20, 30);
+  assert(*vec_idx(vec, 0) == 10);
+  assert(*vec_idx(vec, 1) == 20);
+  assert(*vec_idx(vec, 2) == 30);
+#else
+  Vec(uint16_t) vec; vec_from(uint16_t, vec, 10, 20, 30);
+  assert(*vec_idx(vec, 0) == 10);
+  assert(*vec_idx(vec, 1) == 20);
+  assert(*vec_idx(vec, 2) == 30);
+#endif
 }

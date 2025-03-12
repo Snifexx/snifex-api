@@ -17,6 +17,8 @@ to stick to these as much as I can (ideally always).
 - These are the assumptions this API makes:
     1. As already stated, it conforms to C99.
     2. As explained later, it supposes IEEE 754 standards are being followed, which is true for any modern system.
+    3. This project in particular is compiler agnostic, however usage between GCC/Clang and others may vary, as for more safety
+    I have implemented API differences that depend on `__GNUC__`
 
 - Always use the most correct, descriptive and well-defined integer type. That means:
     - using only exact-width integer types (`intN_t`/`uintN_t`);
@@ -56,20 +58,22 @@ to stick to these as much as I can (ideally always).
     ```
 
 
-
 - Some naming conventions:
     - When naming functions that operate on a type, that could 'feel' method-like, prefix the name with the type,
     maybe abbreviating it. Examples: `str_trim`, `arena_alloc`
 
 - Good practise:
     - Practise Defensive Programming, I.E. spam asserts a lot.
+    - When making macros for non GCC/Clang compilers use the classical do {} while (0) and when replicating GNU's expression statements,
+    have an argument named `result` that is set at the end of the macro
+    - When making macros for GCC or Clang that are NOT expression statements, still use the do {} while (0) hack
 
 # TODO
 
 - ***IMPORTANT!*** Add Doxygen banners and documentation
 - ***IMPORTANT!*** Add alignment in powers of two to capacities
+- *USEFUL* Debug API to replace malloc, realloc, etc... with macro hooks to check that all allocations are deallocated
 - Count substring occurrences
-- Debug API to replace malloc, realloc, etc... with macro hooks to check that all allocations are deallocated
 - Find first occurence of substring
 - Find last occurence of substring
 - Replace all occurrences of substring
