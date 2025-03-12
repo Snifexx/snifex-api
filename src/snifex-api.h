@@ -247,6 +247,7 @@ extern void arena_free(Arena* const arena);
     *remove_at = to_replace;                                    \
     vecsr_vec_ptr->len--;                                       \
   } while (0)
+
 #else  // NON SNIFEX_API_GNU_EXTENSIONS
 
 #define vec_create(lval_result_vec, t, init_cap)  \

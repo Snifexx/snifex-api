@@ -16,7 +16,8 @@ void dyn_arena_usage() {
   //-
   //- Allocate object on arena and set it
   //-
-  size_t int_idx = dyn_arena_alloc(&arena1, sizeof(uint16_t), sizeof(uint16_t));
+  size_t int_idx =
+      dyn_arena_alloc(&arena1, sizeof(uint16_t), sizeof(uint16_t));
   uint16_t* int_obj;
   dyn_arena_get(int_obj, uint16_t, arena1, int_idx);
   *int_obj = 10;
