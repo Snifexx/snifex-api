@@ -23,7 +23,7 @@ void string_usage() {
   //-
   //- Indexing character in string
   //-
-  char *const c = str_idx(str1, 3);
+  char* const c = str_idx(str1, 3);
   assert(*c == 'm');
   *c = 'a';
   assert(str_eq(str1, strlit("Noraal C string literal")));

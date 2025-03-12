@@ -4,8 +4,8 @@ DeclareVec(uint16_t);
 
 typedef struct Vec_uint16_t {
   int different_struct;
-} my_Vec_uint16_t; // using 'Vec_uint16_t' would give a
-                   // redefinition_different_typedef' compiler error!
+} my_Vec_uint16_t;  // using 'Vec_uint16_t' would give a
+                    // redefinition_different_typedef' compiler error!
 
 void demonstrate_unpolluted_symtable() {
   Vec(uint16_t) intVec = vec_create_uint16_t(sizeof(uint16_t));
@@ -38,13 +38,13 @@ void vector_usage() {
   vec_push_uint16_t(&intVec, 123);
   assert(intVec.cap == 1);
   vec_push_uint16_t(&intVec, 456);
-  assert(intVec.cap == 4); // capacity gets doubled after pushing
+  assert(intVec.cap == 4);  // capacity gets doubled after pushing
 
 #ifdef __GNUC__
   uint16_t indexedElem = *vec_idx(intVec, intVec.len - 1);
   uint16_t lastElem = *vec_last(intVec);
 #else
-  uint16_t *ptr;
+  uint16_t* ptr;
   vec_idx(ptr, intVec, intVec.len - 1);
   uint16_t indexedElem = *ptr;
   vec_last(ptr, intVec);
@@ -71,7 +71,7 @@ void vector_macro_init() {
 #else
   Vec(uint16_t) vec;
   vec_from(vec, uint16_t, 10, 20, 30);
-  uint16_t *ptr;
+  uint16_t* ptr;
   vec_idx(ptr, vec, 0);
   assert(*ptr == 10);
   vec_idx(ptr, vec, 1);
