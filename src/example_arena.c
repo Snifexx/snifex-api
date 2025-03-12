@@ -1,6 +1,6 @@
+#define SNIFEX_API_IMPLEMENTATION
 #include "snifex-api.h"
-#include <assert.h>
-#include <stdint.h>
+#undef SNIFEX_API_IMPLEMENTATION
 
 void dyn_arena_usage() {
   size_t fitting_size = sizeof(uint16_t) + sizeof(float);
@@ -25,7 +25,7 @@ void dyn_arena_usage() {
   *dyn_arena_idx(uint16_t, arena1, my_int_obj) = 10;
 #else
   uint16_t *ptr;
-  dyn_arena_idx(uint16_t, ptr, arena1, my_int_obj);
+  dyn_arena_idx(ptr, uint16_t, arena1, my_int_obj);
   *ptr = 10;
 #endif
 
@@ -35,7 +35,7 @@ void dyn_arena_usage() {
   *dyn_arena_idx(float, arena1, my_float_obj) = 10;
 #else
   float *ptr;
-  dyn_arena_idx(float, ptr, arena1, my_float_obj);
+  dyn_arena_idx(ptr, float, arena1, my_float_obj);
   *ptr = 10;
 #endif
 
