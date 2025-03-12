@@ -139,20 +139,20 @@ extern void arena_free(Arena *const arena);
 #define vec_idx(vec, i)                                                        \
   ({                                                                           \
     const size_t macro_i = i;                                                  \
-    assert(vec.len > 0 && macro_i < vec.len && vec.ptr != NULL);               \
-    &vec.ptr[macro_i];                                                         \
+    assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL);         \
+    &(vec).ptr[macro_i];                                                       \
   })
-#define vec_last(vec) ({ vec_idx(vec, vec.len - 1); })
+#define vec_last(vec) ({ vec_idx(vec, (vec).len - 1); })
 #else
 #define vec_idx(result, vec, i)                                                \
   do {                                                                         \
     const size_t macro_i = i;                                                  \
-    assert(vec.len > 0 && macro_i < vec.len && vec.ptr != NULL);               \
-    result = &vec.ptr[macro_i];                                                \
+    assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL);         \
+    result = &(vec).ptr[macro_i];                                              \
   } while (0)
 #define vec_last(result, vec)                                                  \
   do {                                                                         \
-    vec_idx(vec, result vec.len - 1);                                          \
+    vec_idx(vec, result(vec).len - 1);                                         \
   } while (0)
 #endif
 
