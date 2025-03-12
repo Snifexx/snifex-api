@@ -1,3 +1,4 @@
+# Snifex API
 
 This is my quick and easy to use API for C.
 
@@ -7,6 +8,44 @@ Honestly, I'll implement shit as I need to, but if you feel like contributing dr
 So don't take the TODO too seriously.
 
 This project uses C99 and I have my tests with clang (as you can see in the [Makefile](./Makefile)) but should work with any c99 compiler.
+It's an [stb single file header library](https://github.com/nothings/stb).
+
+# Usage
+Since this is an stb file header it packs the header file with the implementations all in one. What does that mean?
+It simply means that you can treat it as a normal header file, however at least ONCE it must be 'implemented' through a macro.
+
+For examples on all the API functions take a look at the [examples](./src/all_examples.c).
+I've also included a Makefile. Its basis is auto-generated, you should only ever need the `debug` and `run-debug` task to test
+th examples
+```c
+// file1.c
+
+#include <file2.c>
+#define SNIFEX_API_IMPLEMENTATION
+#include <snifex-api.h>
+#undef SNIFEX_API_IMPLEMENTATION //not really needed, but just to be sure
+
+int main() {
+    my_test();
+    return 0;
+}
+
+// file2.c
+
+#include <stdio.h>
+#include <stdint.h>
+#include <snifex-api.h>
+#include <inttypes.h>
+
+void my_test() {
+#ifdef __GNUC__
+    uint8_t min_var = min(uint8_t, 10, 2);
+#else
+    uint8_t min_var; min(min_var, uint8_t, 10, 2);
+#endif
+    printf("%" PRIu8 "\n", min_var);
+}
+```
 
 # My guidelines
 This is a small definition of all the rules I've imposed on myself when writing C, my own little standard.

@@ -1,0 +1,22 @@
+[
+ {
+  "directory": "/home/matteoserver/dev/c/snifex-api",
+  "arguments": [
+   "clang",
+   "src/all_examples.c",
+   "-g",
+   "-O0",
+   "-std=c99",
+   "-Wall",
+   "-Werror",
+   "-fstrict-aliasing",
+   "-Wstrict-aliasing",
+   "-o",
+   "/home/matteoserver/dev/c/snifex-api/out/all_examples_debug",
+   "-fsanitize=address",
+   "-fno-omit-frame-pointer",
+   "-fstandalone-debug"
+  ],
+  "file": "src/all_examples.c"
+ }
+]

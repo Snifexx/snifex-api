@@ -1,3 +1,5 @@
+// HEADER
+
 #ifndef SNIFEX_API_H
 #define SNIFEX_API_H
 
@@ -18,17 +20,13 @@
 #define _PRIV_TOKENPASTE2(x, y) _PRIV_TOKENPASTE(x, y)
 #define UNIQUE _PRIV_TOKENPASTE2(Unique_, __LINE__)
 
-#ifdef __GNUC__
-#define EXPRESSION_STATEMENTS
-#endif
-
 //-
 //-  Numbers
 //-
 
 // I use macros because I want these to be the same for all number types
 // without having 10 different implementation for each number type I use
-#ifdef EXPRESSION_STATEMENTS
+#ifdef __GNUC__
 #define min(t, a, b)                                                           \
   ({                                                                           \
     t min0 = a;                                                                \
@@ -49,40 +47,29 @@
     (num > 0 ? 1 : ((num < 0) ? -1 : 0));                                      \
   })
 #else
-#define min(t, result, a, b)                                                   \
+#define min(result, t, a, b)                                                   \
   do {                                                                         \
     t min0 = a;                                                                \
     t min1 = b;                                                                \
     result = (min0 < min1 ? min0 : min1);                                      \
   } while (0)
 
-#define max(t, result, a, b)                                                   \
+#define max(result, t, a, b)                                                   \
   do {                                                                         \
     t max0 = a;                                                                \
     t max1 = b;                                                                \
     result = (max0 > max1 ? max0 : max1);                                      \
   } while (0)
 
-#define sign(t, result, a)                                                     \
+#define sign(result, t, a)                                                     \
   do {                                                                         \
     t num = a;                                                                 \
     result = (num > 0 ? 1 : ((num < 0) ? -1 : 0));                             \
   } while (0)
 #endif
 
-static inline bool is_power_of_two(const size_t x) {
-  return (x & (x - 1)) == 0;
-}
-
-uint32_t ceil_powtwo(uint32_t v) {
-  v--;
-  v |= v >> 1;
-  v |= v >> 2;
-  v |= v >> 4;
-  v |= v >> 8;
-  v |= v >> 16;
-  return v + 1;
-}
+static inline bool is_power_of_two(const size_t x);
+extern uint32_t ceil_powtwo(uint32_t v);
 
 //-
 //- Arenas
@@ -99,6 +86,196 @@ typedef struct arena {
   size_t size;
   size_t top;
 } Arena;
+
+extern void dyn_arena_init(DynArena *const dyn_arena, const size_t init_cap);
+extern void arena_init(Arena *const arena, const size_t size);
+extern DynArena dyn_arena_create(const size_t init_cap);
+extern Arena arena_create(const size_t init_cap);
+extern size_t dyn_arena_alloc(DynArena *const dyn_arena, const size_t size,
+                              const size_t alignment);
+
+extern void *arena_alloc(Arena *const arena, const size_t size,
+                         const size_t alignment);
+
+#ifdef __GNUC__
+#define dyn_arena_idx(t, dyn_arena, idx)                                       \
+  ({                                                                           \
+    const DynArena macro_dyn_arena = dyn_arena;                                \
+    const size_t macro_idx = idx;                                              \
+    (t *)&macro_dyn_arena.buf[macro_idx];                                      \
+  })
+#else
+#define dyn_arena_idx(result, t, dyn_arena, idx)                               \
+  do {                                                                         \
+    const DynArena macro_dyn_arena = dyn_arena;                                \
+    const size_t macro_idx = idx;                                              \
+    result = (t *)&macro_dyn_arena.buf[macro_idx];                             \
+  } while (0)
+#endif
+
+extern void dyn_arena_reserve(DynArena *const dyn_arena, const size_t min_cap);
+extern void dyn_arena_free(DynArena *const dyn_arena);
+extern void arena_free(Arena *const arena);
+
+//-
+//-  General type dynamic arrays:
+//-
+
+// Data structure that owns its own data (that is they just have to be freed).
+// They basically are an alternative `Arena`. In other words... my
+// implementation of a dynamically-growing array, I.E. ArrayList, Vector or
+// however you might call it.
+//
+// The way I decided to have generic like feeling is by a `DeclareVec` macro
+// that takes in the type and declares the struct-vec with the specified
+// type `t`. I decided not to pollute the symbol table so I just used typedef
+// on an anonymous struct, meaning you can create your struct named Array_{t}
+// and make your own alias with typedef (that must be different from Array_{t}
+// though).
+
+#define Vec(t) Vec_##t
+
+#ifdef __GNUC__
+#define vec_idx(vec, i)                                                        \
+  ({                                                                           \
+    const size_t macro_i = i;                                                  \
+    assert(vec.len > 0 && macro_i < vec.len && vec.ptr != NULL);               \
+    &vec.ptr[macro_i];                                                         \
+  })
+#define vec_last(vec) ({ vec_idx(vec, vec.len - 1); })
+#else
+#define vec_idx(result, vec, i)                                                \
+  do {                                                                         \
+    const size_t macro_i = i;                                                  \
+    assert(vec.len > 0 && macro_i < vec.len && vec.ptr != NULL);               \
+    result = &vec.ptr[macro_i];                                                \
+  } while (0)
+#define vec_last(result, vec)                                                  \
+  do {                                                                         \
+    vec_idx(vec, result vec.len - 1);                                          \
+  } while (0)
+#endif
+
+#ifdef __GNUC__
+#define vec_from(t, item1, ...)                                                \
+  ({                                                                           \
+    t macro_item1 = item1;                                                     \
+    t items[] = {macro_item1, __VA_ARGS__};                                    \
+    size_t count = sizeof(items) / sizeof(t);                                  \
+    Vec(t) vec = vec_create_##t(count);                                        \
+    vec.len = count;                                                           \
+    memcpy(vec.ptr, items, sizeof(items));                                     \
+    vec;                                                                       \
+  })
+#else
+#define vec_from(result, t item1, ...)                                         \
+  do {                                                                         \
+    t macro_item1 = item1;                                                     \
+    t items[] = {macro_item1, __VA_ARGS__};                                    \
+    size_t count = sizeof(items) / sizeof(t);                                  \
+    Vec(t) vec = vec_create_##t(count);                                        \
+    vec.len = count;                                                           \
+    memcpy(vec.ptr, items, sizeof(items));                                     \
+    result = vec;                                                              \
+  } while (0)
+#endif
+
+#define DefineVec(t)                                                           \
+  typedef struct {                                                             \
+    t *ptr;                                                                    \
+    size_t cap;                                                                \
+    size_t len;                                                                \
+  } Vec(t);                                                                    \
+                                                                               \
+  extern Vec(t) vec_create_##t(const size_t init_cap);                         \
+  extern void vec_push_##t(Vec(t) *const vec, const t val);                    \
+  extern void vec_free_##t(Vec(t) *const vec);                                 \
+  extern void vec_pop_##t(Vec(t) * vec);
+
+#define ImplementVec(t)                                                        \
+  Vec(t) vec_create_##t(const size_t init_cap) {                               \
+    assert(init_cap > 0);                                                      \
+                                                                               \
+    return (Vec(t)){                                                           \
+        .ptr = (t *)malloc(init_cap * sizeof(t)),                              \
+        .cap = init_cap,                                                       \
+        .len = 0,                                                              \
+    };                                                                         \
+  }                                                                            \
+                                                                               \
+  void vec_push_##t(Vec(t) *const vec, const t val) {                          \
+    assert(vec != NULL);                                                       \
+    if (vec->len + 1 > vec->cap) {                                             \
+      vec->cap += 1;                                                           \
+      vec->cap *= 2;                                                           \
+      vec->ptr = (t *)realloc(vec->ptr, vec->cap * sizeof(t));                 \
+      assert(vec->ptr != NULL);                                                \
+    }                                                                          \
+    vec->ptr[vec->len] = val;                                                  \
+    vec->len += 1;                                                             \
+  }                                                                            \
+                                                                               \
+  void vec_free_##t(Vec(t) *const vec) { free(vec->ptr); }                     \
+                                                                               \
+  void vec_pop_##t(Vec(t) * vec) {                                             \
+    assert(vec != NULL && vec->len > 0);                                       \
+    vec->len -= 1;                                                             \
+  }
+
+#define DeclareVec(t)                                                          \
+  DefineVec(t);                                                                \
+  ImplementVec(t);
+
+//-
+//-  Strings
+//-
+
+typedef struct string {
+  char *ptr;
+  size_t len;
+} string;
+
+DefineVec(string)
+
+    // Short-circuing if the length is equal and is 0 is because memcmp with
+    // NULL pointers is U.B. in c99, even if the number of bytes copied is 0,
+    // and in this library empty strings can have a NULL pointer.
+    //
+    // See `str_join` for more info
+    extern bool str_eq(const string a, const string b);
+
+// Note! Can execute memcpy(ptr, NULL, 0), where ptr is guaranteed not to be
+// NULL, which is U.B. before c2y. Clang and GCC apparently handle this
+// gratefully while MSVC does not so, to conform to c99 we check for 0-len
+// before memcpy-ing. This isn't not really a performance issue in release mode
+// as it should just be optimised out (and gcc/clang with -O1 surely does)
+//
+// See
+// https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
+extern string str_concat(Arena *const arena, const string a, const string b);
+
+extern string str_join(Arena *const arena, Vec(string) to_join);
+extern string str_fmt(Arena *const arena, const char *fmt, ...);
+extern string str_slice(const string str, const size_t start, const size_t end);
+extern string str_trim(const string str);
+
+#endif // SNIFEX_API_H
+
+// IMPLEMENTATION
+
+#ifdef SNIFEX_API_IMPLEMENTATION
+
+inline bool is_power_of_two(const size_t x) { return (x & (x - 1)) == 0; }
+
+uint32_t ceil_powtwo(uint32_t v) {
+  v--;
+  v |= v >> 1;
+  v |= v >> 2;
+  v |= v >> 4;
+  v |= v >> 8;
+  v |= v >> 16;
+  return v + 1;
+}
 
 void dyn_arena_init(DynArena *const dyn_arena, const size_t init_cap) {
   dyn_arena->buf = (char *)malloc(init_cap);
@@ -166,22 +343,6 @@ void *arena_alloc(Arena *const arena, const size_t size,
   return ret;
 }
 
-#ifdef EXPRESSION_STATEMENTS
-#define dyn_arena_idx(t, dyn_arena, idx)                                       \
-  ({                                                                           \
-    const DynArena macro_dyn_arena = dyn_arena;                                \
-    const size_t macro_idx = idx;                                              \
-    (t *)&macro_dyn_arena.buf[macro_idx];                                      \
-  })
-#else
-#define dyn_arena_idx(t, result, dyn_arena, idx)                               \
-  do {                                                                         \
-    const DynArena macro_dyn_arena = dyn_arena;                                \
-    const size_t macro_idx = idx;                                              \
-    result = (t *)&macro_dyn_arena.buf[macro_idx];                             \
-  } while (0)
-#endif
-
 void dyn_arena_reserve(DynArena *const dyn_arena, const size_t min_cap) {
   if (dyn_arena->cap < min_cap) {
     dyn_arena->cap *= min_cap;
@@ -193,114 +354,9 @@ void dyn_arena_reserve(DynArena *const dyn_arena, const size_t min_cap) {
 void dyn_arena_free(DynArena *const dyn_arena) { free(dyn_arena->buf); }
 void arena_free(Arena *const arena) { free(arena->buf); }
 
-//-
-//-  General type dynamic arrays:
-//-
+ImplementVec(string)
 
-// Data structure that owns its own data (that is they just have to be freed).
-// They basically are an alternative `Arena`. In other words... my
-// implementation of a dynamically-growing array, I.E. ArrayList, Vector or
-// however you might call it.
-//
-// The way I decided to have generic like feeling is by a `DeclareVec` macro
-// that takes in the type and declares the struct-vec with the specified
-// type `t`. I decided not to pollute the symbol table so I just used typedef
-// on an anonymous struct, meaning you can create your struct named Array_{t}
-// and make your own alias with typedef (that must be different from Array_{t}
-// though).
-
-#define Vec(t) Vec_##t
-
-#ifdef EXPRESSION_STATEMENTS
-#define vec_idx(vec, i)                                                        \
-  ({                                                                           \
-    const size_t macro_i = i;                                                  \
-    assert(vec.len > 0 && macro_i < vec.len && vec.ptr != NULL);               \
-    &vec.ptr[macro_i];                                                         \
-  })
-#else
-#define vec_idx(vec, result, i)                                                \
-  do {                                                                         \
-    const size_t macro_i = i;                                                  \
-    assert(vec.len > 0 && macro_i < vec.len && vec.ptr != NULL);               \
-    result = &vec.ptr[macro_i];                                                \
-  } while (0)
-#endif
-
-#ifdef EXPRESSION_STATEMENTS
-#define vec_from(t, item1, ...)                                                \
-  ({                                                                           \
-    t macro_item1 = item1;                                                     \
-    t items[] = {macro_item1, __VA_ARGS__};                                    \
-    size_t count = sizeof(items) / sizeof(t);                                  \
-    Vec(t) vec = vec_create_##t(count);                                        \
-    vec.len = count;                                                           \
-    memcpy(vec.ptr, items, sizeof(items));                                     \
-    vec;                                                                       \
-  })
-#else
-#define vec_from(t, result, item1, ...)                                        \
-  do {                                                                         \
-    t macro_item1 = item1;                                                     \
-    t items[] = {macro_item1, __VA_ARGS__};                                    \
-    size_t count = sizeof(items) / sizeof(t);                                  \
-    Vec(t) vec = vec_create_##t(count);                                        \
-    vec.len = count;                                                           \
-    memcpy(vec.ptr, items, sizeof(items));                                     \
-    result = vec;                                                              \
-  } while (0)
-#endif
-
-#define DeclareVec(t)                                                          \
-  typedef struct {                                                             \
-    t *ptr;                                                                    \
-    size_t cap;                                                                \
-    size_t len;                                                                \
-  } Vec(t);                                                                    \
-                                                                               \
-  Vec(t) vec_create_##t(const size_t init_cap) {                               \
-    assert(init_cap > 0);                                                      \
-                                                                               \
-    return (Vec(t)){                                                           \
-        .ptr = (t *)malloc(init_cap * sizeof(t)),                              \
-        .cap = init_cap,                                                       \
-        .len = 0,                                                              \
-    };                                                                         \
-  }                                                                            \
-                                                                               \
-  void vec_push_##t(Vec(t) *const vec, const t val) {                          \
-    assert(vec != NULL);                                                       \
-    if (vec->len + 1 > vec->cap) {                                             \
-      vec->cap += 1;                                                           \
-      vec->cap *= 2;                                                           \
-      vec->ptr = (t *)realloc(vec->ptr, vec->cap * sizeof(t));                 \
-      assert(vec->ptr != NULL);                                                \
-    }                                                                          \
-    vec->ptr[vec->len] = val;                                                  \
-    vec->len += 1;                                                             \
-  }                                                                            \
-                                                                               \
-  void vec_free_##t(Vec(t) *const vec) { free(vec->ptr); }                     \
-                                                                               \
-  t *const vec_last_##t(Vec(t) vec) { return vec_idx(vec, vec.len - 1); }      \
-                                                                               \
-  void vec_pop_##t(Vec(t) * vec) {                                             \
-    assert(vec != NULL && vec->len > 0);                                       \
-    vec->len -= 1;                                                             \
-  }
-
-//-
-//-  Strings
-//-
-
-typedef struct string {
-  char *ptr;
-  size_t len;
-} string;
-
-DeclareVec(string);
-
-string strlit(char const *s) {
+    string strlit(char const *s) {
   return (string){.ptr = (char *)s, .len = strlen(s)};
 }
 bool str_is_empty(const string str) {
@@ -370,13 +426,25 @@ string str_join(Arena *const arena, Vec(string) to_join) {
 
   size_t new_len = 0;
   for (size_t i = 0; i < to_join.len; i++) {
+#ifdef __GNUC__
     new_len += vec_idx(to_join, i)->len;
+#else
+    *string UNIQUE;
+    vec_idx(UNIQUE, to_join i);
+    new_len += UNIQUE->len;
+#endif
   }
   string buf = str_alloc(arena, new_len);
 
   char *dest = buf.ptr;
   for (size_t i = 0; i < to_join.len; i++) {
+#ifdef __GNUC__
     string str = *vec_idx(to_join, i);
+#else
+    *string UNIQUE;
+    vec_idx(UNIQUE, to_join, i);
+    string str = *UNIQUE;
+#endif
     memcpy(dest, str.ptr, str.len);
     dest += str.len;
   }
@@ -429,5 +497,4 @@ string str_trim(const string str) {
   return str_slice(str, start, end);
 }
 
-#undef EXPRESSION_STATEMENTS
-#endif
+#endif // SNIFEX_API_IMPLEMENTATION
