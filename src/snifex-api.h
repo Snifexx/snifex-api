@@ -27,40 +27,12 @@
 // I use macros because I want these to be the same for all number types
 // without having 10 different implementation for each number type I use
 #ifdef __GNUC__
-#define min(t, a, b)             \
-  ({                             \
-    t min0 = a;                  \
-    t min1 = b;                  \
-    (min0 < min1 ? min0 : min1); \
-  })
-
-#define max(t, a, b)             \
-  ({                             \
-    t max0 = a;                  \
-    t max1 = b;                  \
-    (max0 > max1 ? max0 : max1); \
-  })
-
 #define sign(t, a)                        \
   ({                                      \
     t num = a;                            \
     (num > 0 ? 1 : ((num < 0) ? -1 : 0)); \
   })
 #else
-#define min(result, t, a, b)              \
-  do {                                    \
-    t min0 = a;                           \
-    t min1 = b;                           \
-    result = (min0 < min1 ? min0 : min1); \
-  } while (0)
-
-#define max(result, t, a, b)              \
-  do {                                    \
-    t max0 = a;                           \
-    t max1 = b;                           \
-    result = (max0 > max1 ? max0 : max1); \
-  } while (0)
-
 #define sign(result, t, a)                         \
   do {                                             \
     t num = a;                                     \
