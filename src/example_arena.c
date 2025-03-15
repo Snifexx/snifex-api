@@ -22,20 +22,20 @@ void dyn_arena_usage() {
       dyn_arena_alloc(&arena1, sizeof(uint16_t), sizeof(uint16_t));
 
 #ifdef __GNUC__
-  *dyn_arena_idx(uint16_t, arena1, my_int_obj) = 10;
+  *dyn_arena_get(uint16_t, arena1, my_int_obj) = 10;
 #else
   uint16_t* ptr;
-  dyn_arena_idx(ptr, uint16_t, arena1, my_int_obj);
+  dyn_arena_get(ptr, uint16_t, arena1, my_int_obj);
   *ptr = 10;
 #endif
 
   size_t my_float_obj = dyn_arena_alloc(&arena1, sizeof(float), sizeof(float));
 
 #ifdef __GNUC__
-  *dyn_arena_idx(float, arena1, my_float_obj) = 10;
+  *dyn_arena_get(float, arena1, my_float_obj) = 10;
 #else
   float* fptr;
-  dyn_arena_idx(fptr, float, arena1, my_float_obj);
+  dyn_arena_get(fptr, float, arena1, my_float_obj);
   *fptr = 10;
 #endif
 

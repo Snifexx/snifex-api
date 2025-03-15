@@ -50,8 +50,8 @@
 #endif
 
 #ifdef OS_WIN
-#include <windows.h>
 #include <DbgHelp.h>
+#include <windows.h>
 
 #pragma comment(lib, "DbgHelp.lib")
 #endif
@@ -66,7 +66,7 @@ void __snifex_api_assert_fail(const char* expr,
 #define assert(expr)  \
   ((expr) ? ((void)0) \
           : __snifex_api_assert_fail(#expr, __FILE__, __LINE__, __func__))
-#endif // !SNIFEX_API_NO_ASSERT
+#endif  // !SNIFEX_API_NO_ASSERT
 
 //-
 //-  Numbers
@@ -120,18 +120,18 @@ extern void* arena_alloc(Arena* const arena,
                          const size_t alignment);
 
 #ifdef __GNUC__
-#define dyn_arena_idx(t, dyn_arena, idx)        \
+#define dyn_arena_get(t, dyn_arena, rel_ptr)    \
   ({                                            \
     const DynArena macro_dyn_arena = dyn_arena; \
-    const size_t macro_idx = idx;               \
-    (t*)&macro_dyn_arena.buf[macro_idx];        \
+    const size_t macro_rel_ptr = rel_ptr;       \
+    (t*)&macro_dyn_arena.buf[macro_rel_ptr];    \
   })
 #else
-#define dyn_arena_idx(result, t, dyn_arena, idx)  \
-  do {                                            \
-    const DynArena macro_dyn_arena = dyn_arena;   \
-    const size_t macro_idx = idx;                 \
-    result = (t*)&macro_dyn_arena.buf[macro_idx]; \
+#define dyn_arena_get(result, t, dyn_arena, rel_ptr)  \
+  do {                                                \
+    const DynArena macro_dyn_arena = dyn_arena;       \
+    const size_t macro_rel_ptr = rel_ptr;             \
+    result = (t*)&macro_dyn_arena.buf[macro_rel_ptr]; \
   } while (0)
 #endif
 
@@ -160,7 +160,7 @@ extern void arena_free(Arena* const arena);
 #ifdef __GNUC__
 #define vec_idx(vec, i)                                                \
   ({                                                                   \
-    const size_t macro_i = (i);                                          \
+    const size_t macro_i = (i);                                        \
     assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL); \
     &(vec).ptr[macro_i];                                               \
   })
@@ -168,12 +168,12 @@ extern void arena_free(Arena* const arena);
 #else
 #define vec_idx(result, vec, i)                                        \
   do {                                                                 \
-    const size_t macro_i = (i);                                          \
+    const size_t macro_i = (i);                                        \
     assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL); \
     result = &(vec).ptr[macro_i];                                      \
   } while (0)
-#define vec_last(result, vec)          \
-  do {                                 \
+#define vec_last(result, vec)            \
+  do {                                   \
     vec_idx(result, vec, (vec).len - 1); \
   } while (0)
 #endif
@@ -190,7 +190,7 @@ extern void arena_free(Arena* const arena);
     vec;                                      \
   })
 #else
-#define vec_from(result, t, item1, ...)        \
+#define vec_from(result, t, item1, ...)       \
   do {                                        \
     t macro_item1 = item1;                    \
     t items[] = {macro_item1, __VA_ARGS__};   \
@@ -306,10 +306,12 @@ void __snifex_api_assert_fail(const char* expr,
                               const char* file,
                               const int line,
                               const char* func) {
-    fprintf(stderr, "\33[0;31m%s\33[0m:\33[0;33m%d\33[0m in func \33[0;32m%s\33[0m():\n\t\33[0;91mAssert failed\33[0m -> %s\n", file, line,
-        func, expr);
+  fprintf(stderr,
+          "\33[0;31m%s\33[0m:\33[0;33m%d\33[0m in func "
+          "\33[0;32m%s\33[0m():\n\t\33[0;91mAssert failed\33[0m -> %s\n",
+          file, line, func, expr);
 #ifdef OS_LINUX
-    fprintf(stderr, "\33[38;5;124mStacktrace:\33[0m\n");
+  fprintf(stderr, "\33[38;5;124mStacktrace:\33[0m\n");
   char** strings;
   size_t size;
   void* array[1024];
@@ -330,24 +332,25 @@ void __snifex_api_assert_fail(const char* expr,
   void* array[48];
   size_t size = CaptureStackBackTrace(0, 48, array, NULL);
 
-
   for (size_t i = 0; i < size; i++) {
-      DWORD64 address = (DWORD64)(array[i]);
-      CHAR buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(CHAR)];
-      PSYMBOL_INFO symbol = (PSYMBOL_INFO)buffer;
-      symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
-      symbol->MaxNameLen = MAX_SYM_NAME;
+    DWORD64 address = (DWORD64)(array[i]);
+    CHAR buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(CHAR)];
+    PSYMBOL_INFO symbol = (PSYMBOL_INFO)buffer;
+    symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+    symbol->MaxNameLen = MAX_SYM_NAME;
 
-      if (SymFromAddr(GetCurrentProcess(), address, 0, symbol)) {
-          fprintf(stderr, "\33[0;37mFrame %u: %s\n", i, symbol->Name);
-      }
-      else {
-          fprintf(stderr, "\33[0;37mFrame %u: Address = 0x%p (No debug info, if using MSVC remember the /Zi flag)\n", i, (void*)address);
-      }
+    if (SymFromAddr(GetCurrentProcess(), address, 0, symbol)) {
+      fprintf(stderr, "\33[0;37mFrame %u: %s\n", i, symbol->Name);
+    } else {
+      fprintf(stderr,
+              "\33[0;37mFrame %u: Address = 0x%p (No debug info, if using MSVC "
+              "remember the /Zi flag)\n",
+              i, (void*)address);
+    }
   }
   printf("\33[0m\n");
   SymCleanup(GetCurrentProcess());
-#endif // OS_WIN
+#endif  // OS_WIN
   exit(1);
 }
 
@@ -450,7 +453,7 @@ void arena_free(Arena* const arena) {
 
 ImplementVec(string)
 
-string strlit(char const* s) {
+    string strlit(char const* s) {
   return (string){.ptr = (char*)s, .len = strlen(s)};
 }
 bool str_is_empty(const string str) {
