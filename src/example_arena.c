@@ -34,9 +34,9 @@ void dyn_arena_usage() {
 #ifdef __GNUC__
   *dyn_arena_idx(float, arena1, my_float_obj) = 10;
 #else
-  float* ptr;
-  dyn_arena_idx(ptr, float, arena1, my_float_obj);
-  *ptr = 10;
+  float* fptr;
+  dyn_arena_idx(fptr, float, arena1, my_float_obj);
+  *fptr = 10;
 #endif
 
   //-

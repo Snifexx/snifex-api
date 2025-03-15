@@ -49,15 +49,24 @@
 #include <execinfo.h>
 #endif
 
+#ifdef OS_WIN
+#include <windows.h>
+#include <DbgHelp.h>
+
+#pragma comment(lib, "DbgHelp.lib")
+#endif
+
 void __snifex_api_assert_fail(const char* expr,
                               const char* file,
                               const int line,
                               const char* func);
 
+#ifndef SNIFEX_API_NO_ASSERT
 #undef assert
 #define assert(expr)  \
   ((expr) ? ((void)0) \
           : __snifex_api_assert_fail(#expr, __FILE__, __LINE__, __func__))
+#endif // !SNIFEX_API_NO_ASSERT
 
 //-
 //-  Numbers
@@ -151,7 +160,7 @@ extern void arena_free(Arena* const arena);
 #ifdef __GNUC__
 #define vec_idx(vec, i)                                                \
   ({                                                                   \
-    const size_t macro_i = i;                                          \
+    const size_t macro_i = (i);                                          \
     assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL); \
     &(vec).ptr[macro_i];                                               \
   })
@@ -159,13 +168,13 @@ extern void arena_free(Arena* const arena);
 #else
 #define vec_idx(result, vec, i)                                        \
   do {                                                                 \
-    const size_t macro_i = i;                                          \
+    const size_t macro_i = (i);                                          \
     assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL); \
     result = &(vec).ptr[macro_i];                                      \
   } while (0)
 #define vec_last(result, vec)          \
   do {                                 \
-    vec_idx(vec, result(vec).len - 1); \
+    vec_idx(result, vec, (vec).len - 1); \
   } while (0)
 #endif
 
@@ -297,20 +306,48 @@ void __snifex_api_assert_fail(const char* expr,
                               const char* file,
                               const int line,
                               const char* func) {
-  fprintf(stderr, "\e[0;31m%s\e[0m:\e[0;33m%d\e[0m in func \e[0;32m%s\e[0m():\n\t\e[0;91mAssert failed\e[0m -> %s\n", file, line,
-          func, expr);
+    fprintf(stderr, "\33[0;31m%s\33[0m:\33[0;33m%d\33[0m in func \33[0;32m%s\33[0m():\n\t\33[0;91mAssert failed\33[0m -> %s\n", file, line,
+        func, expr);
 #ifdef OS_LINUX
-  fprintf(stderr, "\033[38;5;124mStacktrace:\e[0m\n");
+    fprintf(stderr, "\33[38;5;124mStacktrace:\33[0m\n");
   char** strings;
   size_t size;
   void* array[1024];
   size = backtrace(array, 1024);
   strings = backtrace_symbols(array, size);
   for (size_t i = 0; i < size; i++)
-    printf("\e[0;37m%s\n", strings[i]);
-  printf("\e[0m\n");
+    printf("\33[0;37m%s\n", strings[i]);
+  printf("\33[0m\n");
   free(strings);
 #endif
+#ifdef OS_WIN
+  fprintf(stderr, "\33[38;5;124mStacktrace:\33[0m\n");
+
+  const DWORD options = SymGetOptions();
+  SymSetOptions(options | SYMOPT_LOAD_LINES);
+  SymInitialize(GetCurrentProcess(), NULL, true);
+
+  void* array[48];
+  size_t size = CaptureStackBackTrace(0, 48, array, NULL);
+
+
+  for (size_t i = 0; i < size; i++) {
+      DWORD64 address = (DWORD64)(array[i]);
+      CHAR buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(CHAR)];
+      PSYMBOL_INFO symbol = (PSYMBOL_INFO)buffer;
+      symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+      symbol->MaxNameLen = MAX_SYM_NAME;
+
+      if (SymFromAddr(GetCurrentProcess(), address, 0, symbol)) {
+          fprintf(stderr, "\33[0;37mFrame %u: %s\n", i, symbol->Name);
+      }
+      else {
+          fprintf(stderr, "\33[0;37mFrame %u: Address = 0x%p (No debug info, if using MSVC remember the /Zi flag)\n", i, (void*)address);
+      }
+  }
+  printf("\33[0m\n");
+  SymCleanup(GetCurrentProcess());
+#endif // OS_WIN
   exit(1);
 }
 
@@ -413,7 +450,7 @@ void arena_free(Arena* const arena) {
 
 ImplementVec(string)
 
-    string strlit(char const* s) {
+string strlit(char const* s) {
   return (string){.ptr = (char*)s, .len = strlen(s)};
 }
 bool str_is_empty(const string str) {
