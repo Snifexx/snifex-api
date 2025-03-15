@@ -9,7 +9,7 @@ typedef struct Vec_uint16_t {
 
 void demonstrate_unpolluted_symtable() {
   Vec(uint16_t) intVec = vec_create_uint16_t(sizeof(uint16_t));
-  vec_push_uint16_t(&intVec, 12);
+  vec_push_uint16_t(&intVec, 13);
 
   my_Vec_uint16_t my_vec = {102};
 

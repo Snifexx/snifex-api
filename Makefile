@@ -5,7 +5,7 @@ export OUT
 export BIN_NAME
 
 CC = clang
-COMMON_ARGS = -std=c99 -Wall -Werror -fstrict-aliasing -Wstrict-aliasing 
+COMMON_ARGS = -std=c99 -Wall -Werror -fstrict-aliasing -Wstrict-aliasing -Wno-unused-variable
 DEPS = 
 
 # Tests

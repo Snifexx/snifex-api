@@ -16,9 +16,48 @@
 //- Macro utils
 //-
 
-#define _PRIV_TOKENPASTE(x, y) x##y
-#define _PRIV_TOKENPASTE2(x, y) _PRIV_TOKENPASTE(x, y)
-#define UNIQUE _PRIV_TOKENPASTE2(Unique_, __LINE__)
+// Here "OS" is also used for non Operating Systems like the Linux Kernel.
+// I did so just to have them all in an encompassing group of macros.
+#if defined(__ANDROID__)
+#define OS_ANDROID
+#elif defined(__gnu_linux__)
+#define OS_GNULINUX
+#elif defined(_WIN64)
+#define OS_WIN64
+#define OS_WIN
+#elif defined(_WIN32)
+#define OS_WIN32
+#define OS_WIN
+#elif defined(__CYGWIN__)
+#define OS_CYGWIN
+#define OS_WIN
+#elif defined(__APPLE__) && defined(__MACH__)
+#define OS_MACOSX
+#elif defined(__FreeBSD__)
+#define OS_FREEBSD
+#endif
+
+#if defined(__linux__)
+#define OS_LINUX
+#endif
+
+#if defined(unix) || defined(__unix__) || defined(__unix) || defined(OS_MACOSX)
+#define OS_UNIX
+#endif
+
+#ifdef OS_LINUX
+#include <execinfo.h>
+#endif
+
+void __snifex_api_assert_fail(const char* expr,
+                              const char* file,
+                              const int line,
+                              const char* func);
+
+#undef assert
+#define assert(expr)  \
+  ((expr) ? ((void)0) \
+          : __snifex_api_assert_fail(#expr, __FILE__, __LINE__, __func__))
 
 //-
 //-  Numbers
@@ -253,6 +292,27 @@ extern string str_trim(const string str);
 // IMPLEMENTATION
 
 #ifdef SNIFEX_API_IMPLEMENTATION
+
+void __snifex_api_assert_fail(const char* expr,
+                              const char* file,
+                              const int line,
+                              const char* func) {
+  fprintf(stderr, "\e[0;31m%s\e[0m:\e[0;33m%d\e[0m in func \e[0;32m%s\e[0m():\n\t\e[0;91mAssert failed\e[0m -> %s\n", file, line,
+          func, expr);
+#ifdef OS_LINUX
+  fprintf(stderr, "\033[38;5;124mStacktrace:\e[0m\n");
+  char** strings;
+  size_t size;
+  void* array[1024];
+  size = backtrace(array, 1024);
+  strings = backtrace_symbols(array, size);
+  for (size_t i = 0; i < size; i++)
+    printf("\e[0;37m%s\n", strings[i]);
+  printf("\e[0m\n");
+  free(strings);
+#endif
+  exit(1);
+}
 
 inline bool is_power_of_two(const size_t x) {
   return (x & (x - 1)) == 0;
