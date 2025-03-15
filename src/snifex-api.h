@@ -61,6 +61,13 @@
 #pragma comment(lib, "DbgHelp.lib")
 #endif  // OS_WIN
 
+#ifdef OS_WIN
+#include <windows.h>
+#include <DbgHelp.h>
+
+#pragma comment(lib, "DbgHelp.lib")
+#endif
+
 void __snifex_api_assert_fail(const char* expr,
                               const char* file,
                               const int line,

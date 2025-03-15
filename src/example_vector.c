@@ -16,7 +16,7 @@ void demonstrate_unpolluted_symtable() {
 #ifdef __GNUC__
   assert(*vec_idx(intVec, 0) == 12);
 #else
-  Vec(uint16_t) * ptr;
+  uint16_t* ptr;
   vec_idx(ptr, intVec, 0);
   assert(*ptr == 12);
 #endif
