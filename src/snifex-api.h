@@ -142,7 +142,7 @@ extern void arena_free(Arena* const arena);
     vec;                                      \
   })
 #else
-#define vec_from(result, t item1, ...)        \
+#define vec_from(result, t, item1, ...)        \
   do {                                        \
     t macro_item1 = item1;                    \
     t items[] = {macro_item1, __VA_ARGS__};   \
@@ -426,9 +426,9 @@ string str_join(Arena* const arena, Vec(string) to_join) {
 #ifdef __GNUC__
     new_len += vec_idx(to_join, i)->len;
 #else
-    *string UNIQUE;
-    vec_idx(UNIQUE, to_join i);
-    new_len += UNIQUE->len;
+    string* str;
+    vec_idx(str, to_join, i);
+    new_len += str->len;
 #endif
   }
   string buf = str_alloc(arena, new_len);
@@ -438,9 +438,9 @@ string str_join(Arena* const arena, Vec(string) to_join) {
 #ifdef __GNUC__
     string str = *vec_idx(to_join, i);
 #else
-    *string UNIQUE;
-    vec_idx(UNIQUE, to_join, i);
-    string str = *UNIQUE;
+    string* str_ptr;
+    vec_idx(str_ptr, to_join, i);
+    string str = *str_ptr;
 #endif
     memcpy(dest, str.ptr, str.len);
     dest += str.len;
