@@ -3,8 +3,8 @@
 pkgs.clangStdenv.mkDerivation {
     name = "clang-nix-shell";
     buildInputs = with pkgs; [
-      gnumake python312Packages.compiledb
-      lldb
+      gnumake bear
+      lldb 
 #     Other debug tools I sometimes use
 #     valgrind heaptrack 
     ];

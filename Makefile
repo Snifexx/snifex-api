@@ -1,29 +1,34 @@
 CURR_DIR = $(shell pwd)
 OUT = $(CURR_DIR)/out
-BIN_NAME = all_examples
+BIN_NAME = test_examples
 export OUT
 export BIN_NAME
 
 CC = clang
-COMMON_ARGS = -std=c99 -Wall -Werror -fstrict-aliasing -Wstrict-aliasing -Wno-unused-variable
-DEPS = 
+COMMON_ARGS = -std=c99 -Wall -Werror -fstrict-aliasing -Wstrict-aliasing -Wno-unused \
+							-fsanitize=address -fno-omit-frame-pointer -fstandalone-debug
+DEPS =
 
 # Tests
+default: test
 
-release: src/all_examples.c src/snifex-api.h
+b: build
+build: src/tests-gcc-clang/*.c src/snifex-api.h
 	@-rm $(OUT)/$(BIN_NAME)
-	$(CC) src/all_examples.c -O3 $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME) -flto -DNDEBUG
+	bear -- $(CC) src/tests-gcc-clang/*.c -g $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)
 
-debug: src/all_examples.c src/snifex-api.h
-	@-rm $(OUT)/$(BIN_NAME)_debug
-	$(CC) src/all_examples.c -g -O0 $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)_debug \
-		-fsanitize=address -fno-omit-frame-pointer -fstandalone-debug
+bng: build-non-gnu
+build-non-gnu: src/tests-non-gnu/*.c src/snifex-api.h
+	@-rm $(OUT)/$(BIN_NAME)_nongnu
+	bear -- $(CC) src/tests-non-gnu/*.c -g $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)_nongnu -D NO_GNU_SNIFEX_API_TESTS
 
-run-release: release
+t: test
+test: build
 	$(OUT)/$(BIN_NAME)
 
-run-debug: debug
-	$(OUT)/$(BIN_NAME)_debug
+tng: test-non-gnu
+test-non-gnu: build-non-gnu
+	$(OUT)/$(BIN_NAME)_nongnu
 
 clean:
 	-rm $(OUT)/* -r

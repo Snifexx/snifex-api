@@ -1,4 +1,4 @@
-#include "snifex-api.h"
+#include "../snifex-api.h"
 
 void string_usage() {
   Arena scratch = arena_create(4096);
@@ -52,21 +52,15 @@ void string_usage() {
 
   // If you want to print/format a string longer than INT_MAX, you have to use
   // `str_join`:
-#ifdef __GNUC__
-  Vec(string) to_join =
-      vec_from(string, strlit("This is a string '"), str2,
-               str_fmt(&scratch, "' and its size %zu", str2.len));
-#else
   Vec(string) to_join;
   vec_from(to_join, string, strlit("This is a string '"), str2,
            str_fmt(&scratch, "' and its size %zu", str2.len));
-#endif  // __GCC__
 
   string string_joined = str_join(&scratch, to_join);
   assert(str_eq(
       strlit("This is a string 'Normal C string literal' and its size 23"),
       string_joined));
 
-  vec_free_string(&to_join);
+  vec_free(&to_join);
   arena_free(&scratch);
 }

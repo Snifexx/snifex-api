@@ -16,6 +16,12 @@
 //- Macro utils
 //-
 
+#if !defined(NO_GNU_SNIFEX_API_TESTS)
+#if defined(__GNUC__)
+#define SNIFEX_API_GNU_EXTENSIONS
+#endif
+#endif
+
 // Here "OS" is also used for non Operating Systems like the Linux Kernel.
 // I did so just to have them all in an encompassing group of macros.
 #if defined(__ANDROID__)
@@ -47,14 +53,13 @@
 
 #ifdef OS_LINUX
 #include <execinfo.h>
-#endif
+#endif  // OS_LINUX
 
 #ifdef OS_WIN
 #include <DbgHelp.h>
 #include <windows.h>
-
 #pragma comment(lib, "DbgHelp.lib")
-#endif
+#endif  // OS_WIN
 
 void __snifex_api_assert_fail(const char* expr,
                               const char* file,
@@ -74,21 +79,21 @@ void __snifex_api_assert_fail(const char* expr,
 
 // I use macros because I want these to be the same for all number types
 // without having 10 different implementation for each number type I use
-#ifdef __GNUC__
-#define sign(t, a)                        \
-  ({                                      \
-    t num = a;                            \
-    (num > 0 ? 1 : ((num < 0) ? -1 : 0)); \
+#ifdef SNIFEX_API_GNU_EXTENSIONS
+#define sign(t, num)                        \
+  ({                                        \
+    t _num = num;                           \
+    (_num > 0 ? 1 : ((_num < 0) ? -1 : 0)); \
   })
 #else
-#define sign(result, t, a)                         \
-  do {                                             \
-    t num = a;                                     \
-    result = (num > 0 ? 1 : ((num < 0) ? -1 : 0)); \
+#define sign(result, t, num)                         \
+  do {                                               \
+    t _num = num;                                    \
+    result = (_num > 0 ? 1 : ((_num < 0) ? -1 : 0)); \
   } while (0)
 #endif
 
-static inline bool is_power_of_two(const size_t x);
+static inline bool snifex_api_is_power_of_two(const size_t x);
 extern uint32_t ceil_powtwo(uint32_t v);
 
 //-
@@ -119,19 +124,19 @@ extern void* arena_alloc(Arena* const arena,
                          const size_t size,
                          const size_t alignment);
 
-#ifdef __GNUC__
-#define dyn_arena_get(t, dyn_arena, rel_ptr)    \
-  ({                                            \
-    const DynArena macro_dyn_arena = dyn_arena; \
-    const size_t macro_rel_ptr = rel_ptr;       \
-    (t*)&macro_dyn_arena.buf[macro_rel_ptr];    \
+#ifdef SNIFEX_API_GNU_EXTENSIONS
+#define dyn_arena_get(t, dyn_arena, rel_ptr)  \
+  ({                                          \
+    const DynArena dag_dyn_arena = dyn_arena; \
+    const size_t dag_rel_ptr = rel_ptr;       \
+    (t*)&dag_dyn_arena.buf[dag_rel_ptr];      \
   })
 #else
-#define dyn_arena_get(result, t, dyn_arena, rel_ptr)  \
-  do {                                                \
-    const DynArena macro_dyn_arena = dyn_arena;       \
-    const size_t macro_rel_ptr = rel_ptr;             \
-    result = (t*)&macro_dyn_arena.buf[macro_rel_ptr]; \
+#define dyn_arena_get(result, t, dyn_arena, rel_ptr) \
+  do {                                               \
+    const DynArena dag_dyn_arena = dyn_arena;        \
+    const size_t dag_rel_ptr = rel_ptr;              \
+    result = (t*)&dag_dyn_arena.buf[dag_rel_ptr];    \
   } while (0)
 #endif
 
@@ -147,121 +152,192 @@ extern void arena_free(Arena* const arena);
 // They basically are an alternative `Arena`. In other words... my
 // implementation of a dynamically-growing array, I.E. ArrayList, Vector or
 // however you might call it.
-//
-// The way I decided to have generic like feeling is by a `DeclareVec` macro
-// that takes in the type and declares the struct-vec with the specified
-// type `t`. I decided not to pollute the symbol table so I just used typedef
-// on an anonymous struct, meaning you can create your struct named Array_{t}
-// and make your own alias with typedef (that must be different from Array_{t}
-// though).
+
+#define DefineVec(t) \
+  typedef struct {   \
+    t* ptr;          \
+    size_t cap;      \
+    size_t len;      \
+  } Vec_##t
 
 #define Vec(t) Vec_##t
 
-#ifdef __GNUC__
-#define vec_idx(vec, i)                                                \
-  ({                                                                   \
-    const size_t macro_i = (i);                                        \
-    assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL); \
-    &(vec).ptr[macro_i];                                               \
+#ifdef SNIFEX_API_GNU_EXTENSIONS
+#define vec_create(t, init_cap)                  \
+  ({                                             \
+    const size_t vecc_init_cap = (init_cap);     \
+    assert(vecc_init_cap > 0);                   \
+                                                 \
+    (Vec(t)){                                    \
+        .ptr = calloc(vecc_init_cap, sizeof(t)), \
+        .cap = vecc_init_cap,                    \
+        .len = 0,                                \
+    };                                           \
   })
-#define vec_last(vec) ({ vec_idx(vec, (vec).len - 1); })
-#else
-#define vec_idx(result, vec, i)                                        \
-  do {                                                                 \
-    const size_t macro_i = (i);                                        \
-    assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL); \
-    result = &(vec).ptr[macro_i];                                      \
-  } while (0)
-#define vec_last(result, vec)            \
-  do {                                   \
-    vec_idx(result, vec, (vec).len - 1); \
-  } while (0)
-#endif
 
-#ifdef __GNUC__
 #define vec_from(t, item1, ...)               \
   ({                                          \
-    t macro_item1 = item1;                    \
-    t items[] = {macro_item1, __VA_ARGS__};   \
+    t items[] = {(item1), __VA_ARGS__};       \
     size_t count = sizeof(items) / sizeof(t); \
-    Vec(t) vec = vec_create_##t(count);       \
+    __auto_type vec = vec_create(t, count);   \
     vec.len = count;                          \
     memcpy(vec.ptr, items, sizeof(items));    \
     vec;                                      \
   })
-#else
-#define vec_from(result, t, item1, ...)       \
-  do {                                        \
-    t macro_item1 = item1;                    \
-    t items[] = {macro_item1, __VA_ARGS__};   \
-    size_t count = sizeof(items) / sizeof(t); \
-    Vec(t) vec = vec_create_##t(count);       \
-    vec.len = count;                          \
-    memcpy(vec.ptr, items, sizeof(items));    \
-    result = vec;                             \
+
+#define vec_idx(vec, i)                                                        \
+  ({                                                                           \
+    __typeof(vec) veci_vec = (vec);                                            \
+    const size_t veci_i = (i);                                                 \
+    assert(veci_vec.len > 0 && veci_i < veci_vec.len && veci_vec.ptr != NULL); \
+    &(veci_vec).ptr[veci_i];                                                   \
+  })
+#define vec_last(vec) vec_idx((vec), veci_vec.len - 1);
+
+#define vec_push(vec_ptr, val)                                              \
+  do {                                                                      \
+    const __typeof(*(vec_ptr)->ptr) vecp_val = (val);                       \
+    __typeof(vec_ptr) vecp_vec_ptr = (vec_ptr);                             \
+    assert(vecp_vec_ptr != NULL);                                           \
+    if (vecp_vec_ptr->len + 1 > vecp_vec_ptr->cap) {                        \
+      vecp_vec_ptr->cap += 1;                                               \
+      vecp_vec_ptr->cap *= 2;                                               \
+      vecp_vec_ptr->ptr =                                                   \
+          realloc(vecp_vec_ptr->ptr, vecp_vec_ptr->cap * sizeof(vecp_val)); \
+      assert(vecp_vec_ptr->ptr != NULL);                                    \
+    }                                                                       \
+    *(vecp_vec_ptr->ptr + vecp_vec_ptr->len) = vecp_val;                    \
+    vecp_vec_ptr->len += 1;                                                 \
+  } while (0)
+
+#define vec_pop(vec_ptr)                                   \
+  do {                                                     \
+    __typeof(vec_ptr) vecpop_vec_ptr = (vec_ptr);          \
+    assert(vecpop_vec_ptr != NULL);                        \
+    if (vecpop_vec_ptr->len > 0) vecpop_vec_ptr->len -= 1; \
+  } while (0)
+
+#define vec_append(front_ptr, back)                                    \
+  do {                                                                 \
+    __typeof(front_ptr) veca_front_ptr = (front_ptr);                  \
+    __typeof(*front_ptr) veca_back = (back);                           \
+    assert(veca_front_ptr != NULL);                                    \
+                                                                       \
+    if (veca_front_ptr->len + veca_back.len > veca_front_ptr->cap) {   \
+      veca_front_ptr->cap += veca_back.len;                            \
+      veca_front_ptr->cap *= 1.5;                                      \
+      veca_front_ptr->ptr =                                            \
+          realloc(veca_front_ptr->ptr,                                 \
+                  veca_front_ptr->cap * sizeof(*veca_front_ptr->ptr)); \
+      assert(veca_front_ptr->ptr != NULL);                             \
+    }                                                                  \
+    memcpy(veca_front_ptr->ptr + veca_front_ptr->len, veca_back.ptr,   \
+           veca_back.len * sizeof(*veca_front_ptr->ptr));              \
+    veca_front_ptr->len += veca_back.len;                              \
+  } while (0)
+
+#define vec_swap_remove(vec_ptr, idx)                           \
+  do {                                                          \
+    __auto_type vecsr_vec_ptr = (vec_ptr);                      \
+    size_t vecsr_idx = (idx);                                   \
+    assert(vecsr_vec_ptr != NULL && vecsr_vec_ptr->len > 0);    \
+                                                                \
+    __auto_type remove_at = vec_idx(*vecsr_vec_ptr, vecsr_idx); \
+    __auto_type to_replace = *vec_last(*vecsr_vec_ptr);         \
+    *remove_at = to_replace;                                    \
+    vecsr_vec_ptr->len--;                                       \
+  } while (0)
+#else  // NON SNIFEX_API_GNU_EXTENSIONS
+
+#define vec_create(lval_result_vec, t, init_cap)  \
+  do {                                            \
+    const size_t vecc_init_cap = (init_cap);      \
+    assert(vecc_init_cap > 0);                    \
+                                                  \
+    lval_result_vec = (Vec(t)){                   \
+        .ptr = malloc(vecc_init_cap * sizeof(t)), \
+        .cap = vecc_init_cap,                     \
+        .len = 0,                                 \
+    };                                            \
+  } while (0)
+
+#define vec_from(lval_result_vec, t, item1, ...) \
+  do {                                           \
+    t items[] = {(item1), __VA_ARGS__};          \
+    size_t count = sizeof(items) / sizeof(t);    \
+    Vec(t) vec;                                  \
+    vec_create(vec, t, count);                   \
+    vec.len = count;                             \
+    memcpy(vec.ptr, items, sizeof(items));       \
+    lval_result_vec = vec;                       \
+  } while (0)
+
+#define vec_idx(lval_result_elem_ptr, t, vec, i)                               \
+  do {                                                                         \
+    Vec(t) veci_vec = (vec);                                                   \
+    const size_t veci_i = (i);                                                 \
+    assert(veci_vec.len > 0 && veci_i < veci_vec.len && veci_vec.ptr != NULL); \
+    lval_result_elem_ptr = &(veci_vec).ptr[veci_i];                            \
+  } while (0)
+#define vec_last(lval_result_elem_ptr, t, vec) \
+  vec_idx(lval_result_elem_ptr, t, (vec), veci_vec.len - 1);
+
+#define vec_push(t, vec_ptr, val)                                    \
+  do {                                                               \
+    assert(vec_ptr != NULL);                                         \
+    const t vecp_val = (val);                                        \
+    Vec(t)* vecp_vec_ptr = (vec_ptr);                                \
+    if (vecp_vec_ptr->len + 1 > vecp_vec_ptr->cap) {                 \
+      vecp_vec_ptr->cap += 1;                                        \
+      vecp_vec_ptr->cap *= 2;                                        \
+      vecp_vec_ptr->ptr =                                            \
+          realloc(vecp_vec_ptr->ptr, vecp_vec_ptr->cap * sizeof(t)); \
+      assert(vecp_vec_ptr->ptr != NULL);                             \
+    }                                                                \
+    *(vecp_vec_ptr->ptr + vecp_vec_ptr->len) = vecp_val;             \
+    vecp_vec_ptr->len += 1;                                          \
+  } while (0)
+
+#define vec_pop(t, vec_ptr)                                \
+  do {                                                     \
+    assert(vec_ptr != NULL);                               \
+    Vec(t)* vecpop_vec_ptr = (vec_ptr);                    \
+    if (vecpop_vec_ptr->len > 0) vecpop_vec_ptr->len -= 1; \
+  } while (0)
+
+#define vec_append(t, front_ptr, back)                                   \
+  do {                                                                   \
+    Vec(t)* veca_front_ptr = (front_ptr);                                \
+    Vec(t) veca_back = (back);                                           \
+                                                                         \
+    if (veca_front_ptr->len + veca_back.len > veca_front_ptr->cap) {     \
+      veca_front_ptr->cap += veca_back.len;                              \
+      veca_front_ptr->cap *= 1.5;                                        \
+      veca_front_ptr->ptr =                                              \
+          realloc(veca_front_ptr->ptr, veca_front_ptr->cap * sizeof(t)); \
+      assert(veca_front_ptr->ptr != NULL);                               \
+    }                                                                    \
+    memcpy(veca_front_ptr->ptr + veca_front_ptr->len, veca_back.ptr,     \
+           veca_back.len * sizeof(t));                                   \
+    veca_front_ptr->len += veca_back.len;                                \
+  } while (0)
+
+#define vec_swap_remove(t, vec_ptr, idx)                     \
+  do {                                                       \
+    Vec(t)* vecsr_vec_ptr = (vec_ptr);                       \
+    size_t vecsr_idx = (idx);                                \
+    assert(vecsr_vec_ptr != NULL && vecsr_vec_ptr->len > 0); \
+                                                             \
+    t* remove_at;                                            \
+    vec_idx(remove_at, t, *vecsr_vec_ptr, vecsr_idx);        \
+    t* to_replace;                                           \
+    vec_last(to_replace, t, *vecsr_vec_ptr);                 \
+    *remove_at = *to_replace;                                \
+    vecsr_vec_ptr->len--;                                    \
   } while (0)
 #endif
 
-#define DefineVec(t)                                        \
-  typedef struct {                                          \
-    t* ptr;                                                 \
-    size_t cap;                                             \
-    size_t len;                                             \
-  } Vec(t);                                                 \
-                                                            \
-  extern Vec(t) vec_create_##t(const size_t init_cap);      \
-  extern void vec_push_##t(Vec(t)* const vec, const t val); \
-  extern void vec_free_##t(Vec(t)* const vec);              \
-  extern void vec_pop_##t(Vec(t) * vec);
-
-#define ImplementVec(t)                                             \
-  Vec(t) vec_create_##t(const size_t init_cap) {                    \
-    assert(init_cap > 0);                                           \
-                                                                    \
-    return (Vec(t)){                                                \
-        .ptr = (t*)malloc(init_cap * sizeof(t)),                    \
-        .cap = init_cap,                                            \
-        .len = 0,                                                   \
-    };                                                              \
-  }                                                                 \
-                                                                    \
-  void vec_push_##t(Vec(t)* const vec, const t val) {               \
-    assert(vec != NULL);                                            \
-    if (vec->len + 1 > vec->cap) {                                  \
-      vec->cap += 1;                                                \
-      vec->cap *= 2;                                                \
-      vec->ptr = (t*)realloc(vec->ptr, vec->cap * sizeof(t));       \
-      assert(vec->ptr != NULL);                                     \
-    }                                                               \
-    vec->ptr[vec->len] = val;                                       \
-    vec->len += 1;                                                  \
-  }                                                                 \
-                                                                    \
-  void vec_free_##t(Vec(t)* const vec) {                            \
-    free(vec->ptr);                                                 \
-  }                                                                 \
-                                                                    \
-  void vec_pop_##t(Vec(t) * vec) {                                  \
-    assert(vec != NULL && vec->len > 0);                            \
-    vec->len -= 1;                                                  \
-  }                                                                 \
-                                                                    \
-  void vec_append_##t(Vec(t) * front, Vec(t) back) {                \
-    assert(front != NULL);                                          \
-                                                                    \
-    if (front->len + back.len > front->cap) {                       \
-      front->cap += back.len;                                       \
-      front->cap *= 1.5;                                            \
-      front->ptr = (t*)realloc(front->ptr, front->cap * sizeof(t)); \
-      assert(front->ptr != NULL);                                   \
-    }                                                               \
-    memcpy(front->ptr + front->len, back.ptr, back.len);            \
-    front->len += back.len;                                         \
-  }
-
-#define DeclareVec(t) \
-  DefineVec(t);       \
-  ImplementVec(t);
+#define vec_free(vec_ptr) free((vec_ptr)->ptr)
 
 //-
 //-  Strings
@@ -272,14 +348,19 @@ typedef struct string {
   size_t len;
 } string;
 
-DefineVec(string)
+DefineVec(string);
 
-    // Short-circuing if the length is equal and is 0 is because memcmp with
-    // NULL pointers is U.B. in c99, even if the number of bytes copied is 0,
-    // and in this library empty strings can have a NULL pointer.
-    //
-    // See `str_join` for more info
-    extern bool str_eq(const string a, const string b);
+extern string strlit(char const* s);
+extern string str_alloc(Arena* const arena, const size_t len);
+extern char* const str_idx(const string str, const size_t i);
+extern bool str_is_empty(const string str);
+
+// Short-circuing if the length is equal and is 0 is because memcmp with
+// NULL pointers is U.B. in c99, even if the number of bytes copied is 0,
+// and in this library empty strings can have a NULL pointer.
+//
+// See `str_join` for more info
+extern bool str_eq(const string a, const string b);
 
 // Note! Can execute memcpy(ptr, NULL, 0), where ptr is guaranteed not to be
 // NULL, which is U.B. before c2y. Clang and GCC apparently handle this
@@ -290,11 +371,266 @@ DefineVec(string)
 // See
 // https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
 extern string str_concat(Arena* const arena, const string a, const string b);
-
+extern string str_copy(Arena* const arena, const string str);
 extern string str_join(Arena* const arena, Vec(string) to_join);
 extern string str_fmt(Arena* const arena, const char* fmt, ...);
 extern string str_slice(const string str, const size_t start, const size_t end);
 extern string str_trim(const string str);
+
+//-
+//-  Dictionaries / Hashmaps
+//-
+
+typedef struct bucket {
+  uint64_t hash;
+  size_t index;
+} Bucket;
+
+#define Entry(K, V) Entry_##K##_##V
+#define Dictionary(K, V) Dictionary_##K##_##V
+#define VecEntry(K, V) Vec_Entry_##K##_##V
+
+#define DefineDict(K, V)      \
+  typedef struct {            \
+    K key;                    \
+    V value;                  \
+  } Entry(K, V);              \
+                              \
+  DefineVec(Entry_##K##_##V); \
+                              \
+  typedef struct {            \
+    VecEntry(K, V) entries;   \
+    Bucket* buckets;          \
+    size_t b_len;             \
+    size_t b_cap;             \
+    uint64_t key[2];          \
+  } Dictionary(K, V);
+
+#ifndef HASHFUNC
+#define hash_num(in_ptr, inlen, k0_u64, k1_u64) \
+  (snifex_api_hash_num_func(in_ptr, inlen))
+#endif
+
+uint64_t snifex_api_hash_num_func(const void* in, const size_t inlen);
+
+Bucket* snifex_api_find_bucket(Bucket* buckets,
+                               size_t bucket_cap,
+                               void* key,
+                               uint64_t hashed_key,
+                               void* entries,
+                               size_t entry_size,
+                               size_t key_size,
+                               bool include_tombs);
+void snifex_api_dict_grow(Bucket** buckets,
+                          size_t* bucket_cap,
+                          size_t* bucket_len);
+
+#ifdef SNIFEX_API_GNU_EXTENSIONS
+
+#define dict_create(K, V)                    \
+  ((Dictionary(K, V)){                       \
+      .entries = vec_create(Entry(K, V), 8), \
+      .buckets = calloc(8, sizeof(Bucket)),  \
+      .b_cap = 8,                            \
+      .b_len = 0,                            \
+      .key = {0, 0},                         \
+  })
+
+#define dict_put(dict_ptr, k, v, old_value_ptr)                               \
+  ({                                                                          \
+    __auto_type dp_dict_ptr = (dict_ptr);                                     \
+    __typeof(dp_dict_ptr->entries.ptr->key) dp_k = (k);                       \
+    __typeof(dp_dict_ptr->entries.ptr->value) dp_v = (v);                     \
+    __typeof(&dp_v) _old_value_ptr = (old_value_ptr);                         \
+    uint64_t hasheddp_k =                                                     \
+        hash_num(&dp_k, sizeof(dp_k), dp_dict_ptr->key[0], dp_dict_ptr->[1]); \
+    Bucket* b = snifex_api_find_bucket(                                       \
+        dp_dict_ptr->buckets, dp_dict_ptr->b_cap, &dp_k, hasheddp_k,          \
+        dp_dict_ptr->entries.ptr, sizeof(*(dp_dict_ptr->entries.ptr)),        \
+        sizeof(dp_dict_ptr->entries.ptr->key), true);                         \
+    if (b->index > 1) {                                                       \
+      __auto_type e = vec_idx(dp_dict_ptr->entries, b->index - 2);            \
+      if (_old_value_ptr != NULL) { *_old_value_ptr = e->value; }             \
+      e->value = dp_v;                                                        \
+      true;                                                                   \
+    } else {                                                                  \
+      if (b->index == 0) dp_dict_ptr->b_len++;                                \
+      b->hash = hasheddp_k;                                                   \
+      b->index = dp_dict_ptr->entries.len + 2;                                \
+                                                                              \
+      if (dp_dict_ptr->b_len >= dp_dict_ptr->b_cap * 0.75) {                  \
+        snifex_api_dict_grow(&dp_dict_ptr->buckets, &dp_dict_ptr->b_cap,      \
+                             &dp_dict_ptr->b_len);                            \
+      }                                                                       \
+      __typeof(*dp_dict_ptr->entries.ptr) to_push_entry = {.key = dp_k,       \
+                                                           .value = dp_v};    \
+      vec_push((&dp_dict_ptr->entries), to_push_entry);                       \
+      false;                                                                  \
+    }                                                                         \
+  })
+
+#define dict_get(dict_ptr, k)                                            \
+  ({                                                                     \
+    __auto_type dg_dict_ptr = (dict_ptr);                                \
+    __typeof(dg_dict_ptr->entries.ptr->key) dg_k = (k);                  \
+    __typeof(&dg_dict_ptr->entries.ptr->value) res;                      \
+                                                                         \
+    if (dg_dict_ptr->b_len == 0) {                                       \
+      res = NULL;                                                        \
+    } else {                                                             \
+      Bucket* b = snifex_api_find_bucket(                                \
+          dg_dict_ptr->buckets, dg_dict_ptr->b_cap, &dg_k,               \
+          hash_num(&dg_k, sizeof(dg_k), dg_dict_ptr->key[0],             \
+                   dg_dict_ptr->key[1]),                                 \
+          dg_dict_ptr->entries.ptr, sizeof(*(dg_dict_ptr->entries.ptr)), \
+          sizeof(dg_dict_ptr->entries.ptr->key), false);                 \
+      if (b->index == 0) {                                               \
+        res = NULL;                                                      \
+      } else {                                                           \
+        res = &vec_idx(dg_dict_ptr->entries, (b->index - 2))->value;     \
+      }                                                                  \
+    }                                                                    \
+    res;                                                                 \
+  })
+
+#define dict_del(dict_ptr, k)                                            \
+  ({                                                                     \
+    __auto_type dd_dict_ptr = (dict_ptr);                                \
+    __typeof(dd_dict_ptr->entries.ptr->key) dd_k = (k);                  \
+                                                                         \
+    if (dd_dict_ptr->b_len == 0) {                                       \
+      false;                                                             \
+    } else {                                                             \
+      Bucket* b = snifex_api_find_bucket(                                \
+          dd_dict_ptr->buckets, dd_dict_ptr->b_cap, &dd_k,               \
+          hash_num(&dd_k, sizeof(dd_k), dd_dict_ptr->key[0],             \
+                   dd_dict_ptr->key[1]),                                 \
+          dd_dict_ptr->entries.ptr, sizeof(*(dd_dict_ptr->entries.ptr)), \
+          sizeof(dd_dict_ptr->entries.ptr->key), false);                 \
+      if (b->index == 0) {                                               \
+        false;                                                           \
+      } else {                                                           \
+        /* Remove and place tombstone */                                 \
+        vec_swap_remove(&dd_dict_ptr->entries, b->index - 2);            \
+        b->index = 1;                                                    \
+        true;                                                            \
+      }                                                                  \
+    }                                                                    \
+  })
+
+#define dict_free(dict_ptr)               \
+  do {                                    \
+    __auto_type df_dict_ptr = (dict_ptr); \
+    free(df_dict_ptr->buckets);           \
+    vec_free(&df_dict_ptr->entries);      \
+  } while (0)
+
+#else  // !SNIFEX_API_GNU_EXTENSIONS
+
+#define dict_create(lval_result_dict, K, V)   \
+  do {                                        \
+    Vec(Entry_##K##_##V) e;                   \
+    vec_create(e, Entry(K, V), 8);            \
+    lval_result_dict = (Dictionary(K, V)){    \
+        .entries = e,                         \
+        .buckets = calloc(8, sizeof(Bucket)), \
+        .b_cap = 8,                           \
+        .b_len = 0,                           \
+        .key = {0, 0},                        \
+    };                                        \
+  } while (0)
+
+#define dict_put(k_type, v_type, dict_ptr, k, v, old_value_ptr)                \
+  ({                                                                           \
+    Dictionary(k_type, v_type)* dp_dict_ptr = (dict_ptr);                      \
+    k_type dp_k = (k);                                                         \
+    v_type dp_v = (v);                                                         \
+    v_type* _old_value_ptr = (old_value_ptr);                                  \
+    uint64_t hasheddp_k =                                                      \
+        hash_num(&dp_k, sizeof(dp_k), dp_dict_ptr->key[0], dp_dict_ptr->[1]);  \
+    Bucket* b = snifex_api_find_bucket(                                        \
+        dp_dict_ptr->buckets, dp_dict_ptr->b_cap, &dp_k, hasheddp_k,           \
+        dp_dict_ptr->entries.ptr, sizeof(*(dp_dict_ptr->entries.ptr)),         \
+        sizeof(dp_dict_ptr->entries.ptr->key), true);                          \
+    if (b->index > 1) {                                                        \
+      Entry(k_type, v_type) * e;                                               \
+      vec_idx(e, Entry(k_type, v_type), dp_dict_ptr->entries, b->index - 2);   \
+      if (_old_value_ptr != NULL) { *_old_value_ptr = e->value; }              \
+      e->value = dp_v;                                                         \
+      true;                                                                    \
+    } else {                                                                   \
+      if (b->index == 0) dp_dict_ptr->b_len++;                                 \
+      b->hash = hasheddp_k;                                                    \
+      b->index = dp_dict_ptr->entries.len + 2;                                 \
+                                                                               \
+      if (dp_dict_ptr->b_len >= dp_dict_ptr->b_cap * 0.75) {                   \
+        snifex_api_dict_grow(&dp_dict_ptr->buckets, &dp_dict_ptr->b_cap,       \
+                             &dp_dict_ptr->b_len);                             \
+      }                                                                        \
+      Entry(k_type, v_type) to_push_entry = {.key = dp_k, .value = dp_v};      \
+      vec_push(Entry(k_type, v_type), (&dp_dict_ptr->entries), to_push_entry); \
+      false;                                                                   \
+    }                                                                          \
+  })
+
+#define dict_get(lval_result_val_ptr, k_type, v_type, dict_ptr, k)       \
+  do {                                                                   \
+    Dictionary(k_type, v_type)* dg_dict_ptr = (dict_ptr);                \
+    k_type dg_k = (k);                                                   \
+                                                                         \
+    if (dg_dict_ptr->b_len == 0) {                                       \
+      lval_result_val_ptr = NULL;                                        \
+    } else {                                                             \
+      Bucket* b = snifex_api_find_bucket(                                \
+          dg_dict_ptr->buckets, dg_dict_ptr->b_cap, &dg_k,               \
+          hash_num(&dg_k, sizeof(dg_k), dg_dict_ptr->key[0],             \
+                   dg_dict_ptr->key[1]),                                 \
+          dg_dict_ptr->entries.ptr, sizeof(*(dg_dict_ptr->entries.ptr)), \
+          sizeof(dg_dict_ptr->entries.ptr->key), false);                 \
+      if (b->index == 0) {                                               \
+        lval_result_val_ptr = NULL;                                      \
+      } else {                                                           \
+        Entry(k_type, v_type) * e;                                       \
+        vec_idx(e, Entry(k_type, v_type), dg_dict_ptr->entries,          \
+                (b->index - 2));                                         \
+        lval_result_val_ptr = &e->value;                                 \
+      }                                                                  \
+    }                                                                    \
+  } while (0)
+
+#define dict_del(lval_result_bool, k_type, v_type, dict_ptr, k)          \
+  ({                                                                     \
+    Dictionary(k_type, v_type)* dd_dict_ptr = (dict_ptr);                \
+    k_type dd_k = (k);                                                   \
+                                                                         \
+    if (dd_dict_ptr->b_len == 0) {                                       \
+      lval_result_bool = false;                                          \
+    } else {                                                             \
+      Bucket* b = snifex_api_find_bucket(                                \
+          dd_dict_ptr->buckets, dd_dict_ptr->b_cap, &dd_k,               \
+          hash_num(&dd_k, sizeof(dd_k), dd_dict_ptr->key[0],             \
+                   dd_dict_ptr->key[1]),                                 \
+          dd_dict_ptr->entries.ptr, sizeof(*(dd_dict_ptr->entries.ptr)), \
+          sizeof(dd_dict_ptr->entries.ptr->key), false);                 \
+      if (b->index == 0) {                                               \
+        lval_result_bool = false;                                        \
+      } else {                                                           \
+        /* Remove and place tombstone */                                 \
+        vec_swap_remove(Entry(k_type, v_type), &dd_dict_ptr->entries,    \
+                        b->index - 2);                                   \
+        b->index = 1;                                                    \
+        lval_result_bool = true;                                         \
+      }                                                                  \
+    }                                                                    \
+  })
+
+#define dict_free(k_type, v_type, dict_ptr)               \
+  do {                                                    \
+    Dictionary(k_type, v_type)* df_dict_ptr = (dict_ptr); \
+    free(df_dict_ptr->buckets);                           \
+    vec_free(&df_dict_ptr->entries);                      \
+  } while (0)
+#endif  // SNIFEX_API_GNU_EXTENSIONS
 
 #endif  // SNIFEX_API_H
 
@@ -317,8 +653,7 @@ void __snifex_api_assert_fail(const char* expr,
   void* array[1024];
   size = backtrace(array, 1024);
   strings = backtrace_symbols(array, size);
-  for (size_t i = 0; i < size; i++)
-    printf("\33[0;37m%s\n", strings[i]);
+  for (size_t i = 0; i < size; i++) printf("\33[0;37m%s\n", strings[i]);
   printf("\33[0m\n");
   free(strings);
 #endif
@@ -354,7 +689,7 @@ void __snifex_api_assert_fail(const char* expr,
   exit(1);
 }
 
-inline bool is_power_of_two(const size_t x) {
+inline bool snifex_api_is_power_of_two(const size_t x) {
   return (x & (x - 1)) == 0;
 }
 
@@ -398,7 +733,7 @@ size_t dyn_arena_alloc(DynArena* const dyn_arena,
                        const size_t size,
                        const size_t alignment) {
   assert(!(size == 0 || alignment == 0 ||
-           (alignment != 1 && !is_power_of_two(alignment)) ||
+           (alignment != 1 && !snifex_api_is_power_of_two(alignment)) ||
            size % alignment != 0));
 
   size_t top = dyn_arena->top;
@@ -418,18 +753,15 @@ size_t dyn_arena_alloc(DynArena* const dyn_arena,
 void* arena_alloc(Arena* const arena,
                   const size_t size,
                   const size_t alignment) {
-  if (size == 0) {
-    return NULL;
-  }
-  assert(!(alignment == 0 || (alignment != 1 && !is_power_of_two(alignment)) ||
+  if (size == 0) { return NULL; }
+  assert(!(alignment == 0 ||
+           (alignment != 1 && !snifex_api_is_power_of_two(alignment)) ||
            size % alignment != 0));
 
   size_t top = arena->top;
   size_t padding = (top + alignment - 1) & ~(alignment - 1);
 
-  if (top + padding + size > arena->size) {
-    return NULL;
-  }
+  if (top + padding + size > arena->size) { return NULL; }
 
   void* ret = &arena->buf[top];
   arena->top += size + padding;
@@ -444,16 +776,10 @@ void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap) {
   }
 }
 
-void dyn_arena_free(DynArena* const dyn_arena) {
-  free(dyn_arena->buf);
-}
-void arena_free(Arena* const arena) {
-  free(arena->buf);
-}
+void dyn_arena_free(DynArena* const dyn_arena) { free(dyn_arena->buf); }
+void arena_free(Arena* const arena) { free(arena->buf); }
 
-ImplementVec(string)
-
-    string strlit(char const* s) {
+string strlit(char const* s) {
   return (string){.ptr = (char*)s, .len = strlen(s)};
 }
 bool str_is_empty(const string str) {
@@ -470,9 +796,7 @@ string str_alloc(Arena* const arena, const size_t len) {
 }
 
 string str_copy(Arena* const arena, const string str) {
-  if (str.len == 0) {
-    return str;
-  }
+  if (str.len == 0) { return str; }
   assert(arena != NULL);
 
   char* dest = (char*)arena_alloc(arena, str.len, 1);
@@ -509,12 +833,8 @@ string str_concat(Arena* const arena, const string a, const string b) {
 
   size_t new_len = a.len + b.len;
   string buf = str_alloc(arena, new_len);
-  if (a.len != 0) {
-    memcpy(buf.ptr, a.ptr, a.len);
-  }
-  if (b.len != 0) {
-    memcpy(buf.ptr + a.len, b.ptr, b.len);
-  }
+  if (a.len != 0) { memcpy(buf.ptr, a.ptr, a.len); }
+  if (b.len != 0) { memcpy(buf.ptr + a.len, b.ptr, b.len); }
   return buf;
 }
 
@@ -523,11 +843,11 @@ string str_join(Arena* const arena, Vec(string) to_join) {
 
   size_t new_len = 0;
   for (size_t i = 0; i < to_join.len; i++) {
-#ifdef __GNUC__
+#ifdef SNIFEX_API_GNU_EXTENSIONS
     new_len += vec_idx(to_join, i)->len;
 #else
     string* str;
-    vec_idx(str, to_join, i);
+    vec_idx(str, string, to_join, i);
     new_len += str->len;
 #endif
   }
@@ -535,11 +855,11 @@ string str_join(Arena* const arena, Vec(string) to_join) {
 
   char* dest = buf.ptr;
   for (size_t i = 0; i < to_join.len; i++) {
-#ifdef __GNUC__
+#ifdef SNIFEX_API_GNU_EXTENSIONS
     string str = *vec_idx(to_join, i);
 #else
     string* str_ptr;
-    vec_idx(str_ptr, to_join, i);
+    vec_idx(str_ptr, string, to_join, i);
     string str = *str_ptr;
 #endif
     memcpy(dest, str.ptr, str.len);
@@ -581,17 +901,102 @@ string str_trim(const string str) {
   size_t start = 0;
   size_t end = str.len;
 
-  while (start < end && isspace(*str_idx(str, start))) {
-    start++;
-  }
-  if (start == end) {
-    return (string){0};
-  }
-  while (end > start && isspace(*str_idx(str, end - 1))) {
-    end--;
-  }
+  while (start < end && isspace(*str_idx(str, start))) { start++; }
+  if (start == end) { return (string){0}; }
+  while (end > start && isspace(*str_idx(str, end - 1))) { end--; }
 
   return str_slice(str, start, end);
+}
+
+Bucket* snifex_api_find_bucket(Bucket* buckets,
+                               size_t bucket_cap,
+                               void* key,
+                               uint64_t hashed_key,
+                               void* entries,
+                               size_t entry_size,
+                               size_t key_size,
+                               bool include_tombs) {
+  /* find spot (either empty or entry itself) */
+  size_t index = hashed_key % bucket_cap;
+  Bucket* b;
+  for (;;) {
+    b = &buckets[index];
+    bool replaced;
+    if (b->index == 0 || (b->index == 1 && include_tombs) ||
+        (replaced = (b->index > 1 && b->hash == hashed_key &&
+                     memcmp(((char*)entries + (b->index - 2) * entry_size), key,
+                            key_size) == 0))) {
+      return b;
+    }
+
+    index = (index + 1) % bucket_cap;
+  }
+}
+
+void snifex_api_dict_grow(Bucket** buckets,
+                          size_t* bucket_cap,
+                          size_t* bucket_len) {
+  size_t old_cap = *bucket_cap;
+  size_t new_cap = (*bucket_cap *= 2);
+
+  Bucket* new_bucks = calloc(new_cap, sizeof(Bucket));
+  assert(new_bucks != NULL);
+
+  *bucket_len = 0;
+  for (size_t i = 0; i < old_cap; i++) {
+    Bucket to_put = (*buckets)[i];
+    if (to_put.index == 0) { continue; }
+
+    size_t index = to_put.hash % new_cap;
+    Bucket* b;
+    for (;;) {
+      b = &new_bucks[index];
+
+      if (b->index == 0) {
+        *b = to_put;
+        *bucket_len += 1;
+        break;
+      }
+
+      index = (index + 1) % new_cap;
+    }
+  }
+  free(*buckets);
+  *buckets = new_bucks;
+}
+
+uint64_t snifex_api_hash_num_func(const void* in, const size_t inlen) {
+#define ROTL(a, b) (((a) << (b)) | ((a) >> (8 - (b))))
+  const uint8_t* v = (const uint8_t*)in;
+
+  size_t i = 0;
+  uint64_t ret = 0;
+
+  for (; i + 8 <= inlen; i += 8) {
+    uint8_t a = v[i + 0];
+    uint8_t b = v[i + 1];
+    uint8_t c = v[i + 2];
+    uint8_t d = v[i + 3];
+
+    uint8_t e = v[i + 4];
+    uint8_t f = v[i + 5];
+    uint8_t g = v[i + 6];
+    uint8_t h = v[i + 7];
+    a += b, d ^= a, d = ROTL(d, 4);
+    c += d, b ^= c, b = ROTL(b, 4);
+    e += f, h ^= e, h = ROTL(h, 4);
+    g += h, f ^= g, f = ROTL(f, 4);
+    ret ^= ((uint64_t)a << 56 | (uint64_t)b << 48 | (uint64_t)c << 40 |
+            (uint64_t)d << 32 | (uint64_t)e << 24 | (uint64_t)f << 16 |
+            (uint64_t)g << 8 | (uint64_t)h);
+  }
+  for (; i < inlen; i++) {
+    ret += v[i];
+    ret ^= v[i];
+    ret = ROTL(ret, 8);
+  }
+  return ret;
+#undef ROTL
 }
 
 #endif  // SNIFEX_API_IMPLEMENTATION

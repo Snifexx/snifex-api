@@ -1,6 +1,4 @@
-#define SNIFEX_API_IMPLEMENTATION
-#include "snifex-api.h"
-#undef SNIFEX_API_IMPLEMENTATION
+#include "../snifex-api.h"
 
 void dyn_arena_usage() {
   size_t fitting_size = sizeof(uint16_t) + sizeof(float);
@@ -18,26 +16,15 @@ void dyn_arena_usage() {
   //-
   //- Allocate object on arena and set it
   //-
-  size_t my_int_obj =
-      dyn_arena_alloc(&arena1, sizeof(uint16_t), sizeof(uint16_t));
+  size_t int_idx = dyn_arena_alloc(&arena1, sizeof(uint16_t), sizeof(uint16_t));
+  uint16_t* int_obj;
+  dyn_arena_get(int_obj, uint16_t, arena1, int_idx);
+  *int_obj = 10;
 
-#ifdef __GNUC__
-  *dyn_arena_get(uint16_t, arena1, my_int_obj) = 10;
-#else
-  uint16_t* ptr;
-  dyn_arena_get(ptr, uint16_t, arena1, my_int_obj);
-  *ptr = 10;
-#endif
-
-  size_t my_float_obj = dyn_arena_alloc(&arena1, sizeof(float), sizeof(float));
-
-#ifdef __GNUC__
-  *dyn_arena_get(float, arena1, my_float_obj) = 10;
-#else
-  float* fptr;
-  dyn_arena_get(fptr, float, arena1, my_float_obj);
-  *fptr = 10;
-#endif
+  size_t float_idx = dyn_arena_alloc(&arena1, sizeof(float), sizeof(float));
+  float* float_obj;
+  dyn_arena_get(float_obj, float, arena1, float_idx);
+  *float_obj = 10;
 
   //-
   //- Reserving at least x bytes in capacity
