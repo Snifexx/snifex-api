@@ -119,19 +119,18 @@ typedef struct arena {
   size_t top;
 } Arena;
 
-extern void dyn_arena_init(DynArena* const dyn_arena, const size_t init_cap);
-extern void arena_init(Arena* const arena, const size_t size);
-extern DynArena dyn_arena_create(const size_t init_cap);
-extern Arena arena_create(const size_t init_cap);
-extern size_t dyn_arena_alloc(DynArena* const dyn_arena,
-                              const size_t size,
-                              const size_t alignment);
+void dyn_arena_init(DynArena* const dyn_arena, const size_t init_cap);
+void arena_init(Arena* const arena, const size_t size);
+DynArena dyn_arena_create(const size_t init_cap);
+Arena arena_create(const size_t init_cap);
+size_t dyn_arena_alloc(DynArena* const dyn_arena,
+                       const size_t size,
+                       const size_t alignment);
 
-extern void* arena_alloc(Arena* const arena,
-                         const size_t size,
-                         const size_t alignment);
+void* arena_alloc(Arena* const arena,
+                  const size_t size,
+                  const size_t alignment);
 
-<<<<<<< HEAD
 #ifdef SNIFEX_API_GNU_EXTENSIONS
 #define dyn_arena_get(t, dyn_arena, rel_ptr)  \
   ({                                          \
@@ -145,27 +144,12 @@ extern void* arena_alloc(Arena* const arena,
     const DynArena dag_dyn_arena = dyn_arena;        \
     const size_t dag_rel_ptr = rel_ptr;              \
     result = (t*)&dag_dyn_arena.buf[dag_rel_ptr];    \
-=======
-#ifdef __GNUC__
-#define dyn_arena_get(t, dyn_arena, rel_ptr)    \
-  ({                                            \
-    const DynArena macro_dyn_arena = dyn_arena; \
-    const size_t macro_rel_ptr = rel_ptr;       \
-    (t*)&macro_dyn_arena.buf[macro_rel_ptr];    \
-  })
-#else
-#define dyn_arena_get(result, t, dyn_arena, rel_ptr)  \
-  do {                                                \
-    const DynArena macro_dyn_arena = dyn_arena;       \
-    const size_t macro_rel_ptr = rel_ptr;             \
-    result = (t*)&macro_dyn_arena.buf[macro_rel_ptr]; \
->>>>>>> 4963bd7 (Minor Changes)
   } while (0)
 #endif
 
-extern void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap);
-extern void dyn_arena_free(DynArena* const dyn_arena);
-extern void arena_free(Arena* const arena);
+void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap);
+void dyn_arena_free(DynArena* const dyn_arena);
+void arena_free(Arena* const arena);
 
 //-
 //-  General type dynamic arrays:
@@ -183,9 +167,12 @@ extern void arena_free(Arena* const arena);
     size_t len;      \
   } Vec_##t
 
-#define Vec(t) Vec_##t
+typedef struct vec {
+  void* ptr;
+  size_t cap;
+  size_t len;
+} Vec;
 
-<<<<<<< HEAD
 #ifdef SNIFEX_API_GNU_EXTENSIONS
 #define vec_create(t, init_cap)                  \
   ({                                             \
@@ -198,28 +185,6 @@ extern void arena_free(Arena* const arena);
         .len = 0,                                \
     };                                           \
   })
-=======
-#ifdef __GNUC__
-#define vec_idx(vec, i)                                                \
-  ({                                                                   \
-    const size_t macro_i = (i);                                        \
-    assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL); \
-    &(vec).ptr[macro_i];                                               \
-  })
-#define vec_last(vec) ({ vec_idx(vec, (vec).len - 1); })
-#else
-#define vec_idx(result, vec, i)                                        \
-  do {                                                                 \
-    const size_t macro_i = (i);                                        \
-    assert((vec).len > 0 && macro_i < (vec).len && (vec).ptr != NULL); \
-    result = &(vec).ptr[macro_i];                                      \
-  } while (0)
-#define vec_last(result, vec)            \
-  do {                                   \
-    vec_idx(result, vec, (vec).len - 1); \
-  } while (0)
-#endif
->>>>>>> 4963bd7 (Minor Changes)
 
 #define vec_from(t, item1, ...)               \
   ({                                          \
@@ -230,7 +195,6 @@ extern void arena_free(Arena* const arena);
     memcpy(vec.ptr, items, sizeof(items));    \
     vec;                                      \
   })
-<<<<<<< HEAD
 
 #define vec_idx(vec, i)                                                        \
   ({                                                                           \
@@ -382,18 +346,6 @@ extern void arena_free(Arena* const arena);
     vec_last(to_replace, t, *vecsr_vec_ptr);                 \
     *remove_at = *to_replace;                                \
     vecsr_vec_ptr->len--;                                    \
-=======
-#else
-#define vec_from(result, t, item1, ...)       \
-  do {                                        \
-    t macro_item1 = item1;                    \
-    t items[] = {macro_item1, __VA_ARGS__};   \
-    size_t count = sizeof(items) / sizeof(t); \
-    Vec(t) vec = vec_create_##t(count);       \
-    vec.len = count;                          \
-    memcpy(vec.ptr, items, sizeof(items));    \
-    result = vec;                             \
->>>>>>> 4963bd7 (Minor Changes)
   } while (0)
 #endif
 
@@ -839,7 +791,7 @@ void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap) {
 void dyn_arena_free(DynArena* const dyn_arena) { free(dyn_arena->buf); }
 void arena_free(Arena* const arena) { free(arena->buf); }
 
-    string strlit(char const* s) {
+string strlit(char const* s) {
   return (string){.ptr = (char*)s, .len = strlen(s)};
 }
 bool str_is_empty(const string str) {
@@ -898,7 +850,7 @@ string str_concat(Arena* const arena, const string a, const string b) {
   return buf;
 }
 
-string str_join(Arena* const arena, Vec(string) to_join) {
+string str_join(Arena* const arena, Vec to_join) {
   assert(arena != NULL);
 
   size_t new_len = 0;

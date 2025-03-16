@@ -1,73 +1,74 @@
+#undef _FORTIFY_SOURCE
 #include "snifex-api.h"
-
-DeclareVec(uint16_t);
-
-typedef struct Vec_uint16_t {
-  int different_struct;
-} my_Vec_uint16_t;  // using 'Vec_uint16_t' would give a
-                    // redefinition_different_typedef' compiler error!
-
-void demonstrate_unpolluted_symtable() {
-  Vec(uint16_t) intVec = vec_create_uint16_t(sizeof(uint16_t));
-  vec_push_uint16_t(&intVec, 12);
-
-  my_Vec_uint16_t my_vec = {102};
-
-#ifdef __GNUC__
-  assert(*vec_idx(intVec, 0) == 12);
-#else
-  uint16_t* ptr;
-  vec_idx(ptr, intVec, 0);
-  assert(*ptr == 12);
-#endif
-  assert(my_vec.different_struct == 102);
-
-  vec_free_uint16_t(&intVec);
-}
 
 void vector_usage() {
   //-
   //- Create Vector
   //-
-  Vec(uint16_t) intVec = vec_create_uint16_t(1);
+#ifdef __GNUC__
+  Vec int_vec = vec_create(uint16_t, 1);
+#else
+  Vec int_vec;
+  vec_create(int_vec, uint16_t, 1);
+#endif  //__GNUC__
 
   //-
   //- Pushing, indexing and popping from vector
   //-
-  assert(intVec.cap == 1);
-  vec_push_uint16_t(&intVec, 123);
-  assert(intVec.cap == 1);
-  vec_push_uint16_t(&intVec, 456);
-  assert(intVec.cap == 4);  // capacity gets doubled after pushing
+  assert(int_vec.cap == 1);
+  vec_push(uint16_t, &int_vec, 123);
+  assert(int_vec.cap == 1);
+  vec_push(uint16_t, &int_vec, 456);
+  assert(int_vec.cap == 4);  // capacity gets doubled after pushing
 
 #ifdef __GNUC__
-  uint16_t indexedElem = *vec_idx(intVec, intVec.len - 1);
-  uint16_t lastElem = *vec_last(intVec);
+  uint16_t indexedElem = *vec_idx(int16_t, int_vec, int_vec.len - 1);
+  uint16_t lastElem = *vec_last(int16_t, int_vec);
 #else
   uint16_t* ptr;
-  vec_idx(ptr, intVec, intVec.len - 1);
+  vec_idx(ptr, int_vec, int_vec.len - 1);
   uint16_t indexedElem = *ptr;
-  vec_last(ptr, intVec);
+  vec_last(ptr, int_vec);
   uint16_t lastElem = *ptr;
 #endif
-  vec_pop_uint16_t(&intVec);
-  vec_pop_uint16_t(&intVec);
+  vec_pop(uint16_t, &int_vec);
+  vec_pop(uint16_t, &int_vec);
 
-  assert(intVec.len == 0);
+  assert(int_vec.len == 0);
   assert(lastElem == 456 && lastElem == indexedElem);
+
+#ifdef __GNUC__
+  Vec int_vec_front = vec_from(uint16_t, 1, 2, 3);
+  Vec int_vec_back = vec_from(uint16_t, 4, 5, 6);
+#else
+  Vec int_vec_front;
+  vec_from(int_vec_front, uint16_t, 1, 2, 3);
+  Vec int_vec_back;
+  vec_from(int_vec_back, uint16_t, 4, 5, 6);
+#endif  //__GNUC__
+  vec_append(uint16_t, &int_vec_front, int_vec_back);
+  assert(int_vec_front.len == 6);
+  assert(*vec_idx(uint16_t, int_vec_front, 0) == 1);
+  assert(*vec_idx(uint16_t, int_vec_front, 1) == 2);
+  assert(*vec_idx(uint16_t, int_vec_front, 2) == 3);
+  assert(*vec_idx(uint16_t, int_vec_front, 3) == 4);
+  assert(*vec_idx(uint16_t, int_vec_front, 4) == 5);
+  assert(*vec_idx(uint16_t, int_vec_front, 5) == 6);
 
   //-
   //- Freeing the vector
   //-
-  vec_free_uint16_t(&intVec);
+  vec_free(&int_vec_front);
+  vec_free(&int_vec_back);
+  vec_free(&int_vec);
 }
 
 void vector_macro_init() {
 #ifdef __GNUC__
-  Vec(uint16_t) vec = vec_from(uint16_t, 10, 20, 30);
-  assert(*vec_idx(vec, 0) == 10);
-  assert(*vec_idx(vec, 1) == 20);
-  assert(*vec_idx(vec, 2) == 30);
+  Vec vec = vec_from(uint16_t, 10, 20, 30);
+  assert(*vec_idx(uint16_t, vec, 0) == 10);
+  assert(*vec_idx(uint16_t, vec, 1) == 20);
+  assert(*vec_idx(uint16_t, vec, 2) == 30);
 #else
   Vec(uint16_t) vec;
   vec_from(vec, uint16_t, 10, 20, 30);
