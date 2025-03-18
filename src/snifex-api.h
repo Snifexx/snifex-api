@@ -119,17 +119,17 @@ typedef struct arena {
   size_t top;
 } Arena;
 
-void dyn_arena_init(DynArena* const dyn_arena, const size_t init_cap);
-void arena_init(Arena* const arena, const size_t size);
-DynArena dyn_arena_create(const size_t init_cap);
-Arena arena_create(const size_t init_cap);
-size_t dyn_arena_alloc(DynArena* const dyn_arena,
-                       const size_t size,
-                       const size_t alignment);
+extern void dyn_arena_init(DynArena* const dyn_arena, const size_t init_cap);
+extern void arena_init(Arena* const arena, const size_t size);
+extern DynArena dyn_arena_create(const size_t init_cap);
+extern Arena arena_create(const size_t init_cap);
+extern size_t dyn_arena_alloc(DynArena* const dyn_arena,
+                              const size_t size,
+                              const size_t alignment);
 
-void* arena_alloc(Arena* const arena,
-                  const size_t size,
-                  const size_t alignment);
+extern void* arena_alloc(Arena* const arena,
+                         const size_t size,
+                         const size_t alignment);
 
 #ifdef SNIFEX_API_GNU_EXTENSIONS
 #define dyn_arena_get(t, dyn_arena, rel_ptr)  \
@@ -147,9 +147,9 @@ void* arena_alloc(Arena* const arena,
   } while (0)
 #endif
 
-void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap);
-void dyn_arena_free(DynArena* const dyn_arena);
-void arena_free(Arena* const arena);
+extern void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap);
+extern void dyn_arena_free(DynArena* const dyn_arena);
+extern void arena_free(Arena* const arena);
 
 //-
 //-  General type dynamic arrays:
@@ -172,6 +172,16 @@ typedef struct vec {
   size_t cap;
   size_t len;
 } Vec;
+typedef Vec Vec_void;
+
+#define DefineVec(t) \
+  typedef struct {   \
+    t* ptr;          \
+    size_t cap;      \
+    size_t len;      \
+  } Vec_##t
+
+#define Vec(t) Vec_##t
 
 #ifdef SNIFEX_API_GNU_EXTENSIONS
 #define vec_create(t, init_cap)                  \
@@ -850,7 +860,7 @@ string str_concat(Arena* const arena, const string a, const string b) {
   return buf;
 }
 
-string str_join(Arena* const arena, Vec to_join) {
+string str_join(Arena* const arena, Vec(string) to_join) {
   assert(arena != NULL);
 
   size_t new_len = 0;

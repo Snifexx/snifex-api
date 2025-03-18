@@ -1,14 +1,19 @@
 #undef _FORTIFY_SOURCE
 
-void dyn_arena_usage();
-void arena_usage();
-void string_usage();
-void vector_usage();
+#define SNIFEX_API_IMPLEMENTATION
+#include "snifex-api.h"
+#undef SNIFEX_API_IMPLEMENTATION
+
+#include "hm.h"
+
+DefineDict(uint64_t, float);
 
 int main() {
-  dyn_arena_usage();
-  arena_usage();
-  string_usage();
-  vector_usage();
-  return 0;
+  Dictionary(uint64_t, float) hm = dict_create(uint64_t, float);
+  dict_put(&hm, 4, 420.0, NULL);
+  float a;
+  dict_put(&hm, 4, 69.0, &a);
+
+  free(hm.buckets);
+  vec_free(&hm.entries);
 }
