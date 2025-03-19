@@ -61,13 +61,6 @@
 #pragma comment(lib, "DbgHelp.lib")
 #endif  // OS_WIN
 
-#ifdef OS_WIN
-#include <DbgHelp.h>
-#include <windows.h>
-
-#pragma comment(lib, "DbgHelp.lib")
-#endif
-
 void __snifex_api_assert_fail(const char* expr,
                               const char* file,
                               const int line,
@@ -159,20 +152,6 @@ extern void arena_free(Arena* const arena);
 // They basically are an alternative `Arena`. In other words... my
 // implementation of a dynamically-growing array, I.E. ArrayList, Vector or
 // however you might call it.
-
-#define DefineVec(t) \
-  typedef struct {   \
-    t* ptr;          \
-    size_t cap;      \
-    size_t len;      \
-  } Vec_##t
-
-typedef struct vec {
-  void* ptr;
-  size_t cap;
-  size_t len;
-} Vec;
-typedef Vec Vec_void;
 
 #define DefineVec(t) \
   typedef struct {   \
