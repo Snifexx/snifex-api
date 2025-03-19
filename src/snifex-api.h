@@ -55,7 +55,7 @@
 #include <execinfo.h>
 #endif  // OS_LINUX
 
-#ifdef OS_WIN
+#if defined(OS_WIN) && !defined(SNIFEX_API_NO_ASSERT)
 #include <DbgHelp.h>
 #include <windows.h>
 #pragma comment(lib, "DbgHelp.lib")
@@ -353,7 +353,7 @@ DefineVec(string);
 
 extern string strlit(char const* s);
 extern string str_alloc(Arena* const arena, const size_t len);
-extern char* const str_idx(const string str, const size_t i);
+extern char const* str_idx(const string str, const size_t i);
 extern bool str_is_empty(const string str);
 
 // Short-circuing if the length is equal and is 0 is because memcmp with
@@ -639,6 +639,7 @@ void snifex_api_dict_grow(Bucket** buckets,
 
 #ifdef SNIFEX_API_IMPLEMENTATION
 
+#ifndef SNIFEX_API_NO_ASSERT
 void __snifex_api_assert_fail(const char* expr,
                               const char* file,
                               const int line,
@@ -689,6 +690,7 @@ void __snifex_api_assert_fail(const char* expr,
 #endif  // OS_WIN
   exit(1);
 }
+#endif //SNIFEX_API_NO_ASSERT
 
 inline bool snifex_api_is_power_of_two(const size_t x) {
   return (x & (x - 1)) == 0;
@@ -807,7 +809,7 @@ string str_copy(Arena* const arena, const string str) {
   };
 }
 
-char* const str_idx(const string str, const size_t i) {
+char const* str_idx(const string str, const size_t i) {
   assert(i < str.len && str.ptr != NULL);
   return &str.ptr[i];
 }
