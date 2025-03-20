@@ -10,7 +10,13 @@ So don't take the TODO too seriously.
 This project uses C99 and I have my tests with clang (as you can see in the [Makefile](./Makefile)) but should work with any c99 compiler.
 It's an [stb single file header library](https://github.com/nothings/stb).
 
-# Usage
+## Documentation
+I wrote documentation and generated it with [Doxygen](https://www.doxygen.nl).
+Github page available:
+  - [Here](https://snifexx.github.io/snifex-api/) for GCC/Clang or any compiler with Gnu Extensions and `__GNUC__`,
+  - or [here](https://snifexx.github.io/snifex-api/nongnu) for any other non gnu compiler
+
+## Usage
 Since this is an stb file header it packs the header file with the implementations all in one. What does that mean?
 It simply means that you can treat it as a normal header file, however at least ONCE it must be 'implemented' through a macro.
 
@@ -38,16 +44,16 @@ int main() {
 #include <inttypes.h>
 
 void my_test() {
-#ifdef __GNUC__
-    uint8_t min_var = min(uint8_t, 10, 2);
+#ifdef SNIFEX_API_GNU_EXTENSIONS 
+    uint8_t sign = sign(10);
 #else
-    uint8_t min_var; min(min_var, uint8_t, 10, 2);
+    uint8_t sign; sign(sign, uint8_t, 10);
 #endif
-    printf("%" PRIu8 "\n", min_var);
+    printf("10 is positive! In fact, its sign is: %" PRIu8 "\n", sign);
 }
 ```
 
-# My guidelines
+## My guidelines
 This is a small definition of all the rules I've imposed on myself when writing C, my own little standard.
 Obviously, these rules can be broken when interfacing with other works that are not my own.
 Some of these might sound like simple good practise instead of all and out hard rules but I use these as a frame of reference and try
@@ -107,10 +113,11 @@ to stick to these as much as I can (ideally always).
     have an argument named `result` that is set at the end of the macro
     - When making macros for GCC or Clang that are NOT expression statements, still use the do {} while (0) hack
 
-# TODO
+## TODO
 
 - ***IMPORTANT!*** Add Doxygen banners and documentation
 - ***IMPORTANT!*** Add alignment in powers of two to capacities
+- Arena allocations for Vectors
 - *USEFUL* Debug API to replace malloc, realloc, etc... with macro hooks to check that all allocations are deallocated
 - Count substring occurrences
 - Find first occurence of substring
