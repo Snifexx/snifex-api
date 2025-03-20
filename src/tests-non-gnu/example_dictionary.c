@@ -50,21 +50,28 @@ uint64_t my_hash(const void* in, const size_t inlen) {
 DefineDict(uint64_t, float);
 
 void dict_custom_hashing() {
-  //- To define a custom hashing algorithm one must define the `HASHFUNC` macro before
-  //- including the snifex-api header file. Then the macro `hash_num` MUST be defined before
-  //- any usage of dictionary macros and functions. The body can be any function that returns
-  //- a uint64_t. The definition of the macro `hash_num` must have four arguments and it follows
+  //- To define a custom hashing algorithm one must define the `HASHFUNC` macro
+  // before
+  //- including the snifex-api header file. Then the macro `hash_num` MUST be
+  // defined before
+  //- any usage of dictionary macros and functions. The body can be any function
+  // that returns
+  //- a uint64_t. The definition of the macro `hash_num` must have four
+  // arguments and it follows
   //- this rough signature:
   //-     #define hash_num(in_ptr, inlen, k0_u64, k1_u64)
   //-   where:
   //-     - `in_ptr` is of type `const void*`.
   //-     - `inlen` is of type `const size_t`, and obviously it holds
   //-         the size of the data pointed by `in_ptr`.
-  //-     - `k0_u64` is of type `uint64_t` (as expressed by the hungarian notation). This holds the least significant part of a u128 key.
-  //-     - `k1_u64` is of type `uint64_t` (as expressed by the hungarian notation). This holds the most significant part of a u128 key.
+  //-     - `k0_u64` is of type `uint64_t` (as expressed by the hungarian
+  // notation). This holds the least significant part of a u128 key.
+  //-     - `k1_u64` is of type `uint64_t` (as expressed by the hungarian
+  // notation). This holds the most significant part of a u128 key.
   //-   and returns a uint64_t hash.
 
-  // The following tests assert on the hash being hashed by our custom hashing function `my_hash`
+  // The following tests assert on the hash being hashed by our custom hashing
+  // function `my_hash`
 
   Dictionary(uint64_t, float) dict;
   dict_create(dict, uint64_t, float);
@@ -84,8 +91,10 @@ void dict_custom_hashing() {
   // Since dictionaries start with a default capacity of 8 buckets:
   //    0x88873830983f313b % 8 = 3
   // The bucket that is going to be filled is bucket #3 (The fourth).
-  
-  printf("\33[0;33mRunning a test that assumes Little-endian integers! If assert fails, you know why!\33[0m\n");
+
+  printf(
+      "\33[0;33mRunning a test that assumes Little-endian integers! If assert "
+      "fails, you know why!\33[0m\n");
   assert(dict.buckets[3].hash == 0x88873830983f313b);
   printf("\33[0;32mTest Passed!\33[0m\n");
 

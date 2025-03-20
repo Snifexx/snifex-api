@@ -5,8 +5,12 @@ pkgs.clangStdenv.mkDerivation {
     buildInputs = with pkgs; [
       gnumake bear
       lldb 
-#     Other debug tools I sometimes use
-#     valgrind heaptrack 
+
+      ### Documentation
+      doxygen
+
+      ### Other debug tools I sometimes use
+      # valgrind heaptrack 
     ];
 
 

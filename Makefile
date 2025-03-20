@@ -33,3 +33,6 @@ test-non-gnu: build-non-gnu
 clean:
 	-rm $(OUT)/* -r
 
+docs:
+	@doxygen ./Doxyfile.gnu
+	@doxygen ./Doxyfile.nognu

@@ -41,7 +41,7 @@ void vector_usage() {
   vec_append(uint16_t, &int_vec_front, int_vec_back);
   assert(int_vec_front.len == 6);
 
-  uint16_t to_check[6] = { 1, 2, 3, 4, 5, 6 };
+  uint16_t to_check[6] = {1, 2, 3, 4, 5, 6};
   for (size_t i = 0; i < int_vec_front.len; i++) {
     uint16_t* x_ptr;
     vec_idx(x_ptr, uint16_t, int_vec_front, i);

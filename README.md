@@ -112,7 +112,6 @@ to stick to these as much as I can (ideally always).
 - ***IMPORTANT!*** Add Doxygen banners and documentation
 - ***IMPORTANT!*** Add alignment in powers of two to capacities
 - *USEFUL* Debug API to replace malloc, realloc, etc... with macro hooks to check that all allocations are deallocated
-- Check macro variables to be unique
 - Count substring occurrences
 - Find first occurence of substring
 - Find last occurence of substring

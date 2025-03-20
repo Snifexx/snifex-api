@@ -12,9 +12,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-//-
-//- Macro utils
-//-
+/// @defgroup macro_utils Macro utils
+/// @brief Macro Utilities.
+///
+/// These include:
+///   - The OS_* utility macros, for identifying OSs and platforms
+///   - The asserting macros
+/// @{
 
 #if !defined(NO_GNU_SNIFEX_API_TESTS)
 #if defined(__GNUC__)
@@ -61,65 +65,130 @@
 #pragma comment(lib, "DbgHelp.lib")
 #endif  // OS_WIN
 
+/// @cond EXCLUDE_DOC
 void __snifex_api_assert_fail(const char* expr,
                               const char* file,
                               const int line,
                               const char* func);
+/// @endcond
 
 #ifndef SNIFEX_API_NO_ASSERT
 #undef assert
+/// @brief Snifex API assert
+///
+/// Custom implementation of an assert. The fundamental changes are the
+/// following:
+///   - Persists in release mode
+///   - Prints stack trace when possible
+///   - Is just generally cleaner
+/// @param expr Any `bool` expression that must be true
 #define assert(expr)  \
   ((expr) ? ((void)0) \
           : __snifex_api_assert_fail(#expr, __FILE__, __LINE__, __func__))
+
 #endif  // !SNIFEX_API_NO_ASSERT
 
-//-
-//-  Numbers
-//-
+/// @}
+
+/// @defgroup number Numbers
+/// @brief Utilities for numbers
+///
+/// All numerical functions and macros
+/// @{
 
 // I use macros because I want these to be the same for all number types
 // without having 10 different implementation for each number type I use
 #ifdef SNIFEX_API_GNU_EXTENSIONS
-#define sign(t, num)                        \
-  ({                                        \
-    t _num = num;                           \
-    (_num > 0 ? 1 : ((_num < 0) ? -1 : 0)); \
+
+/// @brief Get the sign of a number
+///
+/// Get the normalized sign of any numerical type or 0
+/// @param num Any numerical type value
+/// @return -1 if `num` is negative, 1 if it's positive, 0 if `num` is 0
+#define sign(num)                             \
+  ({                                          \
+    __auto_type s_num = num;                  \
+    (s_num > 0 ? 1 : ((s_num < 0) ? -1 : 0)); \
   })
 #else
-#define sign(result, t, num)                         \
-  do {                                               \
-    t _num = num;                                    \
-    result = (_num > 0 ? 1 : ((_num < 0) ? -1 : 0)); \
+
+/// @brief Get the sign of a number
+///
+/// Get the normalized sign of any numerical type or 0
+/// @param result An lvalue of type `t` to which the result is going to be set
+/// @param t The type of the `num` parameter
+/// @param num Any numerical type value of type `t`
+/// @return -1 if `num` is negative, 1 if it's positive, 0 if `num` is 0
+#define sign(lval_result_t, t, num)                           \
+  do {                                                        \
+    t s_num = num;                                            \
+    lval_result_t = (s_num > 0 ? 1 : ((s_num < 0) ? -1 : 0)); \
   } while (0)
 #endif
 
-static inline bool snifex_api_is_power_of_two(const size_t x);
-extern uint32_t ceil_powtwo(uint32_t v);
+static inline bool __snifex_api_is_power_of_two(const size_t x);
 
-//-
-//- Arenas
-//-
+// extern uint32_t ceil_powtwo(uint32_t v);
 
+/// @}
+
+/// @defgroup arena Arenas
+/// @brief Fixed-sized and growing arenas
+///
+/// @{
+
+/// @brief A dinamically growing arena
+///
+/// An arena that is not fixed-sized, and dynamically grows.
+/// Because of this property, @ref dyn_arena_alloc does not return a pointer, it
+/// returns an index with which we can access the pointer temporarily (with @ref
+/// dyn_arena_get)
 typedef struct dyn_arena {
   char* buf;
   size_t cap;
   size_t top;
 } DynArena;
 
+/// @brief A fixed-sized arena
+///
+/// A fixed-sized arena, that allocates a certain amount of memory when
+/// initialized and never gets reallocated again. Because of this allocations
+/// can fail when there is not enough memory allocated.
+/// Since reallocations never happen, @ref arena_alloc return pointers, which is
+/// VERY useful for strings or scratch arenas
 typedef struct arena {
   char* buf;
   size_t size;
   size_t top;
 } Arena;
 
+/// @brief Initializes a @ref DynArena
+/// @post `dyn_arena->buf` != NULL if `malloc` did not fail
 extern void dyn_arena_init(DynArena* const dyn_arena, const size_t init_cap);
+/// @brief Initializes an @ref Arena
+/// @post `arena->buf` != NULL if `malloc` did not fail
 extern void arena_init(Arena* const arena, const size_t size);
+/// @brief Creates a @ref DynArena
+/// @post `dyn_arena->buf` != NULL if `malloc` did not fail
 extern DynArena dyn_arena_create(const size_t init_cap);
+/// @brief Creates an @ref Arena
+/// @post `arena->buf` != NULL if `malloc` did not fail
 extern Arena arena_create(const size_t init_cap);
+/// @brief Allocates an object into a @ref DynArena
+///
+/// Allocates object of size '`size`' aligned to '`alignment`'. If unsure of
+/// what to use as `alignment`, just use the `size`
+/// @return Returns an index from `dyn_arena->buf`. To get the obect at that
+/// index refer to @ref dyn_arena_get
 extern size_t dyn_arena_alloc(DynArena* const dyn_arena,
                               const size_t size,
                               const size_t alignment);
 
+/// @brief Allocates an object into an @ref Arena
+///
+/// Allocates object of size '`size`' aligned to '`alignment`'. If unsure of
+/// what to use as `alignment`, just use the `size`
+/// @return Returns an pointer to the object that can be used directly
 extern void* arena_alloc(Arena* const arena,
                          const size_t size,
                          const size_t alignment);
@@ -143,6 +212,8 @@ extern void* arena_alloc(Arena* const arena,
 extern void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap);
 extern void dyn_arena_free(DynArena* const dyn_arena);
 extern void arena_free(Arena* const arena);
+
+/// @}
 
 //-
 //-  General type dynamic arrays:
@@ -353,7 +424,7 @@ DefineVec(string);
 
 extern string strlit(char const* s);
 extern string str_alloc(Arena* const arena, const size_t len);
-extern char const* str_idx(const string str, const size_t i);
+char* const str_idx(const string str, const size_t i);
 extern bool str_is_empty(const string str);
 
 // Short-circuing if the length is equal and is 0 is because memcmp with
@@ -690,21 +761,21 @@ void __snifex_api_assert_fail(const char* expr,
 #endif  // OS_WIN
   exit(1);
 }
-#endif //SNIFEX_API_NO_ASSERT
+#endif  // SNIFEX_API_NO_ASSERT
 
-inline bool snifex_api_is_power_of_two(const size_t x) {
+inline bool __snifex_api_is_power_of_two(const size_t x) {
   return (x & (x - 1)) == 0;
 }
 
-uint32_t ceil_powtwo(uint32_t v) {
-  v--;
-  v |= v >> 1;
-  v |= v >> 2;
-  v |= v >> 4;
-  v |= v >> 8;
-  v |= v >> 16;
-  return v + 1;
-}
+// uint32_t ceil_powtwo(uint32_t v) {
+//   v--;
+//   v |= v >> 1;
+//   v |= v >> 2;
+//   v |= v >> 4;
+//   v |= v >> 8;
+//   v |= v >> 16;
+//   return v + 1;
+// }
 
 void dyn_arena_init(DynArena* const dyn_arena, const size_t init_cap) {
   dyn_arena->buf = (char*)malloc(init_cap);
@@ -736,7 +807,7 @@ size_t dyn_arena_alloc(DynArena* const dyn_arena,
                        const size_t size,
                        const size_t alignment) {
   assert(!(size == 0 || alignment == 0 ||
-           (alignment != 1 && !snifex_api_is_power_of_two(alignment)) ||
+           (alignment != 1 && !__snifex_api_is_power_of_two(alignment)) ||
            size % alignment != 0));
 
   size_t top = dyn_arena->top;
@@ -758,7 +829,7 @@ void* arena_alloc(Arena* const arena,
                   const size_t alignment) {
   if (size == 0) { return NULL; }
   assert(!(alignment == 0 ||
-           (alignment != 1 && !snifex_api_is_power_of_two(alignment)) ||
+           (alignment != 1 && !__snifex_api_is_power_of_two(alignment)) ||
            size % alignment != 0));
 
   size_t top = arena->top;
@@ -809,7 +880,7 @@ string str_copy(Arena* const arena, const string str) {
   };
 }
 
-char const* str_idx(const string str, const size_t i) {
+char* const str_idx(const string str, const size_t i) {
   assert(i < str.len && str.ptr != NULL);
   return &str.ptr[i];
 }
