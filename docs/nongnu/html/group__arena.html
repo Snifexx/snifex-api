@@ -126,8 +126,8 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:gaae751bba3f7ac5dab1f32e3701213998" id="r_gaae751bba3f7ac5dab1f32e3701213998"><td class="memItemLeft" align="right" valign="top"><a id="gaae751bba3f7ac5dab1f32e3701213998" name="gaae751bba3f7ac5dab1f32e3701213998"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>dyn_arena_get</b>(t,  <a class="el" href="structdyn__arena.html">dyn_arena</a>,  rel_ptr)</td></tr>
+<tr class="memitem:gaae751bba3f7ac5dab1f32e3701213998" id="r_gaae751bba3f7ac5dab1f32e3701213998"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaae751bba3f7ac5dab1f32e3701213998">dyn_arena_get</a>(t,  <a class="el" href="structdyn__arena.html">dyn_arena</a>,  rel_ptr)</td></tr>
+<tr class="memdesc:gaae751bba3f7ac5dab1f32e3701213998"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a temporary pointer from relative pointer of a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>.  <br /></td></tr>
 <tr class="separator:gaae751bba3f7ac5dab1f32e3701213998"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
@@ -159,18 +159,58 @@ Functions</h2></td></tr>
 <tr class="memitem:gafa4a34eff8578b37c7fa9a3e12188959" id="r_gafa4a34eff8578b37c7fa9a3e12188959"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gafa4a34eff8578b37c7fa9a3e12188959">arena_alloc</a> (<a class="el" href="#gaa3c04ba804275765a4e49c9872d46a25">Arena</a> *const <a class="el" href="structarena.html">arena</a>, const size_t size, const size_t alignment)</td></tr>
 <tr class="memdesc:gafa4a34eff8578b37c7fa9a3e12188959"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates an object into an <a class="el" href="#gaa3c04ba804275765a4e49c9872d46a25">Arena</a>.  <br /></td></tr>
 <tr class="separator:gafa4a34eff8578b37c7fa9a3e12188959"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf897e892410e5f2d2a89d78bc7e062c4" id="r_gaf897e892410e5f2d2a89d78bc7e062c4"><td class="memItemLeft" align="right" valign="top"><a id="gaf897e892410e5f2d2a89d78bc7e062c4" name="gaf897e892410e5f2d2a89d78bc7e062c4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>dyn_arena_reserve</b> (<a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a> *const <a class="el" href="structdyn__arena.html">dyn_arena</a>, const size_t min_cap)</td></tr>
+<tr class="memitem:gaf897e892410e5f2d2a89d78bc7e062c4" id="r_gaf897e892410e5f2d2a89d78bc7e062c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaf897e892410e5f2d2a89d78bc7e062c4">dyn_arena_reserve</a> (<a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a> *const <a class="el" href="structdyn__arena.html">dyn_arena</a>, const size_t min_cap)</td></tr>
+<tr class="memdesc:gaf897e892410e5f2d2a89d78bc7e062c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reserves at least <code>min_cap</code> bytes in the arena.  <br /></td></tr>
 <tr class="separator:gaf897e892410e5f2d2a89d78bc7e062c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga86be5730f0ea3d9f5c512e97c05eca97" id="r_ga86be5730f0ea3d9f5c512e97c05eca97"><td class="memItemLeft" align="right" valign="top"><a id="ga86be5730f0ea3d9f5c512e97c05eca97" name="ga86be5730f0ea3d9f5c512e97c05eca97"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>dyn_arena_free</b> (<a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a> *const <a class="el" href="structdyn__arena.html">dyn_arena</a>)</td></tr>
+<tr class="memdesc:ga86be5730f0ea3d9f5c512e97c05eca97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>. <br /></td></tr>
 <tr class="separator:ga86be5730f0ea3d9f5c512e97c05eca97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gace2ac8edeb4f508d4086ec658911f854" id="r_gace2ac8edeb4f508d4086ec658911f854"><td class="memItemLeft" align="right" valign="top"><a id="gace2ac8edeb4f508d4086ec658911f854" name="gace2ac8edeb4f508d4086ec658911f854"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a class="el" href="#gaa3c04ba804275765a4e49c9872d46a25">Arena</a> *const <a class="el" href="structarena.html">arena</a>)</td></tr>
+<tr class="memdesc:gace2ac8edeb4f508d4086ec658911f854"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees an <a class="el" href="#gaa3c04ba804275765a4e49c9872d46a25">Arena</a>. <br /></td></tr>
 <tr class="separator:gace2ac8edeb4f508d4086ec658911f854"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Fixed-sized and growing arenas. </p>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="gaae751bba3f7ac5dab1f32e3701213998" name="gaae751bba3f7ac5dab1f32e3701213998"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaae751bba3f7ac5dab1f32e3701213998">&#9670;&#160;</a></span>dyn_arena_get</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define dyn_arena_get</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">t, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><a class="el" href="structdyn__arena.html">dyn_arena</a>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">rel_ptr</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a temporary pointer from relative pointer of a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>. </p>
+<p>Get a pointer to the object at from <code>rel_ptr</code>. The returning pointer should not be stored or reused after a <a class="el" href="#gaf51416939c44395d6d982750c464ab44">dyn_arena_alloc</a> allocation, because an allocation could trigger a resizing rendering that pointer dangerous. Instead, store, pass and work with the relative pointer retuned from <a class="el" href="#gaf51416939c44395d6d982750c464ab44">dyn_arena_alloc</a> and then, when working on the object in the <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>, get a temporary "absolute" pointer with this macro</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>The type of the item we're casting the pointer to </td></tr>
+    <tr><td class="paramname">rel_ptr</td><td>The relative pointer to the object in the <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An "absolute" pointer to the object of type <code>t</code> allocated in the <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a> at offset <code>rel_ptr</code> </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="gaa3c04ba804275765a4e49c9872d46a25" name="gaa3c04ba804275765a4e49c9872d46a25"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaa3c04ba804275765a4e49c9872d46a25">&#9670;&#160;</a></span>Arena</h2>
@@ -202,7 +242,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 </div><div class="memdoc">
 
 <p>A dinamically growing arena. </p>
-<p>An arena that is not fixed-sized, and dynamically grows. Because of this property, <a class="el" href="#gaf51416939c44395d6d982750c464ab44">dyn_arena_alloc</a> does not return a pointer, it returns an index with which we can access the pointer temporarily (with dyn_arena_get) </p>
+<p>An arena that is not fixed-sized, and dynamically grows. Because of this property, <a class="el" href="#gaf51416939c44395d6d982750c464ab44">dyn_arena_alloc</a> does not return a pointer, it returns an index with which we can access the pointer temporarily (with <a class="el" href="#gaae751bba3f7ac5dab1f32e3701213998">dyn_arena_get</a>) </p>
 
 </div>
 </div>
@@ -268,7 +308,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 </div><div class="memdoc">
 
 <p>Creates an <a class="el" href="#gaa3c04ba804275765a4e49c9872d46a25">Arena</a>. </p>
-<dl class="section post"><dt>Postcondition</dt><dd><code>arena-&gt;buf</code> != NULL if <code>malloc</code> did not fail </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd><code>arena-&gt;buf != NULL</code> if <code>malloc</code> did not fail </dd></dl>
 
 </div>
 </div>
@@ -300,7 +340,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 </div><div class="memdoc">
 
 <p>Initializes an <a class="el" href="#gaa3c04ba804275765a4e49c9872d46a25">Arena</a>. </p>
-<dl class="section post"><dt>Postcondition</dt><dd><code>arena-&gt;buf</code> != NULL if <code>malloc</code> did not fail </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd><code>arena-&gt;buf != NULL</code> if <code>malloc</code> did not fail </dd></dl>
 
 </div>
 </div>
@@ -337,7 +377,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 </div><div class="memdoc">
 
 <p>Allocates an object into a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>. </p>
-<p>Allocates object of size '<code>size</code>' aligned to '<code>alignment</code>'. If unsure of what to use as <code>alignment</code>, just use the <code>size</code> </p><dl class="section return"><dt>Returns</dt><dd>Returns an index from <code>dyn_arena-&gt;buf</code>. To get the obect at that index refer to dyn_arena_get </dd></dl>
+<p>Allocates object of size '<code>size</code>' aligned to '<code>alignment</code>'. If unsure of what to use as <code>alignment</code>, just use the <code>size</code> </p><dl class="section return"><dt>Returns</dt><dd>Returns an index from <code>dyn_arena-&gt;buf</code>. To get the obect at that index refer to <a class="el" href="#gaae751bba3f7ac5dab1f32e3701213998">dyn_arena_get</a> </dd></dl>
 
 </div>
 </div>
@@ -365,7 +405,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 </div><div class="memdoc">
 
 <p>Creates a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>. </p>
-<dl class="section post"><dt>Postcondition</dt><dd><code>dyn_arena-&gt;buf</code> != NULL if <code>malloc</code> did not fail </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd><code>dyn_arena-&gt;buf != NULL</code> if <code>malloc</code> did not fail </dd></dl>
 
 </div>
 </div>
@@ -397,7 +437,39 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 </div><div class="memdoc">
 
 <p>Initializes a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>. </p>
-<dl class="section post"><dt>Postcondition</dt><dd><code>dyn_arena-&gt;buf</code> != NULL if <code>malloc</code> did not fail </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd><code>dyn_arena-&gt;buf != NULL</code> if <code>malloc</code> did not fail </dd></dl>
+
+</div>
+</div>
+<a id="gaf897e892410e5f2d2a89d78bc7e062c4" name="gaf897e892410e5f2d2a89d78bc7e062c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf897e892410e5f2d2a89d78bc7e062c4">&#9670;&#160;</a></span>dyn_arena_reserve()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dyn_arena_reserve </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a> *const</td>          <td class="paramname"><span class="paramname"><em>dyn_arena</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>min_cap</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reserves at least <code>min_cap</code> bytes in the arena. </p>
+<p>Allocates enough bytes of memory for the <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a> capacity to be at least <code>min_cap</code>. It is not a guaranteed realloc: it COULD trigger one, but only if <code>dyn_arena-&gt;cap &lt; min_cap</code>. </p><dl class="section post"><dt>Postcondition</dt><dd><code>dyn_arena-&gt;buf != NULL</code> if <code>malloc</code> did not fail </dd></dl>
 
 </div>
 </div>

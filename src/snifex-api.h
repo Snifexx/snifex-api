@@ -166,16 +166,16 @@ typedef struct arena {
 } Arena;
 
 /// @brief Initializes a @ref DynArena
-/// @post `dyn_arena->buf` != NULL if `malloc` did not fail
+/// @post `dyn_arena->buf != NULL` if `malloc` did not fail
 extern void dyn_arena_init(DynArena* const dyn_arena, const size_t init_cap);
 /// @brief Initializes an @ref Arena
-/// @post `arena->buf` != NULL if `malloc` did not fail
+/// @post `arena->buf != NULL` if `malloc` did not fail
 extern void arena_init(Arena* const arena, const size_t size);
 /// @brief Creates a @ref DynArena
-/// @post `dyn_arena->buf` != NULL if `malloc` did not fail
+/// @post `dyn_arena->buf != NULL` if `malloc` did not fail
 extern DynArena dyn_arena_create(const size_t init_cap);
 /// @brief Creates an @ref Arena
-/// @post `arena->buf` != NULL if `malloc` did not fail
+/// @post `arena->buf != NULL` if `malloc` did not fail
 extern Arena arena_create(const size_t init_cap);
 /// @brief Allocates an object into a @ref DynArena
 ///
@@ -197,6 +197,19 @@ extern void* arena_alloc(Arena* const arena,
                          const size_t alignment);
 
 #ifdef SNIFEX_API_GNU_EXTENSIONS
+/// @brief Get a temporary pointer from relative pointer of a @ref DynArena
+///
+/// Get a pointer to the object at from `rel_ptr`. The returning pointer should
+/// not be stored or reused after a @ref dyn_arena_alloc allocation, because an
+/// allocation could trigger a resizing rendering that pointer dangerous.
+/// Instead, store, pass and work with the relative pointer retuned from @ref
+/// dyn_arena_alloc and then, when working on the object in the @ref DynArena,
+/// get a temporary "absolute" pointer with this macro
+///
+/// @param t The type of the item we're casting the pointer to
+/// @param rel_ptr The relative pointer to the object in the @ref DynArena
+/// @return An "absolute" pointer to the object of type `t` allocated in the
+/// @ref DynArena at offset `rel_ptr`
 /// @hideinitializer
 #define dyn_arena_get(t, dyn_arena, rel_ptr)  \
   ({                                          \
@@ -205,6 +218,22 @@ extern void* arena_alloc(Arena* const arena,
     (t*)&dag_dyn_arena.buf[dag_rel_ptr];      \
   })
 #else
+
+/// @brief Get a temporary pointer from relative pointer of a @ref DynArena
+///
+/// Get a pointer to the object at from `rel_ptr`. The returning pointer should
+/// not be stored or reused after a @ref dyn_arena_alloc allocation, because an
+/// allocation could trigger a resizing rendering that pointer dangerous.
+/// Instead, store, pass and work with the relative pointer retuned from @ref
+/// dyn_arena_alloc and then, when working on the object in the @ref DynArena,
+/// get a temporary "absolute" pointer with this macro
+///
+/// @param result An lvalue of type `t*` to which the result is going to be set
+/// @param t The type of the item we're casting the pointer to
+/// @param rel_ptr The relative pointer to the object in the @ref DynArena
+/// @return An "absolute" pointer to the object of type `t` allocated in the
+/// @ref DynArena at offset `rel_ptr`
+/// @hideinitializer
 #define dyn_arena_get(result, t, dyn_arena, rel_ptr) \
   do {                                               \
     const DynArena dag_dyn_arena = dyn_arena;        \
@@ -213,8 +242,16 @@ extern void* arena_alloc(Arena* const arena,
   } while (0)
 #endif
 
+/// @brief Reserves at least `min_cap` bytes in the arena
+///
+/// Allocates enough bytes of memory for the @ref DynArena capacity to be at
+/// least `min_cap`. It is not a guaranteed realloc: it COULD trigger one, but
+/// only if `dyn_arena->cap < min_cap`.
+/// @post `dyn_arena->buf != NULL` if `malloc` did not fail
 extern void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap);
+/// @brief Frees a @ref DynArena
 extern void dyn_arena_free(DynArena* const dyn_arena);
+/// @brief Frees an @ref Arena
 extern void arena_free(Arena* const arena);
 
 /// @}
