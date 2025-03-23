@@ -1,0 +1,22 @@
+html {
+  --primary-color: #D91B24;
+  --primary-dark-color: #8E2528;
+  --primary-light-color: #D91B24;
+  --page-background-color: #BDB8B8;
+  --side-nav-background: #ADA8A8;
+  --separator-color: #b6a5a5;
+  --page-foreground-color: #261F1F;
+  --page-secondary-foreground-color: #392E2E;
+  --font-family: "Ubuntu";
+}
+
+html.dark-mode {
+  --primary-color: #D91B24;
+  --primary-dark-color: #8E2528;
+  --primary-light-color: #D91B24;
+  --page-background-color: #261F1F;
+  --side-nav-background: #392E2E;
+  --page-foreground-color: #E4E4E4;
+  --page-secondary-foreground-color: #9D9898;
+  --font-family: "Ubuntu";
+}

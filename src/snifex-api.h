@@ -82,6 +82,7 @@ void __snifex_api_assert_fail(const char* expr,
 ///   - Prints stack trace when possible
 ///   - Is just generally cleaner
 /// @param expr Any `bool` expression that must be true
+/// @hideinitializer
 #define assert(expr)  \
   ((expr) ? ((void)0) \
           : __snifex_api_assert_fail(#expr, __FILE__, __LINE__, __func__))
@@ -105,6 +106,7 @@ void __snifex_api_assert_fail(const char* expr,
 /// Get the normalized sign of any numerical type or 0
 /// @param num Any numerical type value
 /// @return -1 if `num` is negative, 1 if it's positive, 0 if `num` is 0
+/// @hideinitializer
 #define sign(num)                             \
   ({                                          \
     __auto_type s_num = num;                  \
@@ -119,6 +121,7 @@ void __snifex_api_assert_fail(const char* expr,
 /// @param t The type of the `num` parameter
 /// @param num Any numerical type value of type `t`
 /// @return -1 if `num` is negative, 1 if it's positive, 0 if `num` is 0
+/// @hideinitializer
 #define sign(lval_result_t, t, num)                           \
   do {                                                        \
     t s_num = num;                                            \
@@ -194,6 +197,7 @@ extern void* arena_alloc(Arena* const arena,
                          const size_t alignment);
 
 #ifdef SNIFEX_API_GNU_EXTENSIONS
+/// @hideinitializer
 #define dyn_arena_get(t, dyn_arena, rel_ptr)  \
   ({                                          \
     const DynArena dag_dyn_arena = dyn_arena; \

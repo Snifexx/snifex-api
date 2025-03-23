@@ -9,9 +9,12 @@ COMMON_ARGS = -std=c99 -Wall -Werror -fstrict-aliasing -Wstrict-aliasing -Wno-un
 							-fsanitize=address -fno-omit-frame-pointer -fstandalone-debug
 DEPS =
 
-docs: Doxyfile.gnu Doxyfile.nongnu
+.PHONY: docs
+
+docs:
 	@doxygen ./Doxyfile.gnu
 	@doxygen ./Doxyfile.nongnu
+
 
 # Tests
 default: test
