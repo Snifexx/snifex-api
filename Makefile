@@ -20,14 +20,14 @@ docs:
 default: test
 
 b: build
-build: src/tests-gcc-clang/*.c src/snifex-api.h
+build: src/examples-and-tests/tests-gcc-clang/*.c src/snifex-api.h
 	@-rm $(OUT)/$(BIN_NAME)
-	bear -- $(CC) src/tests-gcc-clang/*.c -g $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)
+	bear -- $(CC) src/examples-and-tests/tests-gcc-clang/*.c -g $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)
 
 bng: build-non-gnu
-build-non-gnu: src/tests-non-gnu/*.c src/snifex-api.h
+build-non-gnu: src/examples-and-tests/tests-non-gnu/*.c src/snifex-api.h
 	@-rm $(OUT)/$(BIN_NAME)_nongnu
-	bear -- $(CC) src/tests-non-gnu/*.c -g $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)_nongnu -D NO_GNU_SNIFEX_API_TESTS
+	bear -- $(CC) src/examples-and-tests/tests-non-gnu/*.c -g $(DEPS) $(COMMON_ARGS) -o $(OUT)/$(BIN_NAME)_nongnu -D NO_GNU_SNIFEX_API_TESTS
 
 t: test
 test: build

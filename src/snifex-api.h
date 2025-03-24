@@ -147,9 +147,11 @@ static inline bool __snifex_api_is_power_of_two(const size_t x);
 /// returns an index with which we can access the pointer temporarily (with @ref
 /// dyn_arena_get)
 typedef struct dyn_arena {
-  char* buf;
-  size_t cap;
-  size_t top;
+  char* buf;   ///< @brief The arena buffer
+  size_t cap;  ///< @brief The capacity of the arena, I.E. the amount of memory
+               /// allocated
+  size_t top;  ///< @brief The amount of bytes used by allocated objects, so the
+               /// offset at which the newly allocated objects will start
 } DynArena;
 
 /// @brief A fixed-sized arena
@@ -160,9 +162,10 @@ typedef struct dyn_arena {
 /// Since reallocations never happen, @ref arena_alloc return pointers, which is
 /// VERY useful for strings or scratch arenas
 typedef struct arena {
-  char* buf;
-  size_t size;
-  size_t top;
+  char* buf;    ///< @brief The arena buffer
+  size_t size;  ///< @brief The size of the arena
+  size_t top;  ///< @brief The amount of allocated bytes, so the offset at which
+               /// the newly allocated objects will start
 } Arena;
 
 /// @brief Initializes a @ref DynArena
@@ -256,15 +259,36 @@ extern void arena_free(Arena* const arena);
 
 /// @}
 
-//-
-//-  General type dynamic arrays:
-//-
+/// @defgroup vector Vector
+/// @brief General type dynamically-growing arrays.
+///
+/// Data structure that owns its own data.
+/// Basically... my implementation of a dynamically-growing array, ArrayList,
+/// Vector or however you might call it.
+///
+/// All examples are <a href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+/// @{
 
-// Data structure that owns its own data (that is they just have to be freed).
-// They basically are an alternative `Arena`. In other words... my
-// implementation of a dynamically-growing array, I.E. ArrayList, Vector or
-// however you might call it.
-
+/// @brief Macro to declare a specifically typed Vector
+///
+/// The way I implemented generic vectors is by having macro work on vectors
+/// instead of functions. Instead of the stb-db approach of having hidden
+/// metadata, I prefer packing the metadata with the data itself, so that using
+/// different allocating strategies is easier, E.G. @ref DynArena.
+///
+/// The downside is having to declare all the vector types used in the project.
+/// This macro makes that process stupid simple. Take a look at this example:
+/// @code
+/// DefineVec(int);
+///
+/// int main() {
+///   Vec(int) vector;
+///   return 0;
+/// }
+/// @endcode
+///
+/// @param t The type of the elements in the vector
+/// @see - @ref Vec
 #define DefineVec(t) \
   typedef struct {   \
     t* ptr;          \
@@ -272,9 +296,20 @@ extern void arena_free(Arena* const arena);
     size_t len;      \
   } Vec_##t
 
+/// @brief Macro to get the struct type of a vector of `t`s
+///
+/// @param t The type of the elements in the vector
+/// @see @ref DefineVec for more info
 #define Vec(t) Vec_##t
 
 #ifdef SNIFEX_API_GNU_EXTENSIONS
+/// @brief Create a vector
+///
+/// Create a vector of `t`s with an initial capacity of `init_cap`
+///
+/// @param t The type of the elements in the vector
+/// @param init_cap The initial capacity of the vector
+/// @hideinitializer
 #define vec_create(t, init_cap)                  \
   ({                                             \
     const size_t vecc_init_cap = (init_cap);     \
@@ -287,6 +322,13 @@ extern void arena_free(Arena* const arena);
     };                                           \
   })
 
+/// @brief Create a vector
+///
+/// Create a vector of `t`s with an initial capacity of `init_cap`
+///
+/// @param t The type of the elements in the vector
+/// @param init_cap The initial capacity of the vector
+/// @hideinitializer
 #define vec_from(t, item1, ...)               \
   ({                                          \
     t items[] = {(item1), __VA_ARGS__};       \
@@ -451,6 +493,8 @@ extern void arena_free(Arena* const arena);
 #endif
 
 #define vec_free(vec_ptr) free((vec_ptr)->ptr)
+
+/// @}
 
 //-
 //-  Strings

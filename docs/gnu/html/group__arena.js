@@ -1,7 +1,15 @@
 var group__arena =
 [
-    [ "dyn_arena", "structdyn__arena.html", null ],
-    [ "arena", "structarena.html", null ],
+    [ "dyn_arena", "structdyn__arena.html", [
+      [ "buf", "structdyn__arena.html#abd5862cba1a3aed4a53ec38eeb97d1a5", null ],
+      [ "cap", "structdyn__arena.html#a8e97819310fee8f247c5b88e9af71cd7", null ],
+      [ "top", "structdyn__arena.html#af6a8621205a903f11819ce5a2471422c", null ]
+    ] ],
+    [ "arena", "structarena.html", [
+      [ "buf", "structarena.html#a257924809df1a067caa5a7c798b59913", null ],
+      [ "size", "structarena.html#ad43326ab5c17ca16d59b5eeb34a25303", null ],
+      [ "top", "structarena.html#ade1712c9e2266607fac772eb4140815e", null ]
+    ] ],
     [ "dyn_arena_get", "group__arena.html#gaae751bba3f7ac5dab1f32e3701213998", null ],
     [ "Arena", "group__arena.html#gaa3c04ba804275765a4e49c9872d46a25", null ],
     [ "DynArena", "group__arena.html#ga87592162b834e5e3424de774f8cb8eb3", null ],

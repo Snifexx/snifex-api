@@ -1,0 +1,243 @@
+\doxysection{Vector}
+\hypertarget{group__vector}{}\label{group__vector}\index{Vector@{Vector}}
+
+
+General type dynamically-\/growing arrays.  
+
+
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{Define\+Vec}}(t)
+\begin{DoxyCompactList}\small\item\em Macro to declare a specifically typed Vector. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(t)~Vec\+\_\+\#\#t
+\begin{DoxyCompactList}\small\item\em Macro to get the struct type of a vector of {\ttfamily t}s. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga85377c64c46343c4dbf05a73724db8a6}{vec\+\_\+create}}(t,  init\+\_\+cap)
+\begin{DoxyCompactList}\small\item\em Create a vector. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga98ce1bacc1d60cd65f2c0ba9f61840d3}{vec\+\_\+from}}(t,  item1, ...)
+\begin{DoxyCompactList}\small\item\em Create a vector. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\+\_\+idx}}(vec,  i)
+\item 
+\Hypertarget{group__vector_ga8658b8a80e25d259520ed4cd4adf1729}\label{group__vector_ga8658b8a80e25d259520ed4cd4adf1729} 
+\#define {\bfseries vec\+\_\+last}(vec)~vec\+\_\+idx((vec), veci\+\_\+vec.\+len -\/ 1);
+\item 
+\#define \mbox{\hyperlink{group__vector_gacf1c58bf560b4b89d60091e093bc5d88}{vec\+\_\+push}}(vec\+\_\+ptr,  val)
+\item 
+\#define \mbox{\hyperlink{group__vector_ga58a40fa5257bab64d1fd6f7046d30e0e}{vec\+\_\+pop}}(vec\+\_\+ptr)
+\item 
+\#define \mbox{\hyperlink{group__vector_ga06b74abb56b0226f908d1157353176e3}{vec\+\_\+append}}(front\+\_\+ptr,  back)
+\item 
+\#define \mbox{\hyperlink{group__vector_ga944fa232b956cf6561b3fc242da0d200}{vec\+\_\+swap\+\_\+remove}}(vec\+\_\+ptr,  idx)
+\item 
+\Hypertarget{group__vector_ga8abddb0def71d192a4cafdca99a71729}\label{group__vector_ga8abddb0def71d192a4cafdca99a71729} 
+\#define {\bfseries vec\+\_\+free}(vec\+\_\+ptr)~free((vec\+\_\+ptr)-\/$>$ptr)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+General type dynamically-\/growing arrays. 
+
+Data structure that owns its own data. Basically... my implementation of a dynamically-\/growing array, Array\+List, Vector or however you might call it.
+
+All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}} 
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}\label{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef} 
+\index{Vector@{Vector}!DefineVec@{DefineVec}}
+\index{DefineVec@{DefineVec}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{DefineVec}{DefineVec}}
+{\footnotesize\ttfamily \#define Define\+Vec(\begin{DoxyParamCaption}\item[{}]{t }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{\ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ t*\ ptr;\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ cap;\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ len;\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ Vec\_\#\#t}
+
+\end{DoxyCode}
+
+
+Macro to declare a specifically typed Vector. 
+
+The way I implemented generic vectors is by having macro work on vectors instead of functions. Instead of the stb-\/db approach of having hidden metadata, I prefer packing the metadata with the data itself, so that using different allocating strategies is easier, E.\+G. \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}.
+
+The downside is having to declare all the vector types used in the project. This macro makes that process stupid simple. Take a look at this example\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{DefineVec}}(\textcolor{keywordtype}{int});}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int}\ main()\ \{}
+\DoxyCodeLine{\ \ \mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(\textcolor{keywordtype}{int})\ vector;}
+\DoxyCodeLine{\ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+-\/ \doxylink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec} 
+\end{DoxySeeAlso}
+\Hypertarget{group__vector_ga21ec81b33f2746d76b94b77c7f990379}\label{group__vector_ga21ec81b33f2746d76b94b77c7f990379} 
+\index{Vector@{Vector}!Vec@{Vec}}
+\index{Vec@{Vec}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{Vec}{Vec}}
+{\footnotesize\ttfamily \#define Vec(\begin{DoxyParamCaption}\item[{}]{t }\end{DoxyParamCaption})~Vec\+\_\+\#\#t}
+
+
+
+Macro to get the struct type of a vector of {\ttfamily t}s. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxylink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{Define\+Vec} for more info 
+\end{DoxySeeAlso}
+\Hypertarget{group__vector_ga06b74abb56b0226f908d1157353176e3}\label{group__vector_ga06b74abb56b0226f908d1157353176e3} 
+\index{Vector@{Vector}!vec\_append@{vec\_append}}
+\index{vec\_append@{vec\_append}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_append}{vec\_append}}
+{\footnotesize\ttfamily \#define vec\+\_\+append(\begin{DoxyParamCaption}\item[{}]{front\+\_\+ptr,  }\item[{}]{back }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keywordflow}{do}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_typeof(front\_ptr)\ veca\_front\_ptr\ =\ (front\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_typeof(*front\_ptr)\ veca\_back\ =\ (back);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ assert(veca\_front\_ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ if\ (veca\_front\_ptr-\/>len\ +\ veca\_back.len\ >\ veca\_front\_ptr-\/>cap)\ \{\ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ veca\_front\_ptr-\/>cap\ +=\ veca\_back.len;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ veca\_front\_ptr-\/>cap\ *=\ 1.5;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ veca\_front\_ptr-\/>ptr\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ realloc(veca\_front\_ptr-\/>ptr,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ veca\_front\_ptr-\/>cap\ *\ \textcolor{keyword}{sizeof}(*veca\_front\_ptr-\/>ptr));\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ assert(veca\_front\_ptr-\/>ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ memcpy(veca\_front\_ptr-\/>ptr\ +\ veca\_front\_ptr-\/>len,\ veca\_back.ptr,\ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ veca\_back.len\ *\ \textcolor{keyword}{sizeof}(*veca\_front\_ptr-\/>ptr));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ veca\_front\_ptr-\/>len\ +=\ veca\_back.len;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ \textcolor{keywordflow}{while}\ (0)}
+
+\end{DoxyCode}
+\Hypertarget{group__vector_ga85377c64c46343c4dbf05a73724db8a6}\label{group__vector_ga85377c64c46343c4dbf05a73724db8a6} 
+\index{Vector@{Vector}!vec\_create@{vec\_create}}
+\index{vec\_create@{vec\_create}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_create}{vec\_create}}
+{\footnotesize\ttfamily \#define vec\+\_\+create(\begin{DoxyParamCaption}\item[{}]{t,  }\item[{}]{init\+\_\+cap }\end{DoxyParamCaption})}
+
+
+
+Create a vector. 
+
+Create a vector of {\ttfamily t}s with an initial capacity of {\ttfamily init\+\_\+cap}
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em init\+\_\+cap} & The initial capacity of the vector \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__vector_ga98ce1bacc1d60cd65f2c0ba9f61840d3}\label{group__vector_ga98ce1bacc1d60cd65f2c0ba9f61840d3} 
+\index{Vector@{Vector}!vec\_from@{vec\_from}}
+\index{vec\_from@{vec\_from}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_from}{vec\_from}}
+{\footnotesize\ttfamily \#define vec\+\_\+from(\begin{DoxyParamCaption}\item[{}]{t,  }\item[{}]{item1,  }\item[{}]{... }\end{DoxyParamCaption})}
+
+
+
+Create a vector. 
+
+Create a vector of {\ttfamily t}s with an initial capacity of {\ttfamily init\+\_\+cap}
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em init\+\_\+cap} & The initial capacity of the vector \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}\label{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378} 
+\index{Vector@{Vector}!vec\_idx@{vec\_idx}}
+\index{vec\_idx@{vec\_idx}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_idx}{vec\_idx}}
+{\footnotesize\ttfamily \#define vec\+\_\+idx(\begin{DoxyParamCaption}\item[{}]{vec,  }\item[{}]{i }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_typeof(vec)\ veci\_vec\ =\ (vec);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ veci\_i\ =\ (i);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ assert(veci\_vec.len\ >\ 0\ \&\&\ veci\_i\ <\ veci\_vec.len\ \&\&\ veci\_vec.ptr\ !=\ NULL);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \&(veci\_vec).ptr[veci\_i];\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \})}
+
+\end{DoxyCode}
+\Hypertarget{group__vector_ga58a40fa5257bab64d1fd6f7046d30e0e}\label{group__vector_ga58a40fa5257bab64d1fd6f7046d30e0e} 
+\index{Vector@{Vector}!vec\_pop@{vec\_pop}}
+\index{vec\_pop@{vec\_pop}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_pop}{vec\_pop}}
+{\footnotesize\ttfamily \#define vec\+\_\+pop(\begin{DoxyParamCaption}\item[{}]{vec\+\_\+ptr }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keywordflow}{do}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_typeof(vec\_ptr)\ vecpop\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ assert(vecpop\_vec\_ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ if\ (vecpop\_vec\_ptr-\/>len\ >\ 0)\ vecpop\_vec\_ptr-\/>len\ -\/=\ 1;\ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ while\ (0)}
+
+\end{DoxyCode}
+\Hypertarget{group__vector_gacf1c58bf560b4b89d60091e093bc5d88}\label{group__vector_gacf1c58bf560b4b89d60091e093bc5d88} 
+\index{Vector@{Vector}!vec\_push@{vec\_push}}
+\index{vec\_push@{vec\_push}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_push}{vec\_push}}
+{\footnotesize\ttfamily \#define vec\+\_\+push(\begin{DoxyParamCaption}\item[{}]{vec\+\_\+ptr,  }\item[{}]{val }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keywordflow}{do}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{const}\ \_\_typeof(*(vec\_ptr)-\/>ptr)\ vecp\_val\ =\ (val);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_typeof(vec\_ptr)\ vecp\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ assert(vecp\_vec\_ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ if\ (vecp\_vec\_ptr-\/>len\ +\ 1\ >\ vecp\_vec\_ptr-\/>cap)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ vecp\_vec\_ptr-\/>cap\ +=\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ vecp\_vec\_ptr-\/>cap\ *=\ 2;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ vecp\_vec\_ptr-\/>ptr\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ realloc(vecp\_vec\_ptr-\/>ptr,\ vecp\_vec\_ptr-\/>cap\ *\ \textcolor{keyword}{sizeof}(vecp\_val));\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ assert(vecp\_vec\_ptr-\/>ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ *(vecp\_vec\_ptr-\/>ptr\ +\ vecp\_vec\_ptr-\/>len)\ =\ vecp\_val;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ vecp\_vec\_ptr-\/>len\ +=\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ \textcolor{keywordflow}{while}\ (0)}
+
+\end{DoxyCode}
+\Hypertarget{group__vector_ga944fa232b956cf6561b3fc242da0d200}\label{group__vector_ga944fa232b956cf6561b3fc242da0d200} 
+\index{Vector@{Vector}!vec\_swap\_remove@{vec\_swap\_remove}}
+\index{vec\_swap\_remove@{vec\_swap\_remove}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_swap\_remove}{vec\_swap\_remove}}
+{\footnotesize\ttfamily \#define vec\+\_\+swap\+\_\+remove(\begin{DoxyParamCaption}\item[{}]{vec\+\_\+ptr,  }\item[{}]{idx }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keywordflow}{do}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_auto\_type\ vecsr\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ vecsr\_idx\ =\ (idx);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ assert(vecsr\_vec\_ptr\ !=\ NULL\ \&\&\ vecsr\_vec\_ptr-\/>len\ >\ 0);\ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_auto\_type\ remove\_at\ =\ vec\_idx(*vecsr\_vec\_ptr,\ vecsr\_idx);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_auto\_type\ to\_replace\ =\ *vec\_last(*vecsr\_vec\_ptr);\ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ *remove\_at\ =\ to\_replace;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ vecsr\_vec\_ptr-\/>len-\/-\/;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ \textcolor{keywordflow}{while}\ (0)}
+
+\end{DoxyCode}
