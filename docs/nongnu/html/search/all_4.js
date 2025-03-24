@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['len_0',['len',['../structstring.html#aa6bcf0353fd5cf2f374a9b1dd0e4a73a',1,'string']]]
+  ['entry_0',['Entry',['../group__dict.html#ga7c51d2eb1ed17eba744aa6f43b8b2d5e',1,'snifex-api.h']]]
 ];

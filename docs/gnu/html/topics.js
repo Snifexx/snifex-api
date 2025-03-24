@@ -5,5 +5,5 @@ var topics =
     [ "Arena", "group__arena.html", "group__arena" ],
     [ "Vector", "group__vector.html", "group__vector" ],
     [ "String", "group__string.html", "group__string" ],
-    [ "Dictionary", "group__dict.html", null ]
+    [ "Dictionary", "group__dict.html", "group__dict" ]
 ];
