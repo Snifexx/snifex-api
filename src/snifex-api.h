@@ -142,7 +142,7 @@ static inline bool __snifex_api_is_power_of_two(const size_t x);
 
 /// @}
 
-/// @defgroup arena Arenas
+/// @defgroup arena Arena
 /// @brief Fixed-sized and growing arenas
 ///
 /// My implementation of an Arena allocator.
@@ -663,7 +663,7 @@ extern void arena_free(Arena* const arena);
 
 /// @}
 
-/// @defgroup string Strings
+/// @defgroup string String
 /// @brief Just... Strings 🙂
 ///
 /// All examples are <a
@@ -681,7 +681,7 @@ extern void arena_free(Arena* const arena);
 /// recommended way is using an arena.
 ///
 /// @note
-/// @ref string are NOT zero tailing (since they're string-views anyways)
+/// These strings are NOT zero tailing (since they're string-views anyways)
 typedef struct string {
   char* ptr; ///< Internal string buffer 
   size_t len; ///< Length of string
@@ -755,14 +755,19 @@ extern string str_trim(const string str);
 
 /// @}
 
-//-
-//-  Dictionaries / Hashmaps
-//-
+/// @defgroup dict Dictionary
+/// @brief General type hashmaps
+///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+/// @{
 
+/// @cond EXCLUDE_DOC
 typedef struct bucket {
   uint64_t hash;
   size_t index;
 } Bucket;
+/// @endcond
 
 #define Entry(K, V) Entry_##K##_##V
 #define Dictionary(K, V) Dictionary_##K##_##V
@@ -1010,6 +1015,7 @@ void snifex_api_dict_grow(Bucket** buckets,
   } while (0)
 #endif  // SNIFEX_API_GNU_EXTENSIONS
 
+/// @}
 #endif  // SNIFEX_API_H
 
 // IMPLEMENTATION

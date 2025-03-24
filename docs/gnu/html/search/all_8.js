@@ -13,6 +13,6 @@ var searchData=
   ['str_5fslice_10',['str_slice',['../group__string.html#ga4a8505f75a2b6d26de673670a08b1c10',1,'snifex-api.h']]],
   ['str_5ftrim_11',['str_trim',['../group__string.html#ga6b29d7c310951916aa4a75be0cf85b96',1,'snifex-api.h']]],
   ['string_12',['string',['../structstring.html',1,'string'],['../group__string.html#ga63e2e3ee7db5274c6a3929edfc07c6c9',1,'string:&#160;snifex-api.h']]],
-  ['strings_13',['Strings',['../group__string.html',1,'']]],
+  ['string_13',['String',['../group__string.html',1,'']]],
   ['strlit_14',['strlit',['../group__string.html#ga22cf0f5934dd718b3b38529740b17571',1,'snifex-api.h']]]
 ];

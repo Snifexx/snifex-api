@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['arenas_0',['Arenas',['../group__arena.html',1,'']]]
+  ['arena_0',['Arena',['../group__arena.html',1,'']]]
 ];

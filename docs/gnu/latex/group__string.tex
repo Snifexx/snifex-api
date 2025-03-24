@@ -1,5 +1,5 @@
-\doxysection{Strings}
-\hypertarget{group__string}{}\label{group__string}\index{Strings@{Strings}}
+\doxysection{String}
+\hypertarget{group__string}{}\label{group__string}\index{String@{String}}
 
 
 Just... Strings 🙂  
@@ -23,7 +23,7 @@ typedef struct string \mbox{\hyperlink{group__string_ga63e2e3ee7db5274c6a3929edf
 \item 
 \Hypertarget{group__string_ga22cf0f5934dd718b3b38529740b17571}\label{group__string_ga22cf0f5934dd718b3b38529740b17571} 
 \mbox{\hyperlink{structstring}{string}} {\bfseries strlit} (char const \texorpdfstring{$\ast$}{*}s)
-\begin{DoxyCompactList}\small\item\em Returns a string literal (char const\texorpdfstring{$\ast$}{*}) to a \doxylink{group__string}{Strings} format. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Returns a string literal (char const\texorpdfstring{$\ast$}{*}) to a \doxylink{group__string}{String} format. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{structstring}{string}} \mbox{\hyperlink{group__string_gadc27d8af78d1abfe47308d740d1ac552}{str\+\_\+alloc}} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}}, const size\+\_\+t len)
 \begin{DoxyCompactList}\small\item\em Allocates a string of length {\ttfamily len} in an arena. \end{DoxyCompactList}\item 
 char \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{group__string_ga02ab529ec0eede2732f7e0bf824a6645}{str\+\_\+idx}} (const \mbox{\hyperlink{structstring}{string}} str, const size\+\_\+t i)
@@ -54,8 +54,8 @@ All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examp
 
 \doxysubsection{Typedef Documentation}
 \Hypertarget{group__string_ga63e2e3ee7db5274c6a3929edfc07c6c9}\label{group__string_ga63e2e3ee7db5274c6a3929edfc07c6c9} 
-\index{Strings@{Strings}!string@{string}}
-\index{string@{string}!Strings@{Strings}}
+\index{String@{String}!string@{string}}
+\index{string@{string}!String@{String}}
 \doxysubsubsection{\texorpdfstring{string}{string}}
 {\footnotesize\ttfamily typedef struct string string}
 
@@ -70,14 +70,14 @@ This a simple sized string view... Nothing else. For the uninitiated\+:
 \end{DoxyItemize}
 
 \begin{DoxyNote}{Note}
-\doxylink{group__string}{Strings} are NOT zero tailing (since they\textquotesingle{}re string-\/views anyways) 
+These strings are NOT zero tailing (since they\textquotesingle{}re string-\/views anyways) 
 \end{DoxyNote}
 
 
 \doxysubsection{Function Documentation}
 \Hypertarget{group__string_gadc27d8af78d1abfe47308d740d1ac552}\label{group__string_gadc27d8af78d1abfe47308d740d1ac552} 
-\index{Strings@{Strings}!str\_alloc@{str\_alloc}}
-\index{str\_alloc@{str\_alloc}!Strings@{Strings}}
+\index{String@{String}!str\_alloc@{str\_alloc}}
+\index{str\_alloc@{str\_alloc}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_alloc()}{str\_alloc()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+alloc (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const size\+\_\+t}]{len }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
 
@@ -89,8 +89,8 @@ Allocates a string of length {\ttfamily len} in an arena.
 {\ttfamily arena != NULL} 
 \end{DoxyPrecond}
 \Hypertarget{group__string_gacc342cc4cb474215ada342b9b2d65b8a}\label{group__string_gacc342cc4cb474215ada342b9b2d65b8a} 
-\index{Strings@{Strings}!str\_concat@{str\_concat}}
-\index{str\_concat@{str\_concat}!Strings@{Strings}}
+\index{String@{String}!str\_concat@{str\_concat}}
+\index{str\_concat@{str\_concat}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_concat()}{str\_concat()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+concat (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const \mbox{\hyperlink{structstring}{string}}}]{a,  }\item[{const \mbox{\hyperlink{structstring}{string}}}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
 
@@ -108,8 +108,8 @@ If we are not careful we could execute memcpy(ptr, NULL, 0), where ptr is guaran
 \href{https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0}{\texttt{ https\+://stackoverflow.\+com/questions/5243012/is-\/it-\/guaranteed-\/to-\/be-\/safe-\/to-\/perform-\/memcpy0-\/0-\/0}} 
 \end{DoxySeeAlso}
 \Hypertarget{group__string_ga8c7ecc1d2a88f9327e727b1def4002ad}\label{group__string_ga8c7ecc1d2a88f9327e727b1def4002ad} 
-\index{Strings@{Strings}!str\_copy@{str\_copy}}
-\index{str\_copy@{str\_copy}!Strings@{Strings}}
+\index{String@{String}!str\_copy@{str\_copy}}
+\index{str\_copy@{str\_copy}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_copy()}{str\_copy()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+copy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const \mbox{\hyperlink{structstring}{string}}}]{str }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
 
@@ -121,8 +121,8 @@ Returns copy of a string.
 {\ttfamily arena != NULL} 
 \end{DoxyPrecond}
 \Hypertarget{group__string_ga5724c9294f7d8aeb114b4dc901333a11}\label{group__string_ga5724c9294f7d8aeb114b4dc901333a11} 
-\index{Strings@{Strings}!str\_eq@{str\_eq}}
-\index{str\_eq@{str\_eq}!Strings@{Strings}}
+\index{String@{String}!str\_eq@{str\_eq}}
+\index{str\_eq@{str\_eq}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_eq()}{str\_eq()}}
 {\footnotesize\ttfamily bool str\+\_\+eq (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structstring}{string}}}]{a,  }\item[{const \mbox{\hyperlink{structstring}{string}}}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
 
@@ -137,8 +137,8 @@ Short-\/circuing if the length is equal and is 0. This is because memcmp with NU
 \doxylink{group__string_ga9e2729b7029bf2407d722c8acbe5a45e}{str\+\_\+join} for more info 
 \end{DoxySeeAlso}
 \Hypertarget{group__string_gaa3b530e0395a6c05d9e7fe641a007001}\label{group__string_gaa3b530e0395a6c05d9e7fe641a007001} 
-\index{Strings@{Strings}!str\_fmt@{str\_fmt}}
-\index{str\_fmt@{str\_fmt}!Strings@{Strings}}
+\index{String@{String}!str\_fmt@{str\_fmt}}
+\index{str\_fmt@{str\_fmt}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_fmt()}{str\_fmt()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+fmt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
 
@@ -152,8 +152,8 @@ Returns a formatted string.
 {\ttfamily fmt != NULL} 
 \end{DoxyPrecond}
 \Hypertarget{group__string_ga02ab529ec0eede2732f7e0bf824a6645}\label{group__string_ga02ab529ec0eede2732f7e0bf824a6645} 
-\index{Strings@{Strings}!str\_idx@{str\_idx}}
-\index{str\_idx@{str\_idx}!Strings@{Strings}}
+\index{String@{String}!str\_idx@{str\_idx}}
+\index{str\_idx@{str\_idx}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_idx()}{str\_idx()}}
 {\footnotesize\ttfamily char \texorpdfstring{$\ast$}{*}const str\+\_\+idx (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structstring}{string}}}]{str,  }\item[{const size\+\_\+t}]{i }\end{DoxyParamCaption})}
 
@@ -169,8 +169,8 @@ Gets pointer to character at specific index.
 {\ttfamily str.\+ptr != NULL} which should be true if the user did not mess with the {\ttfamily ptr} directly 
 \end{DoxyPrecond}
 \Hypertarget{group__string_gaa056a9531cde5296d71c6065501aae12}\label{group__string_gaa056a9531cde5296d71c6065501aae12} 
-\index{Strings@{Strings}!str\_is\_empty@{str\_is\_empty}}
-\index{str\_is\_empty@{str\_is\_empty}!Strings@{Strings}}
+\index{String@{String}!str\_is\_empty@{str\_is\_empty}}
+\index{str\_is\_empty@{str\_is\_empty}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_is\_empty()}{str\_is\_empty()}}
 {\footnotesize\ttfamily bool str\+\_\+is\+\_\+empty (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structstring}{string}}}]{str }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
 
@@ -178,9 +178,9 @@ Gets pointer to character at specific index.
 
 Returns whether the string is empty. 
 
-An empty \doxylink{group__string}{Strings} means that either the length is 0 or the internal {\ttfamily ptr} is NULL \Hypertarget{group__string_ga9e2729b7029bf2407d722c8acbe5a45e}\label{group__string_ga9e2729b7029bf2407d722c8acbe5a45e} 
-\index{Strings@{Strings}!str\_join@{str\_join}}
-\index{str\_join@{str\_join}!Strings@{Strings}}
+An empty \doxylink{group__string}{String} means that either the length is 0 or the internal {\ttfamily ptr} is NULL \Hypertarget{group__string_ga9e2729b7029bf2407d722c8acbe5a45e}\label{group__string_ga9e2729b7029bf2407d722c8acbe5a45e} 
+\index{String@{String}!str\_join@{str\_join}}
+\index{str\_join@{str\_join}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_join()}{str\_join()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+join (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{\mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(\mbox{\hyperlink{structstring}{string}})}]{to\+\_\+join }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
 
@@ -192,8 +192,8 @@ Joins a list of strings together and returns the returning string.
 {\ttfamily arena != NULL} 
 \end{DoxyPrecond}
 \Hypertarget{group__string_ga4a8505f75a2b6d26de673670a08b1c10}\label{group__string_ga4a8505f75a2b6d26de673670a08b1c10} 
-\index{Strings@{Strings}!str\_slice@{str\_slice}}
-\index{str\_slice@{str\_slice}!Strings@{Strings}}
+\index{String@{String}!str\_slice@{str\_slice}}
+\index{str\_slice@{str\_slice}!String@{String}}
 \doxysubsubsection{\texorpdfstring{str\_slice()}{str\_slice()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+slice (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structstring}{string}}}]{str,  }\item[{const size\+\_\+t}]{start,  }\item[{const size\+\_\+t}]{end }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
 

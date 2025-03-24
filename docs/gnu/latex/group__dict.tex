@@ -1,0 +1,176 @@
+\doxysection{Dictionary}
+\hypertarget{group__dict}{}\label{group__dict}\index{Dictionary@{Dictionary}}
+
+
+General type hashmaps.  
+
+
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{group__dict_ga7c51d2eb1ed17eba744aa6f43b8b2d5e}\label{group__dict_ga7c51d2eb1ed17eba744aa6f43b8b2d5e} 
+\#define {\bfseries Entry}(K,  V)~Entry\+\_\+\#\#K\#\#\+\_\+\#\#V
+\item 
+\Hypertarget{group__dict_ga5994d163fa36ffea9e49f5406c6cdc53}\label{group__dict_ga5994d163fa36ffea9e49f5406c6cdc53} 
+\#define {\bfseries Dictionary}(K,  V)~Dictionary\+\_\+\#\#K\#\#\+\_\+\#\#V
+\item 
+\Hypertarget{group__dict_ga74f90b242defcb0f85906f2ae2e34e5a}\label{group__dict_ga74f90b242defcb0f85906f2ae2e34e5a} 
+\#define {\bfseries Vec\+Entry}(K,  V)~Vec\+\_\+\+Entry\+\_\+\#\#K\#\#\+\_\+\#\#V
+\item 
+\#define \mbox{\hyperlink{group__dict_ga54109dc4f962d4329973b14d22e3632b}{Define\+Dict}}(K,  V)
+\item 
+\Hypertarget{group__dict_ga0f9e75b044e5378c50d25b65fd7f58c7}\label{group__dict_ga0f9e75b044e5378c50d25b65fd7f58c7} 
+\#define {\bfseries hash\+\_\+num}(in\+\_\+ptr,  inlen,  k0\+\_\+u64,  k1\+\_\+u64)~  (snifex\+\_\+api\+\_\+hash\+\_\+num\+\_\+func(in\+\_\+ptr, inlen))
+\item 
+\#define \mbox{\hyperlink{group__dict_ga7a2ac91ec01b4145bc9ccfd99a635b06}{dict\+\_\+create}}(K,  V)
+\item 
+\Hypertarget{group__dict_ga9f846bb059511698e5eebec9350f6b29}\label{group__dict_ga9f846bb059511698e5eebec9350f6b29} 
+\#define {\bfseries dict\+\_\+put}(dict\+\_\+ptr,  k,  v,  old\+\_\+value\+\_\+ptr)
+\item 
+\#define \mbox{\hyperlink{group__dict_gad5f11ed679ff546c93c979924f2b7df0}{dict\+\_\+get}}(dict\+\_\+ptr,  k)
+\item 
+\#define \mbox{\hyperlink{group__dict_gafe0ec7ef3a1c7b368fcdfde8755d8fc1}{dict\+\_\+del}}(dict\+\_\+ptr,  k)
+\item 
+\#define \mbox{\hyperlink{group__dict_ga0e4265999e32051929e83ecfa7a86af1}{dict\+\_\+free}}(dict\+\_\+ptr)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{group__dict_ga623c8c6be7cec35175d10ab755b9a4cb}\label{group__dict_ga623c8c6be7cec35175d10ab755b9a4cb} 
+uint64\+\_\+t {\bfseries snifex\+\_\+api\+\_\+hash\+\_\+num\+\_\+func} (const void \texorpdfstring{$\ast$}{*}in, const size\+\_\+t inlen)
+\item 
+\Hypertarget{group__dict_gafc3f0da3de76d6280c634e9c40d9ad82}\label{group__dict_gafc3f0da3de76d6280c634e9c40d9ad82} 
+Bucket \texorpdfstring{$\ast$}{*} {\bfseries snifex\+\_\+api\+\_\+find\+\_\+bucket} (Bucket \texorpdfstring{$\ast$}{*}buckets, size\+\_\+t bucket\+\_\+cap, void \texorpdfstring{$\ast$}{*}key, uint64\+\_\+t hashed\+\_\+key, void \texorpdfstring{$\ast$}{*}entries, size\+\_\+t entry\+\_\+size, size\+\_\+t key\+\_\+size, bool include\+\_\+tombs)
+\item 
+\Hypertarget{group__dict_ga587cf80addf08814c00559f4c3e156ad}\label{group__dict_ga587cf80addf08814c00559f4c3e156ad} 
+void {\bfseries snifex\+\_\+api\+\_\+dict\+\_\+grow} (Bucket \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}buckets, size\+\_\+t \texorpdfstring{$\ast$}{*}bucket\+\_\+cap, size\+\_\+t \texorpdfstring{$\ast$}{*}bucket\+\_\+len)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+General type hashmaps. 
+
+All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}} 
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{group__dict_ga54109dc4f962d4329973b14d22e3632b}\label{group__dict_ga54109dc4f962d4329973b14d22e3632b} 
+\index{Dictionary@{Dictionary}!DefineDict@{DefineDict}}
+\index{DefineDict@{DefineDict}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{DefineDict}{DefineDict}}
+{\footnotesize\ttfamily \#define Define\+Dict(\begin{DoxyParamCaption}\item[{}]{K,  }\item[{}]{V }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ K\ key;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ V\ value;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ Entry(K,\ V);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ DefineVec(Entry\_\#\#K\#\#\_\#\#V);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ VecEntry(K,\ V)\ entries;\ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ Bucket*\ buckets;\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ b\_len;\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ b\_cap;\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ uint64\_t\ key[2];\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ Dictionary(K,\ V);}
+
+\end{DoxyCode}
+\Hypertarget{group__dict_ga7a2ac91ec01b4145bc9ccfd99a635b06}\label{group__dict_ga7a2ac91ec01b4145bc9ccfd99a635b06} 
+\index{Dictionary@{Dictionary}!dict\_create@{dict\_create}}
+\index{dict\_create@{dict\_create}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_create}{dict\_create}}
+{\footnotesize\ttfamily \#define dict\+\_\+create(\begin{DoxyParamCaption}\item[{}]{K,  }\item[{}]{V }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ ((Dictionary(K,\ V))\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ .entries\ =\ \mbox{\hyperlink{group__vector_ga85377c64c46343c4dbf05a73724db8a6}{vec\_create}}(Entry(K,\ V),\ 8),\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ .buckets\ =\ calloc(8,\ \textcolor{keyword}{sizeof}(Bucket)),\ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ .b\_cap\ =\ 8,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ .b\_len\ =\ 0,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ .key\ =\ \{0,\ 0\},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \})}
+
+\end{DoxyCode}
+\Hypertarget{group__dict_gafe0ec7ef3a1c7b368fcdfde8755d8fc1}\label{group__dict_gafe0ec7ef3a1c7b368fcdfde8755d8fc1} 
+\index{Dictionary@{Dictionary}!dict\_del@{dict\_del}}
+\index{dict\_del@{dict\_del}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_del}{dict\_del}}
+{\footnotesize\ttfamily \#define dict\+\_\+del(\begin{DoxyParamCaption}\item[{}]{dict\+\_\+ptr,  }\item[{}]{k }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_auto\_type\ dd\_dict\_ptr\ =\ (dict\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_typeof(dd\_dict\_ptr-\/>entries.ptr-\/>key)\ dd\_k\ =\ (k);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ if\ (dd\_dict\_ptr-\/>b\_len\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keyword}{false};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ Bucket*\ b\ =\ snifex\_api\_find\_bucket(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>buckets,\ dd\_dict\_ptr-\/>b\_cap,\ \&dd\_k,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ hash\_num(\&dd\_k,\ \textcolor{keyword}{sizeof}(dd\_k),\ dd\_dict\_ptr-\/>key[0],\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>key[1]),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>entries.ptr,\ \textcolor{keyword}{sizeof}(*(dd\_dict\_ptr-\/>entries.ptr)),\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{sizeof}(dd\_dict\_ptr-\/>entries.ptr-\/>key),\ \textcolor{keyword}{false});\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ if\ (b-\/>index\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keyword}{false};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Remove\ and\ place\ tombstone\ */}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ vec\_swap\_remove(\&dd\_dict\_ptr-\/>entries,\ b-\/>index\ -\/\ 2);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ b-\/>index\ =\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keyword}{true};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \})}
+
+\end{DoxyCode}
+\Hypertarget{group__dict_ga0e4265999e32051929e83ecfa7a86af1}\label{group__dict_ga0e4265999e32051929e83ecfa7a86af1} 
+\index{Dictionary@{Dictionary}!dict\_free@{dict\_free}}
+\index{dict\_free@{dict\_free}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_free}{dict\_free}}
+{\footnotesize\ttfamily \#define dict\+\_\+free(\begin{DoxyParamCaption}\item[{}]{dict\+\_\+ptr }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keywordflow}{do}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_auto\_type\ df\_dict\_ptr\ =\ (dict\_ptr);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ free(df\_dict\_ptr-\/>buckets);\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ vec\_free(\&df\_dict\_ptr-\/>entries);\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ \textcolor{keywordflow}{while}\ (0)}
+
+\end{DoxyCode}
+\Hypertarget{group__dict_gad5f11ed679ff546c93c979924f2b7df0}\label{group__dict_gad5f11ed679ff546c93c979924f2b7df0} 
+\index{Dictionary@{Dictionary}!dict\_get@{dict\_get}}
+\index{dict\_get@{dict\_get}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_get}{dict\_get}}
+{\footnotesize\ttfamily \#define dict\+\_\+get(\begin{DoxyParamCaption}\item[{}]{dict\+\_\+ptr,  }\item[{}]{k }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_auto\_type\ dg\_dict\_ptr\ =\ (dict\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_typeof(dg\_dict\_ptr-\/>entries.ptr-\/>key)\ dg\_k\ =\ (k);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \_\_typeof(\&dg\_dict\_ptr-\/>entries.ptr-\/>value)\ res;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ if\ (dg\_dict\_ptr-\/>b\_len\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ res\ =\ NULL;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ Bucket*\ b\ =\ snifex\_api\_find\_bucket(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>buckets,\ dg\_dict\_ptr-\/>b\_cap,\ \&dg\_k,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ hash\_num(\&dg\_k,\ \textcolor{keyword}{sizeof}(dg\_k),\ dg\_dict\_ptr-\/>key[0],\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>key[1]),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>entries.ptr,\ \textcolor{keyword}{sizeof}(*(dg\_dict\_ptr-\/>entries.ptr)),\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{sizeof}(dg\_dict\_ptr-\/>entries.ptr-\/>key),\ \textcolor{keyword}{false});\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ if\ (b-\/>index\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ res\ =\ NULL;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ res\ =\ \&\mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(dg\_dict\_ptr-\/>entries,\ (b-\/>index\ -\/\ 2))-\/>value;\ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ res;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \})}
+
+\end{DoxyCode}
