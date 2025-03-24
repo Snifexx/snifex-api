@@ -14,7 +14,7 @@ It's an [stb single file header library](https://github.com/nothings/stb).
 I wrote documentation and generated it with [Doxygen](https://www.doxygen.nl).
 Github page available:
   - [Here](https://snifexx.github.io/snifex-api/) for GCC/Clang or any compiler with Gnu Extensions and `__GNUC__`,
-  - or [here](https://snifexx.github.io/snifex-api/nongnu) for any other non gnu compiler
+  - or [here](https://snifexx.github.io/snifex-api/nongnu) for any other non gnu compiler, or if `NO_GNU_SNIFEX_API_TESTS` macro is defined.
 
 ## Usage
 Since this is an stb file header it packs the header file with the implementations all in one. What does that mean?
