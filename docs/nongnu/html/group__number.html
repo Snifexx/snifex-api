@@ -114,17 +114,17 @@ $(function(){initNavTree('group__number.html',''); initResizable(); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:gab0edffd7b718be24b88cd29f560268ab" id="r_gab0edffd7b718be24b88cd29f560268ab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gab0edffd7b718be24b88cd29f560268ab">sign</a>(num)</td></tr>
-<tr class="memdesc:gab0edffd7b718be24b88cd29f560268ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the sign of a number.  <br /></td></tr>
-<tr class="separator:gab0edffd7b718be24b88cd29f560268ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1f8755bcd7c7f65dcc6ba1c914f498f0" id="r_ga1f8755bcd7c7f65dcc6ba1c914f498f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga1f8755bcd7c7f65dcc6ba1c914f498f0">sign</a>(lval_result_t,  t,  num)</td></tr>
+<tr class="memdesc:ga1f8755bcd7c7f65dcc6ba1c914f498f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the sign of a number.  <br /></td></tr>
+<tr class="separator:ga1f8755bcd7c7f65dcc6ba1c914f498f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Utilities for numbers. </p>
 <p>All examples are <a href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a></p>
 <p>All numerical functions and macros </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="gab0edffd7b718be24b88cd29f560268ab" name="gab0edffd7b718be24b88cd29f560268ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab0edffd7b718be24b88cd29f560268ab">&#9670;&#160;</a></span>sign</h2>
+<a id="ga1f8755bcd7c7f65dcc6ba1c914f498f0" name="ga1f8755bcd7c7f65dcc6ba1c914f498f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1f8755bcd7c7f65dcc6ba1c914f498f0">&#9670;&#160;</a></span>sign</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -132,8 +132,17 @@ Macros</h2></td></tr>
         <tr>
           <td class="memname">#define sign</td>
           <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">num</span></td><td>)</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">lval_result_t, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">t, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">num</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -141,7 +150,9 @@ Macros</h2></td></tr>
 <p>Get the sign of a number. </p>
 <p>Get the normalized sign of any numerical type or 0 </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">num</td><td>Any numerical type value </td></tr>
+    <tr><td class="paramname">lval_result_t</td><td>An lvalue of type <code>t</code> to which the result is going to be set </td></tr>
+    <tr><td class="paramname">t</td><td>The type of the <code>num</code> parameter </td></tr>
+    <tr><td class="paramname">num</td><td>Any numerical type value of type <code>t</code> </td></tr>
   </table>
   </dd>
 </dl>

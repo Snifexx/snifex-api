@@ -845,10 +845,10 @@
 \DoxyCodeLine{01169\ \ \ \textcolor{keywordtype}{size\_t}\ new\_len\ =\ 0;}
 \DoxyCodeLine{01170\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ to\_join.len;\ i++)\ \{}
 \DoxyCodeLine{01171\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_GNU\_EXTENSIONS}}
-\DoxyCodeLine{01172\ \ \ \ \ new\_len\ +=\ \mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(to\_join,\ i)-\/>len;}
+\DoxyCodeLine{01172\ \ \ \ \ new\_len\ +=\ \mbox{\hyperlink{group__vector_ga34057adbd9b0356ce0a766607286dbb9}{vec\_idx}}(to\_join,\ i)-\/>len;}
 \DoxyCodeLine{01173\ \textcolor{preprocessor}{\#else}}
 \DoxyCodeLine{01174\ \ \ \ \ \textcolor{keywordtype}{string}*\ str;}
-\DoxyCodeLine{01175\ \ \ \ \ \mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(str,\ \textcolor{keywordtype}{string},\ to\_join,\ i);}
+\DoxyCodeLine{01175\ \ \ \ \ \mbox{\hyperlink{group__vector_ga34057adbd9b0356ce0a766607286dbb9}{vec\_idx}}(str,\ \textcolor{keywordtype}{string},\ to\_join,\ i);}
 \DoxyCodeLine{01176\ \ \ \ \ new\_len\ +=\ str-\/>len;}
 \DoxyCodeLine{01177\ \textcolor{preprocessor}{\#endif}}
 \DoxyCodeLine{01178\ \ \ \}}
@@ -857,10 +857,10 @@
 \DoxyCodeLine{01181\ \ \ \textcolor{keywordtype}{char}*\ dest\ =\ buf.ptr;}
 \DoxyCodeLine{01182\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ to\_join.len;\ i++)\ \{}
 \DoxyCodeLine{01183\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_GNU\_EXTENSIONS}}
-\DoxyCodeLine{01184\ \ \ \ \ \textcolor{keywordtype}{string}\ str\ =\ *\mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(to\_join,\ i);}
+\DoxyCodeLine{01184\ \ \ \ \ \textcolor{keywordtype}{string}\ str\ =\ *\mbox{\hyperlink{group__vector_ga34057adbd9b0356ce0a766607286dbb9}{vec\_idx}}(to\_join,\ i);}
 \DoxyCodeLine{01185\ \textcolor{preprocessor}{\#else}}
 \DoxyCodeLine{01186\ \ \ \ \ \textcolor{keywordtype}{string}*\ str\_ptr;}
-\DoxyCodeLine{01187\ \ \ \ \ \mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(str\_ptr,\ \textcolor{keywordtype}{string},\ to\_join,\ i);}
+\DoxyCodeLine{01187\ \ \ \ \ \mbox{\hyperlink{group__vector_ga34057adbd9b0356ce0a766607286dbb9}{vec\_idx}}(str\_ptr,\ \textcolor{keywordtype}{string},\ to\_join,\ i);}
 \DoxyCodeLine{01188\ \ \ \ \ \textcolor{keywordtype}{string}\ str\ =\ *str\_ptr;}
 \DoxyCodeLine{01189\ \textcolor{preprocessor}{\#endif}}
 \DoxyCodeLine{01190\ \ \ \ \ memcpy(dest,\ str.ptr,\ str.len);}
