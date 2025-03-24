@@ -1,0 +1,44 @@
+\doxysection{Numbers}
+\hypertarget{group__number}{}\label{group__number}\index{Numbers@{Numbers}}
+
+
+Utilities for numbers.  
+
+
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group__number_ga1f8755bcd7c7f65dcc6ba1c914f498f0}{sign}}(lval\+\_\+result\+\_\+t,  t,  num)
+\begin{DoxyCompactList}\small\item\em Get the sign of a number. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Utilities for numbers. 
+
+All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}}
+
+All numerical functions and macros 
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{group__number_ga1f8755bcd7c7f65dcc6ba1c914f498f0}\label{group__number_ga1f8755bcd7c7f65dcc6ba1c914f498f0} 
+\index{Numbers@{Numbers}!sign@{sign}}
+\index{sign@{sign}!Numbers@{Numbers}}
+\doxysubsubsection{\texorpdfstring{sign}{sign}}
+{\footnotesize\ttfamily \#define sign(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+t,  }\item[{}]{t,  }\item[{}]{num }\end{DoxyParamCaption})}
+
+
+
+Get the sign of a number. 
+
+Get the normalized sign of any numerical type or 0 
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+t} & An lvalue of type {\ttfamily t} to which the result is going to be set \\
+\hline
+{\em t} & The type of the {\ttfamily num} parameter \\
+\hline
+{\em num} & Any numerical type value of type {\ttfamily t} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+-\/1 if {\ttfamily num} is negative, 1 if it\textquotesingle{}s positive, 0 if {\ttfamily num} is 0 
+\end{DoxyReturn}

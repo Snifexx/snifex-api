@@ -1,0 +1,33 @@
+\doxysection{arena Struct Reference}
+\hypertarget{structarena}{}\label{structarena}\index{arena@{arena}}
+
+
+A fixed-\/sized arena.  
+
+
+
+
+{\ttfamily \#include $<$snifex-\/api.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structarena_a257924809df1a067caa5a7c798b59913}\label{structarena_a257924809df1a067caa5a7c798b59913} 
+char \texorpdfstring{$\ast$}{*} {\bfseries buf}
+\begin{DoxyCompactList}\small\item\em The arena buffer. \end{DoxyCompactList}\item 
+\Hypertarget{structarena_ad43326ab5c17ca16d59b5eeb34a25303}\label{structarena_ad43326ab5c17ca16d59b5eeb34a25303} 
+size\+\_\+t {\bfseries size}
+\begin{DoxyCompactList}\small\item\em The size of the arena. \end{DoxyCompactList}\item 
+\Hypertarget{structarena_ade1712c9e2266607fac772eb4140815e}\label{structarena_ade1712c9e2266607fac772eb4140815e} 
+size\+\_\+t {\bfseries top}
+\begin{DoxyCompactList}\small\item\em The amount of allocated bytes, so the offset at which the newly allocated objects will start. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A fixed-\/sized arena. 
+
+A fixed-\/sized arena, that allocates a certain amount of memory when initialized and never gets reallocated again. Because of this allocations can fail when there is not enough memory allocated. Since reallocations never happen, \doxylink{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}{arena\+\_\+alloc} return pointers, which is VERY useful for strings or scratch arenas 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/snifex-\/api.\+h\end{DoxyCompactItemize}

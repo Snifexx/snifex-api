@@ -1,0 +1,33 @@
+\doxysection{dyn\+\_\+arena Struct Reference}
+\hypertarget{structdyn__arena}{}\label{structdyn__arena}\index{dyn\_arena@{dyn\_arena}}
+
+
+A dinamically growing arena.  
+
+
+
+
+{\ttfamily \#include $<$snifex-\/api.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}\label{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5} 
+char \texorpdfstring{$\ast$}{*} {\bfseries buf}
+\begin{DoxyCompactList}\small\item\em The arena buffer. \end{DoxyCompactList}\item 
+\Hypertarget{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}\label{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7} 
+size\+\_\+t {\bfseries cap}
+\begin{DoxyCompactList}\small\item\em The capacity of the arena, I.\+E. the amount of memory allocated. \end{DoxyCompactList}\item 
+\Hypertarget{structdyn__arena_af6a8621205a903f11819ce5a2471422c}\label{structdyn__arena_af6a8621205a903f11819ce5a2471422c} 
+size\+\_\+t {\bfseries top}
+\begin{DoxyCompactList}\small\item\em The amount of bytes used by allocated objects, so the offset at which the newly allocated objects will start. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A dinamically growing arena. 
+
+An arena that is not fixed-\/sized, and dynamically grows. Because of this property, \doxylink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\+\_\+arena\+\_\+alloc} does not return a pointer, it returns an index with which we can access the pointer temporarily (with \doxylink{group__arena_ga42cd5df57e48132617fffea48005b8b0}{dyn\+\_\+arena\+\_\+get}) 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/snifex-\/api.\+h\end{DoxyCompactItemize}

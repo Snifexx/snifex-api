@@ -1,0 +1,990 @@
+\doxysection{snifex-\/api.h}
+\hypertarget{snifex-api_8h_source}{}\label{snifex-api_8h_source}\index{src/snifex-\/api.h@{src/snifex-\/api.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ HEADER}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#ifndef\ SNIFEX\_API\_H}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#define\ SNIFEX\_API\_H}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <assert.h>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <ctype.h>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <stdarg.h>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#if\ !defined(NO\_GNU\_SNIFEX\_API\_TESTS)}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#if\ defined(\_\_GNUC\_\_)}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ Here\ "{}OS"{}\ is\ also\ used\ for\ non\ Operating\ Systems\ like\ the\ Linux\ Kernel.}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ I\ did\ so\ just\ to\ have\ them\ all\ in\ an\ encompassing\ group\ of\ macros.}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#if\ defined(\_\_ANDROID\_\_)}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ OS\_ANDROID}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#elif\ defined(\_\_gnu\_linux\_\_)}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ OS\_GNULINUX}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#elif\ defined(\_WIN64)}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#define\ OS\_WIN64}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ OS\_WIN}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#elif\ defined(\_WIN32)}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#define\ OS\_WIN32}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ OS\_WIN}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#elif\ defined(\_\_CYGWIN\_\_)}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#define\ OS\_CYGWIN}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#define\ OS\_WIN}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#elif\ defined(\_\_APPLE\_\_)\ \&\&\ defined(\_\_MACH\_\_)}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#define\ OS\_MACOSX}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#elif\ defined(\_\_FreeBSD\_\_)}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#define\ OS\_FREEBSD}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#if\ defined(\_\_linux\_\_)}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#define\ OS\_LINUX}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#if\ defined(unix)\ ||\ defined(\_\_unix\_\_)\ ||\ defined(\_\_unix)\ ||\ defined(OS\_MACOSX)}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#define\ OS\_UNIX}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#ifdef\ OS\_LINUX}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#include\ <execinfo.h>}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ OS\_LINUX}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#if\ defined(OS\_WIN)\ \&\&\ !defined(SNIFEX\_API\_NO\_ASSERT)}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#include\ <DbgHelp.h>}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#pragma\ comment(lib,\ "{}DbgHelp.lib"{})}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ OS\_WIN}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00072\ \textcolor{keywordtype}{void}\ \_\_snifex\_api\_assert\_fail(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ expr,}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ func);}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#ifndef\ SNIFEX\_API\_NO\_ASSERT}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#undef\ assert}}
+\DoxyCodeLine{00089\ \textcolor{preprocessor}{\#define\ assert(expr)\ \ \(\backslash\)}}
+\DoxyCodeLine{00090\ \textcolor{preprocessor}{\ \ ((expr)\ ?\ ((void)0)\ \(\backslash\)}}
+\DoxyCodeLine{00091\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ :\ \_\_snifex\_api\_assert\_fail(\#expr,\ \_\_FILE\_\_,\ \_\_LINE\_\_,\ \_\_func\_\_))}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !SNIFEX\_API\_NO\_ASSERT}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{comment}{//\ I\ use\ macros\ because\ I\ want\ these\ to\ be\ the\ same\ for\ all\ number\ types}}
+\DoxyCodeLine{00107\ \textcolor{comment}{//\ without\ having\ 10\ different\ implementation\ for\ each\ number\ type\ I\ use}}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\#define\ sign(num)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00117\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ s\_num\ =\ num;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00119\ \textcolor{preprocessor}{\ \ \ \ (s\_num\ >\ 0\ ?\ 1\ :\ ((s\_num\ <\ 0)\ ?\ -\/1\ :\ 0));\ \(\backslash\)}}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\#define\ sign(lval\_result\_t,\ t,\ num)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\ \ \ \ t\ s\_num\ =\ num;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\ \ \ \ lval\_result\_t\ =\ (s\_num\ >\ 0\ ?\ 1\ :\ ((s\_num\ <\ 0)\ ?\ -\/1\ :\ 0));\ \(\backslash\)}}
+\DoxyCodeLine{00136\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ \_\_snifex\_api\_is\_power\_of\_two(\textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ x);}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{comment}{//\ extern\ uint32\_t\ ceil\_powtwo(uint32\_t\ v);}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00162\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structdyn__arena}{dyn\_arena}}\ \{}
+\DoxyCodeLine{00163\ \ \ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}};\ \ \ }
+\DoxyCodeLine{00164\ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}};\ \ }
+\DoxyCodeLine{00166\ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structdyn__arena_af6a8621205a903f11819ce5a2471422c}{top}};\ \ }
+\DoxyCodeLine{00168\ \}\ \mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{DynArena}};}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00177\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structarena}{arena}}\ \{}
+\DoxyCodeLine{00178\ \ \ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{structarena_a257924809df1a067caa5a7c798b59913}{buf}};\ \ \ \ }
+\DoxyCodeLine{00179\ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structarena_ad43326ab5c17ca16d59b5eeb34a25303}{size}};\ \ }
+\DoxyCodeLine{00180\ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structarena_ade1712c9e2266607fac772eb4140815e}{top}};\ \ }
+\DoxyCodeLine{00182\ \}\ \mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}};}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00186\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_ga4f2552f1f1916a66b9b668573b5f5da5}{dyn\_arena\_init}}(\mbox{\hyperlink{structdyn__arena}{DynArena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ init\_cap);}
+\DoxyCodeLine{00189\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_ga556fe6f44a864e923de34fbf4ec7ee99}{arena\_init}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ size);}
+\DoxyCodeLine{00192\ \textcolor{keyword}{extern}\ \mbox{\hyperlink{structdyn__arena}{DynArena}}\ \mbox{\hyperlink{group__arena_ga5cf19a838d5dca54e91d85cf1a316a35}{dyn\_arena\_create}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ init\_cap);}
+\DoxyCodeLine{00195\ \textcolor{keyword}{extern}\ \mbox{\hyperlink{structarena}{Arena}}\ \mbox{\hyperlink{group__arena_gab0573670aaeee0a29decae478d241cdb}{arena\_create}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ init\_cap);}
+\DoxyCodeLine{00202\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\_arena\_alloc}}(\mbox{\hyperlink{structdyn__arena}{DynArena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}},}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ size,}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ alignment);}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00211\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{void}*\ \mbox{\hyperlink{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}{arena\_alloc}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ size,}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ alignment);}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{00230\ \textcolor{preprocessor}{\#define\ dyn\_arena\_get(t,\ dyn\_arena,\ rel\_ptr)\ \ \(\backslash\)}}
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\ \ \ \ const\ DynArena\ dag\_dyn\_arena\ =\ dyn\_arena;\ \(\backslash\)}}
+\DoxyCodeLine{00233\ \textcolor{preprocessor}{\ \ \ \ const\ size\_t\ dag\_rel\_ptr\ =\ rel\_ptr;\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00234\ \textcolor{preprocessor}{\ \ \ \ (t*)\&dag\_dyn\_arena.buf[dag\_rel\_ptr];\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00235\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{00236\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00254\ \textcolor{preprocessor}{\#define\ dyn\_arena\_get(lval\_result\_t\_ptr,\ t,\ dyn\_arena,\ rel\_ptr)\ \(\backslash\)}}
+\DoxyCodeLine{00255\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00256\ \textcolor{preprocessor}{\ \ \ \ const\ DynArena\ dag\_dyn\_arena\ =\ dyn\_arena;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00257\ \textcolor{preprocessor}{\ \ \ \ const\ size\_t\ dag\_rel\_ptr\ =\ rel\_ptr;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00258\ \textcolor{preprocessor}{\ \ \ \ lval\_result\_t\_ptr\ =\ (t*)\&dag\_dyn\_arena.buf[dag\_rel\_ptr];\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00259\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00260\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00268\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_gaf897e892410e5f2d2a89d78bc7e062c4}{dyn\_arena\_reserve}}(\mbox{\hyperlink{structdyn__arena}{DynArena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ min\_cap);}
+\DoxyCodeLine{00270\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_ga86be5730f0ea3d9f5c512e97c05eca97}{dyn\_arena\_free}}(\mbox{\hyperlink{structdyn__arena}{DynArena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}});}
+\DoxyCodeLine{00272\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_gace2ac8edeb4f508d4086ec658911f854}{arena\_free}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}});}
+\DoxyCodeLine{00273\ }
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00317\ \textcolor{preprocessor}{\#define\ DefineVec(t)\ \(\backslash\)}}
+\DoxyCodeLine{00318\ \textcolor{preprocessor}{\ \ typedef\ struct\ \{\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00319\ \textcolor{preprocessor}{\ \ \ \ t*\ ptr;\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00320\ \textcolor{preprocessor}{\ \ \ \ size\_t\ cap;\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00321\ \textcolor{preprocessor}{\ \ \ \ size\_t\ len;\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00322\ \textcolor{preprocessor}{\ \ \}\ Vec\_\#\#t}}
+\DoxyCodeLine{00323\ }
+\DoxyCodeLine{00328\ \textcolor{preprocessor}{\#define\ Vec(t)\ Vec\_\#\#t}}
+\DoxyCodeLine{00329\ }
+\DoxyCodeLine{00330\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{00336\ \textcolor{preprocessor}{\#define\ vec\_create(t,\ init\_cap)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00337\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00338\ \textcolor{preprocessor}{\ \ \ \ const\ size\_t\ vecc\_init\_cap\ =\ (init\_cap);\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00339\ \textcolor{preprocessor}{\ \ \ \ assert(vecc\_init\_cap\ >\ 0);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00340\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00341\ \textcolor{preprocessor}{\ \ \ \ (Vec(t))\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00342\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .ptr\ =\ calloc(vecc\_init\_cap,\ sizeof(t)),\ \(\backslash\)}}
+\DoxyCodeLine{00343\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .cap\ =\ vecc\_init\_cap,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00344\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .len\ =\ 0,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00345\ \textcolor{preprocessor}{\ \ \ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00346\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{00347\ }
+\DoxyCodeLine{00355\ \textcolor{preprocessor}{\#define\ vec\_from(t,\ item1,\ ...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00356\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00357\ \textcolor{preprocessor}{\ \ \ \ t\ items[]\ =\ \{(item1),\ \_\_VA\_ARGS\_\_\};\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00358\ \textcolor{preprocessor}{\ \ \ \ size\_t\ count\ =\ sizeof(items)\ /\ sizeof(t);\ \(\backslash\)}}
+\DoxyCodeLine{00359\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ vec\ =\ vec\_create(t,\ count);\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00360\ \textcolor{preprocessor}{\ \ \ \ vec.len\ =\ count;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00361\ \textcolor{preprocessor}{\ \ \ \ memcpy(vec.ptr,\ items,\ sizeof(items));\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00362\ \textcolor{preprocessor}{\ \ \ \ vec;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00363\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00376\ \textcolor{preprocessor}{\#define\ vec\_idx(vec,\ i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00377\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00378\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(vec)\ veci\_vec\ =\ (vec);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00379\ \textcolor{preprocessor}{\ \ \ \ const\ size\_t\ veci\_i\ =\ (i);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00380\ \textcolor{preprocessor}{\ \ \ \ assert(veci\_vec.len\ >\ 0\ \&\&\ veci\_i\ <\ veci\_vec.len\ \&\&\ veci\_vec.ptr\ !=\ NULL);\ \(\backslash\)}}
+\DoxyCodeLine{00381\ \textcolor{preprocessor}{\ \ \ \ \&(veci\_vec).ptr[veci\_i];\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00382\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{00383\ }
+\DoxyCodeLine{00391\ \textcolor{preprocessor}{\#define\ vec\_last(vec)\ vec\_idx((vec),\ veci\_vec.len\ -\/\ 1);}}
+\DoxyCodeLine{00392\ }
+\DoxyCodeLine{00404\ \textcolor{preprocessor}{\#define\ vec\_push(vec\_ptr,\ val)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00405\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00406\ \textcolor{preprocessor}{\ \ \ \ const\ \_\_typeof(*(vec\_ptr)-\/>ptr)\ vecp\_val\ =\ (val);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00407\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(vec\_ptr)\ vecp\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00408\ \textcolor{preprocessor}{\ \ \ \ assert(vecp\_vec\_ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00409\ \textcolor{preprocessor}{\ \ \ \ if\ (vecp\_vec\_ptr-\/>len\ +\ 1\ >\ vecp\_vec\_ptr-\/>cap)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00410\ \textcolor{preprocessor}{\ \ \ \ \ \ vecp\_vec\_ptr-\/>cap\ +=\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00411\ \textcolor{preprocessor}{\ \ \ \ \ \ vecp\_vec\_ptr-\/>cap\ *=\ 2;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00412\ \textcolor{preprocessor}{\ \ \ \ \ \ vecp\_vec\_ptr-\/>ptr\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00413\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ realloc(vecp\_vec\_ptr-\/>ptr,\ vecp\_vec\_ptr-\/>cap\ *\ sizeof(vecp\_val));\ \(\backslash\)}}
+\DoxyCodeLine{00414\ \textcolor{preprocessor}{\ \ \ \ \ \ assert(vecp\_vec\_ptr-\/>ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00415\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00416\ \textcolor{preprocessor}{\ \ \ \ *(vecp\_vec\_ptr-\/>ptr\ +\ vecp\_vec\_ptr-\/>len)\ =\ vecp\_val;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00417\ \textcolor{preprocessor}{\ \ \ \ vecp\_vec\_ptr-\/>len\ +=\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00418\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00419\ }
+\DoxyCodeLine{00426\ \textcolor{preprocessor}{\#define\ vec\_pop(vec\_ptr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00427\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00428\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(vec\_ptr)\ vecpop\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00429\ \textcolor{preprocessor}{\ \ \ \ assert(vecpop\_vec\_ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00430\ \textcolor{preprocessor}{\ \ \ \ if\ (vecpop\_vec\_ptr-\/>len\ >\ 0)\ vecpop\_vec\_ptr-\/>len\ -\/=\ 1;\ \(\backslash\)}}
+\DoxyCodeLine{00431\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00432\ }
+\DoxyCodeLine{00443\ \textcolor{preprocessor}{\#define\ vec\_append(front\_ptr,\ back)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00444\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00445\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(front\_ptr)\ veca\_front\_ptr\ =\ (front\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00446\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(*front\_ptr)\ veca\_back\ =\ (back);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00447\ \textcolor{preprocessor}{\ \ \ \ assert(veca\_front\_ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00448\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00449\ \textcolor{preprocessor}{\ \ \ \ if\ (veca\_front\_ptr-\/>len\ +\ veca\_back.len\ >\ veca\_front\_ptr-\/>cap)\ \{\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00450\ \textcolor{preprocessor}{\ \ \ \ \ \ veca\_front\_ptr-\/>cap\ +=\ veca\_back.len;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00451\ \textcolor{preprocessor}{\ \ \ \ \ \ veca\_front\_ptr-\/>cap\ *=\ 1.5;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00452\ \textcolor{preprocessor}{\ \ \ \ \ \ veca\_front\_ptr-\/>ptr\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00453\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ realloc(veca\_front\_ptr-\/>ptr,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00454\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ veca\_front\_ptr-\/>cap\ *\ sizeof(*veca\_front\_ptr-\/>ptr));\ \(\backslash\)}}
+\DoxyCodeLine{00455\ \textcolor{preprocessor}{\ \ \ \ \ \ assert(veca\_front\_ptr-\/>ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00456\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00457\ \textcolor{preprocessor}{\ \ \ \ memcpy(veca\_front\_ptr-\/>ptr\ +\ veca\_front\_ptr-\/>len,\ veca\_back.ptr,\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00458\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ veca\_back.len\ *\ sizeof(*veca\_front\_ptr-\/>ptr));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00459\ \textcolor{preprocessor}{\ \ \ \ veca\_front\_ptr-\/>len\ +=\ veca\_back.len;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00460\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00461\ }
+\DoxyCodeLine{00474\ \textcolor{preprocessor}{\#define\ vec\_swap\_remove(vec\_ptr,\ idx)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00475\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00476\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ vecsr\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00477\ \textcolor{preprocessor}{\ \ \ \ size\_t\ vecsr\_idx\ =\ (idx);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00478\ \textcolor{preprocessor}{\ \ \ \ assert(vecsr\_vec\_ptr\ !=\ NULL\ \&\&\ vecsr\_vec\_ptr-\/>len\ >\ 0);\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00479\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00480\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ remove\_at\ =\ vec\_idx(*vecsr\_vec\_ptr,\ vecsr\_idx);\ \(\backslash\)}}
+\DoxyCodeLine{00481\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ to\_replace\ =\ *vec\_last(*vecsr\_vec\_ptr);\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00482\ \textcolor{preprocessor}{\ \ \ \ *remove\_at\ =\ to\_replace;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00483\ \textcolor{preprocessor}{\ \ \ \ vecsr\_vec\_ptr-\/>len-\/-\/;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00484\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00485\ }
+\DoxyCodeLine{00486\ \textcolor{preprocessor}{\#else\ \ }\textcolor{comment}{//\ NON\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{00487\ }
+\DoxyCodeLine{00495\ \textcolor{preprocessor}{\#define\ vec\_create(lval\_result\_vec,\ t,\ init\_cap)\ \ \(\backslash\)}}
+\DoxyCodeLine{00496\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00497\ \textcolor{preprocessor}{\ \ \ \ const\ size\_t\ vecc\_init\_cap\ =\ (init\_cap);\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00498\ \textcolor{preprocessor}{\ \ \ \ assert(vecc\_init\_cap\ >\ 0);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00499\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00500\ \textcolor{preprocessor}{\ \ \ \ lval\_result\_vec\ =\ (Vec(t))\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00501\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .ptr\ =\ malloc(vecc\_init\_cap\ *\ sizeof(t)),\ \(\backslash\)}}
+\DoxyCodeLine{00502\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .cap\ =\ vecc\_init\_cap,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00503\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .len\ =\ 0,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00504\ \textcolor{preprocessor}{\ \ \ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00505\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00506\ }
+\DoxyCodeLine{00516\ \textcolor{preprocessor}{\#define\ vec\_from(lval\_result\_vec,\ t,\ item1,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00517\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00518\ \textcolor{preprocessor}{\ \ \ \ t\ items[]\ =\ \{(item1),\ \_\_VA\_ARGS\_\_\};\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00519\ \textcolor{preprocessor}{\ \ \ \ size\_t\ count\ =\ sizeof(items)\ /\ sizeof(t);\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00520\ \textcolor{preprocessor}{\ \ \ \ Vec(t)\ vec;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00521\ \textcolor{preprocessor}{\ \ \ \ vec\_create(vec,\ t,\ count);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00522\ \textcolor{preprocessor}{\ \ \ \ vec.len\ =\ count;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00523\ \textcolor{preprocessor}{\ \ \ \ memcpy(vec.ptr,\ items,\ sizeof(items));\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00524\ \textcolor{preprocessor}{\ \ \ \ lval\_result\_vec\ =\ vec;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00525\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00526\ }
+\DoxyCodeLine{00541\ \textcolor{preprocessor}{\#define\ vec\_idx(lval\_result\_elem\_ptr,\ t,\ vec,\ i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00542\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00543\ \textcolor{preprocessor}{\ \ \ \ Vec(t)\ veci\_vec\ =\ (vec);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00544\ \textcolor{preprocessor}{\ \ \ \ const\ size\_t\ veci\_i\ =\ (i);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00545\ \textcolor{preprocessor}{\ \ \ \ assert(veci\_vec.len\ >\ 0\ \&\&\ veci\_i\ <\ veci\_vec.len\ \&\&\ veci\_vec.ptr\ !=\ NULL);\ \(\backslash\)}}
+\DoxyCodeLine{00546\ \textcolor{preprocessor}{\ \ \ \ lval\_result\_elem\_ptr\ =\ \&(veci\_vec).ptr[veci\_i];\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00547\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00548\ }
+\DoxyCodeLine{00559\ \textcolor{preprocessor}{\#define\ vec\_last(lval\_result\_elem\_ptr,\ t,\ vec)\ \(\backslash\)}}
+\DoxyCodeLine{00560\ \textcolor{preprocessor}{\ \ vec\_idx(lval\_result\_elem\_ptr,\ t,\ (vec),\ veci\_vec.len\ -\/\ 1);}}
+\DoxyCodeLine{00561\ }
+\DoxyCodeLine{00574\ \textcolor{preprocessor}{\#define\ vec\_push(t,\ vec\_ptr,\ val)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00575\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00576\ \textcolor{preprocessor}{\ \ \ \ assert(vec\_ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00577\ \textcolor{preprocessor}{\ \ \ \ const\ t\ vecp\_val\ =\ (val);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00578\ \textcolor{preprocessor}{\ \ \ \ Vec(t)*\ vecp\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00579\ \textcolor{preprocessor}{\ \ \ \ if\ (vecp\_vec\_ptr-\/>len\ +\ 1\ >\ vecp\_vec\_ptr-\/>cap)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00580\ \textcolor{preprocessor}{\ \ \ \ \ \ vecp\_vec\_ptr-\/>cap\ +=\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00581\ \textcolor{preprocessor}{\ \ \ \ \ \ vecp\_vec\_ptr-\/>cap\ *=\ 2;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00582\ \textcolor{preprocessor}{\ \ \ \ \ \ vecp\_vec\_ptr-\/>ptr\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00583\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ realloc(vecp\_vec\_ptr-\/>ptr,\ vecp\_vec\_ptr-\/>cap\ *\ sizeof(t));\ \(\backslash\)}}
+\DoxyCodeLine{00584\ \textcolor{preprocessor}{\ \ \ \ \ \ assert(vecp\_vec\_ptr-\/>ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00585\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00586\ \textcolor{preprocessor}{\ \ \ \ *(vecp\_vec\_ptr-\/>ptr\ +\ vecp\_vec\_ptr-\/>len)\ =\ vecp\_val;\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00587\ \textcolor{preprocessor}{\ \ \ \ vecp\_vec\_ptr-\/>len\ +=\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00588\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00589\ }
+\DoxyCodeLine{00597\ \textcolor{preprocessor}{\#define\ vec\_pop(t,\ vec\_ptr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00598\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00599\ \textcolor{preprocessor}{\ \ \ \ assert(vec\_ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00600\ \textcolor{preprocessor}{\ \ \ \ Vec(t)*\ vecpop\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00601\ \textcolor{preprocessor}{\ \ \ \ if\ (vecpop\_vec\_ptr-\/>len\ >\ 0)\ vecpop\_vec\_ptr-\/>len\ -\/=\ 1;\ \(\backslash\)}}
+\DoxyCodeLine{00602\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00603\ }
+\DoxyCodeLine{00615\ \textcolor{preprocessor}{\#define\ vec\_append(t,\ front\_ptr,\ back)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00616\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00617\ \textcolor{preprocessor}{\ \ \ \ Vec(t)*\ veca\_front\_ptr\ =\ (front\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00618\ \textcolor{preprocessor}{\ \ \ \ Vec(t)\ veca\_back\ =\ (back);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00619\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00620\ \textcolor{preprocessor}{\ \ \ \ if\ (veca\_front\_ptr-\/>len\ +\ veca\_back.len\ >\ veca\_front\_ptr-\/>cap)\ \{\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00621\ \textcolor{preprocessor}{\ \ \ \ \ \ veca\_front\_ptr-\/>cap\ +=\ veca\_back.len;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00622\ \textcolor{preprocessor}{\ \ \ \ \ \ veca\_front\_ptr-\/>cap\ *=\ 1.5;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00623\ \textcolor{preprocessor}{\ \ \ \ \ \ veca\_front\_ptr-\/>ptr\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00624\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ realloc(veca\_front\_ptr-\/>ptr,\ veca\_front\_ptr-\/>cap\ *\ sizeof(t));\ \(\backslash\)}}
+\DoxyCodeLine{00625\ \textcolor{preprocessor}{\ \ \ \ \ \ assert(veca\_front\_ptr-\/>ptr\ !=\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00626\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00627\ \textcolor{preprocessor}{\ \ \ \ memcpy(veca\_front\_ptr-\/>ptr\ +\ veca\_front\_ptr-\/>len,\ veca\_back.ptr,\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00628\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ veca\_back.len\ *\ sizeof(t));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00629\ \textcolor{preprocessor}{\ \ \ \ veca\_front\_ptr-\/>len\ +=\ veca\_back.len;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00630\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00631\ }
+\DoxyCodeLine{00645\ \textcolor{preprocessor}{\#define\ vec\_swap\_remove(t,\ vec\_ptr,\ idx)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00646\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00647\ \textcolor{preprocessor}{\ \ \ \ Vec(t)*\ vecsr\_vec\_ptr\ =\ (vec\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00648\ \textcolor{preprocessor}{\ \ \ \ size\_t\ vecsr\_idx\ =\ (idx);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00649\ \textcolor{preprocessor}{\ \ \ \ assert(vecsr\_vec\_ptr\ !=\ NULL\ \&\&\ vecsr\_vec\_ptr-\/>len\ >\ 0);\ \(\backslash\)}}
+\DoxyCodeLine{00650\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00651\ \textcolor{preprocessor}{\ \ \ \ t*\ remove\_at;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00652\ \textcolor{preprocessor}{\ \ \ \ vec\_idx(remove\_at,\ t,\ *vecsr\_vec\_ptr,\ vecsr\_idx);\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00653\ \textcolor{preprocessor}{\ \ \ \ t*\ to\_replace;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00654\ \textcolor{preprocessor}{\ \ \ \ vec\_last(to\_replace,\ t,\ *vecsr\_vec\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00655\ \textcolor{preprocessor}{\ \ \ \ *remove\_at\ =\ *to\_replace;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00656\ \textcolor{preprocessor}{\ \ \ \ vecsr\_vec\_ptr-\/>len-\/-\/;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00657\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{00658\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00659\ }
+\DoxyCodeLine{00662\ \textcolor{preprocessor}{\#define\ vec\_free(vec\_ptr)\ free((vec\_ptr)-\/>ptr)}}
+\DoxyCodeLine{00663\ }
+\DoxyCodeLine{00665\ }
+\DoxyCodeLine{00672\ }
+\DoxyCodeLine{00685\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structstring}{string}}\ \{}
+\DoxyCodeLine{00686\ \ \ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}};\ \ \ }
+\DoxyCodeLine{00687\ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}};\ \ }
+\DoxyCodeLine{00688\ \}\ \mbox{\hyperlink{group__string_ga63e2e3ee7db5274c6a3929edfc07c6c9}{string}};}
+\DoxyCodeLine{00689\ }
+\DoxyCodeLine{00690\ \mbox{\hyperlink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{DefineVec}}(\textcolor{keywordtype}{string});}
+\DoxyCodeLine{00691\ }
+\DoxyCodeLine{00693\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga22cf0f5934dd718b3b38529740b17571}{strlit}}(\textcolor{keywordtype}{char}\ \textcolor{keyword}{const}*\ s);}
+\DoxyCodeLine{00696\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_gadc27d8af78d1abfe47308d740d1ac552}{str\_alloc}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00703\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{group__string_ga02ab529ec0eede2732f7e0bf824a6645}{str\_idx}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ i);}
+\DoxyCodeLine{00708\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{group__string_gaa056a9531cde5296d71c6065501aae12}{str\_is\_empty}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str);}
+\DoxyCodeLine{00709\ }
+\DoxyCodeLine{00718\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{group__string_ga5724c9294f7d8aeb114b4dc901333a11}{str\_eq}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ a,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ b);}
+\DoxyCodeLine{00719\ }
+\DoxyCodeLine{00733\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_gacc342cc4cb474215ada342b9b2d65b8a}{str\_concat}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ a,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ b);}
+\DoxyCodeLine{00737\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga8c7ecc1d2a88f9327e727b1def4002ad}{str\_copy}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str);}
+\DoxyCodeLine{00741\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga9e2729b7029bf2407d722c8acbe5a45e}{str\_join}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(\textcolor{keywordtype}{string})\ to\_join);}
+\DoxyCodeLine{00746\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_gaa3b530e0395a6c05d9e7fe641a007001}{str\_fmt}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ fmt,\ ...);}
+\DoxyCodeLine{00754\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga4a8505f75a2b6d26de673670a08b1c10}{str\_slice}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ start,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ end);}
+\DoxyCodeLine{00756\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga6b29d7c310951916aa4a75be0cf85b96}{str\_trim}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str);}
+\DoxyCodeLine{00757\ }
+\DoxyCodeLine{00759\ }
+\DoxyCodeLine{00777\ }
+\DoxyCodeLine{00779\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }bucket\ \{}
+\DoxyCodeLine{00780\ \ \ uint64\_t\ hash;}
+\DoxyCodeLine{00781\ \ \ \textcolor{keywordtype}{size\_t}\ index;}
+\DoxyCodeLine{00782\ \}\ Bucket;}
+\DoxyCodeLine{00784\ }
+\DoxyCodeLine{00790\ \textcolor{preprocessor}{\#define\ Entry(K,\ V)\ Entry\_\#\#K\#\#\_\#\#V}}
+\DoxyCodeLine{00796\ \textcolor{preprocessor}{\#define\ Dict(K,\ V)\ Dictionary\_\#\#K\#\#\_\#\#V}}
+\DoxyCodeLine{00803\ \textcolor{preprocessor}{\#define\ VecEntry(K,\ V)\ Vec\_Entry\_\#\#K\#\#\_\#\#V}}
+\DoxyCodeLine{00804\ }
+\DoxyCodeLine{00846\ \textcolor{preprocessor}{\#define\ DefineDict(K,\ V)\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00847\ \textcolor{preprocessor}{\ \ typedef\ struct\ \{\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00848\ \textcolor{preprocessor}{\ \ \ \ K\ key;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00849\ \textcolor{preprocessor}{\ \ \ \ V\ value;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00850\ \textcolor{preprocessor}{\ \ \}\ Entry(K,\ V);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00851\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00852\ \textcolor{preprocessor}{\ \ DefineVec(Entry\_\#\#K\#\#\_\#\#V);\ \(\backslash\)}}
+\DoxyCodeLine{00853\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00854\ \textcolor{preprocessor}{\ \ typedef\ struct\ \{\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00855\ \textcolor{preprocessor}{\ \ \ \ VecEntry(K,\ V)\ entries;\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00856\ \textcolor{preprocessor}{\ \ \ \ Bucket*\ buckets;\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00857\ \textcolor{preprocessor}{\ \ \ \ size\_t\ b\_len;\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00858\ \textcolor{preprocessor}{\ \ \ \ size\_t\ b\_cap;\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00859\ \textcolor{preprocessor}{\ \ \ \ uint64\_t\ key[2];\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00860\ \textcolor{preprocessor}{\ \ \}\ Dict(K,\ V);}}
+\DoxyCodeLine{00861\ }
+\DoxyCodeLine{00862\ \textcolor{comment}{//\ This\ is\ my\ way\ of\ implementing\ custom\ hashing\ algorithms.\ Honestly\ just}}
+\DoxyCodeLine{00863\ \textcolor{comment}{//\ looking\ at\ the\ examples\ in\ the\ repo\ is\ the\ best\ way\ to\ see\ it\ in\ action}}
+\DoxyCodeLine{00864\ \textcolor{preprocessor}{\#ifndef\ HASHFUNC}}
+\DoxyCodeLine{00865\ \textcolor{preprocessor}{\#define\ hash\_num(in\_ptr,\ inlen,\ k0\_u64,\ k1\_u64)\ \(\backslash\)}}
+\DoxyCodeLine{00866\ \textcolor{preprocessor}{\ \ (snifex\_api\_hash\_num\_func(in\_ptr,\ inlen))}}
+\DoxyCodeLine{00867\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00868\ }
+\DoxyCodeLine{00870\ uint64\_t\ snifex\_api\_hash\_num\_func(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ in,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ inlen);}
+\DoxyCodeLine{00871\ }
+\DoxyCodeLine{00872\ Bucket*\ snifex\_api\_find\_bucket(Bucket*\ buckets,}
+\DoxyCodeLine{00873\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ bucket\_cap,}
+\DoxyCodeLine{00874\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}*\ key,}
+\DoxyCodeLine{00875\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint64\_t\ hashed\_key,}
+\DoxyCodeLine{00876\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}*\ entries,}
+\DoxyCodeLine{00877\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ entry\_size,}
+\DoxyCodeLine{00878\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ key\_size,}
+\DoxyCodeLine{00879\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ include\_tombs);}
+\DoxyCodeLine{00880\ \textcolor{keywordtype}{void}\ snifex\_api\_dict\_grow(Bucket**\ buckets,}
+\DoxyCodeLine{00881\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}*\ bucket\_cap,}
+\DoxyCodeLine{00882\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}*\ bucket\_len);}
+\DoxyCodeLine{00884\ }
+\DoxyCodeLine{00885\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{00886\ }
+\DoxyCodeLine{00895\ \textcolor{preprocessor}{\#define\ dict\_create(K,\ V)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00896\ \textcolor{preprocessor}{\ \ ((Dict(K,\ V))\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00897\ \textcolor{preprocessor}{\ \ \ \ \ \ .entries\ =\ vec\_create(Entry(K,\ V),\ 8),\ \(\backslash\)}}
+\DoxyCodeLine{00898\ \textcolor{preprocessor}{\ \ \ \ \ \ .buckets\ =\ calloc(8,\ sizeof(Bucket)),\ \ \(\backslash\)}}
+\DoxyCodeLine{00899\ \textcolor{preprocessor}{\ \ \ \ \ \ .b\_cap\ =\ 8,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00900\ \textcolor{preprocessor}{\ \ \ \ \ \ .b\_len\ =\ 0,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00901\ \textcolor{preprocessor}{\ \ \ \ \ \ .key\ =\ \{0,\ 0\},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00902\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{00903\ }
+\DoxyCodeLine{00916\ \textcolor{preprocessor}{\#define\ dict\_put(dict\_ptr,\ k,\ v,\ old\_value\_ptr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00917\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00918\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ dp\_dict\_ptr\ =\ (dict\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00919\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(dp\_dict\_ptr-\/>entries.ptr-\/>key)\ dp\_k\ =\ (k);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00920\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(dp\_dict\_ptr-\/>entries.ptr-\/>value)\ dp\_v\ =\ (v);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00921\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(\&dp\_v)\ \_old\_value\_ptr\ =\ (old\_value\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00922\ \textcolor{preprocessor}{\ \ \ \ uint64\_t\ hasheddp\_k\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00923\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ hash\_num(\&dp\_k,\ sizeof(dp\_k),\ dp\_dict\_ptr-\/>key[0],\ dp\_dict\_ptr-\/>[1]);\ \(\backslash\)}}
+\DoxyCodeLine{00924\ \textcolor{preprocessor}{\ \ \ \ Bucket*\ b\ =\ snifex\_api\_find\_bucket(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00925\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ dp\_dict\_ptr-\/>buckets,\ dp\_dict\_ptr-\/>b\_cap,\ \&dp\_k,\ hasheddp\_k,\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00926\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ dp\_dict\_ptr-\/>entries.ptr,\ sizeof(*(dp\_dict\_ptr-\/>entries.ptr)),\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00927\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ sizeof(dp\_dict\_ptr-\/>entries.ptr-\/>key),\ true);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00928\ \textcolor{preprocessor}{\ \ \ \ if\ (b-\/>index\ >\ 1)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00929\ \textcolor{preprocessor}{\ \ \ \ \ \ \_\_auto\_type\ e\ =\ vec\_idx(dp\_dict\_ptr-\/>entries,\ b-\/>index\ -\/\ 2);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00930\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (\_old\_value\_ptr\ !=\ NULL)\ \{\ *\_old\_value\_ptr\ =\ e-\/>value;\ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00931\ \textcolor{preprocessor}{\ \ \ \ \ \ e-\/>value\ =\ dp\_v;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00932\ \textcolor{preprocessor}{\ \ \ \ \ \ true;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00933\ \textcolor{preprocessor}{\ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00934\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (b-\/>index\ ==\ 0)\ dp\_dict\_ptr-\/>b\_len++;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00935\ \textcolor{preprocessor}{\ \ \ \ \ \ b-\/>hash\ =\ hasheddp\_k;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00936\ \textcolor{preprocessor}{\ \ \ \ \ \ b-\/>index\ =\ dp\_dict\_ptr-\/>entries.len\ +\ 2;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00937\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00938\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (dp\_dict\_ptr-\/>b\_len\ >=\ dp\_dict\_ptr-\/>b\_cap\ *\ 0.75)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00939\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ snifex\_api\_dict\_grow(\&dp\_dict\_ptr-\/>buckets,\ \&dp\_dict\_ptr-\/>b\_cap,\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00940\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&dp\_dict\_ptr-\/>b\_len);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00941\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00942\ \textcolor{preprocessor}{\ \ \ \ \ \ \_\_typeof(*dp\_dict\_ptr-\/>entries.ptr)\ to\_push\_entry\ =\ \{.key\ =\ dp\_k,\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00943\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .value\ =\ dp\_v\};\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00944\ \textcolor{preprocessor}{\ \ \ \ \ \ vec\_push((\&dp\_dict\_ptr-\/>entries),\ to\_push\_entry);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00945\ \textcolor{preprocessor}{\ \ \ \ \ \ false;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00946\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00947\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{00948\ }
+\DoxyCodeLine{00957\ \textcolor{preprocessor}{\#define\ dict\_get(dict\_ptr,\ k)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00958\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00959\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ dg\_dict\_ptr\ =\ (dict\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00960\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(dg\_dict\_ptr-\/>entries.ptr-\/>key)\ dg\_k\ =\ (k);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00961\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(\&dg\_dict\_ptr-\/>entries.ptr-\/>value)\ res;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00962\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00963\ \textcolor{preprocessor}{\ \ \ \ if\ (dg\_dict\_ptr-\/>b\_len\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00964\ \textcolor{preprocessor}{\ \ \ \ \ \ res\ =\ NULL;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00965\ \textcolor{preprocessor}{\ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00966\ \textcolor{preprocessor}{\ \ \ \ \ \ Bucket*\ b\ =\ snifex\_api\_find\_bucket(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00967\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>buckets,\ dg\_dict\_ptr-\/>b\_cap,\ \&dg\_k,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00968\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ hash\_num(\&dg\_k,\ sizeof(dg\_k),\ dg\_dict\_ptr-\/>key[0],\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00969\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>key[1]),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00970\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>entries.ptr,\ sizeof(*(dg\_dict\_ptr-\/>entries.ptr)),\ \(\backslash\)}}
+\DoxyCodeLine{00971\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ sizeof(dg\_dict\_ptr-\/>entries.ptr-\/>key),\ false);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00972\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (b-\/>index\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00973\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ res\ =\ NULL;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00974\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00975\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ res\ =\ \&vec\_idx(dg\_dict\_ptr-\/>entries,\ (b-\/>index\ -\/\ 2))-\/>value;\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00976\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00977\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00978\ \textcolor{preprocessor}{\ \ \ \ res;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00979\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{00980\ }
+\DoxyCodeLine{00991\ \textcolor{preprocessor}{\#define\ dict\_del(dict\_ptr,\ k)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00992\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00993\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ dd\_dict\_ptr\ =\ (dict\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00994\ \textcolor{preprocessor}{\ \ \ \ \_\_typeof(dd\_dict\_ptr-\/>entries.ptr-\/>key)\ dd\_k\ =\ (k);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00995\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00996\ \textcolor{preprocessor}{\ \ \ \ if\ (dd\_dict\_ptr-\/>b\_len\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00997\ \textcolor{preprocessor}{\ \ \ \ \ \ false;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00998\ \textcolor{preprocessor}{\ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00999\ \textcolor{preprocessor}{\ \ \ \ \ \ Bucket*\ b\ =\ snifex\_api\_find\_bucket(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01000\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>buckets,\ dd\_dict\_ptr-\/>b\_cap,\ \&dd\_k,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01001\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ hash\_num(\&dd\_k,\ sizeof(dd\_k),\ dd\_dict\_ptr-\/>key[0],\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01002\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>key[1]),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01003\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>entries.ptr,\ sizeof(*(dd\_dict\_ptr-\/>entries.ptr)),\ \(\backslash\)}}
+\DoxyCodeLine{01004\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ sizeof(dd\_dict\_ptr-\/>entries.ptr-\/>key),\ false);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01005\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (b-\/>index\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01006\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ false;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01007\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01008\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ }\textcolor{comment}{/*\ Remove\ and\ place\ tombstone\ */}\textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01009\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ vec\_swap\_remove(\&dd\_dict\_ptr-\/>entries,\ b-\/>index\ -\/\ 2);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01010\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ b-\/>index\ =\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01011\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ true;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01012\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01013\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01014\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{01015\ }
+\DoxyCodeLine{01020\ \textcolor{preprocessor}{\#define\ dict\_free(dict\_ptr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01021\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01022\ \textcolor{preprocessor}{\ \ \ \ \_\_auto\_type\ df\_dict\_ptr\ =\ (dict\_ptr);\ \(\backslash\)}}
+\DoxyCodeLine{01023\ \textcolor{preprocessor}{\ \ \ \ free(df\_dict\_ptr-\/>buckets);\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01024\ \textcolor{preprocessor}{\ \ \ \ vec\_free(\&df\_dict\_ptr-\/>entries);\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01025\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{01026\ }
+\DoxyCodeLine{01027\ \textcolor{preprocessor}{\#else\ \ }\textcolor{comment}{//\ !SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{01028\ }
+\DoxyCodeLine{01039\ \textcolor{preprocessor}{\#define\ dict\_create(lval\_result\_dict,\ K,\ V)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{01040\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01041\ \textcolor{preprocessor}{\ \ \ \ Vec(Entry\_\#\#K\#\#\_\#\#V)\ e;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01042\ \textcolor{preprocessor}{\ \ \ \ vec\_create(e,\ Entry(K,\ V),\ 8);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01043\ \textcolor{preprocessor}{\ \ \ \ lval\_result\_dict\ =\ (Dict(K,\ V))\{\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01044\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .entries\ =\ e,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01045\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .buckets\ =\ calloc(8,\ sizeof(Bucket)),\ \(\backslash\)}}
+\DoxyCodeLine{01046\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .b\_cap\ =\ 8,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01047\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .b\_len\ =\ 0,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01048\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .key\ =\ \{0,\ 0\},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01049\ \textcolor{preprocessor}{\ \ \ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01050\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{01051\ }
+\DoxyCodeLine{01066\ \textcolor{preprocessor}{\#define\ dict\_put(k\_type,\ v\_type,\ dict\_ptr,\ k,\ v,\ old\_value\_ptr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01067\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01068\ \textcolor{preprocessor}{\ \ \ \ Dict(k\_type,\ v\_type)*\ dp\_dict\_ptr\ =\ (dict\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01069\ \textcolor{preprocessor}{\ \ \ \ k\_type\ dp\_k\ =\ (k);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01070\ \textcolor{preprocessor}{\ \ \ \ v\_type\ dp\_v\ =\ (v);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01071\ \textcolor{preprocessor}{\ \ \ \ v\_type*\ \_old\_value\_ptr\ =\ (old\_value\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01072\ \textcolor{preprocessor}{\ \ \ \ uint64\_t\ hasheddp\_k\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01073\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ hash\_num(\&dp\_k,\ sizeof(dp\_k),\ dp\_dict\_ptr-\/>key[0],\ dp\_dict\_ptr-\/>[1]);\ \ \(\backslash\)}}
+\DoxyCodeLine{01074\ \textcolor{preprocessor}{\ \ \ \ Bucket*\ b\ =\ snifex\_api\_find\_bucket(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01075\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ dp\_dict\_ptr-\/>buckets,\ dp\_dict\_ptr-\/>b\_cap,\ \&dp\_k,\ hasheddp\_k,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01076\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ dp\_dict\_ptr-\/>entries.ptr,\ sizeof(*(dp\_dict\_ptr-\/>entries.ptr)),\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01077\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ sizeof(dp\_dict\_ptr-\/>entries.ptr-\/>key),\ true);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01078\ \textcolor{preprocessor}{\ \ \ \ if\ (b-\/>index\ >\ 1)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01079\ \textcolor{preprocessor}{\ \ \ \ \ \ Entry(k\_type,\ v\_type)\ *\ e;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01080\ \textcolor{preprocessor}{\ \ \ \ \ \ vec\_idx(e,\ Entry(k\_type,\ v\_type),\ dp\_dict\_ptr-\/>entries,\ b-\/>index\ -\/\ 2);\ \ \ \(\backslash\)}}
+\DoxyCodeLine{01081\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (\_old\_value\_ptr\ !=\ NULL)\ \{\ *\_old\_value\_ptr\ =\ e-\/>value;\ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01082\ \textcolor{preprocessor}{\ \ \ \ \ \ e-\/>value\ =\ dp\_v;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01083\ \textcolor{preprocessor}{\ \ \ \ \ \ true;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01084\ \textcolor{preprocessor}{\ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01085\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (b-\/>index\ ==\ 0)\ dp\_dict\_ptr-\/>b\_len++;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01086\ \textcolor{preprocessor}{\ \ \ \ \ \ b-\/>hash\ =\ hasheddp\_k;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01087\ \textcolor{preprocessor}{\ \ \ \ \ \ b-\/>index\ =\ dp\_dict\_ptr-\/>entries.len\ +\ 2;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01088\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01089\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (dp\_dict\_ptr-\/>b\_len\ >=\ dp\_dict\_ptr-\/>b\_cap\ *\ 0.75)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01090\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ snifex\_api\_dict\_grow(\&dp\_dict\_ptr-\/>buckets,\ \&dp\_dict\_ptr-\/>b\_cap,\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01091\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&dp\_dict\_ptr-\/>b\_len);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01092\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01093\ \textcolor{preprocessor}{\ \ \ \ \ \ Entry(k\_type,\ v\_type)\ to\_push\_entry\ =\ \{.key\ =\ dp\_k,\ .value\ =\ dp\_v\};\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01094\ \textcolor{preprocessor}{\ \ \ \ \ \ vec\_push(Entry(k\_type,\ v\_type),\ (\&dp\_dict\_ptr-\/>entries),\ to\_push\_entry);\ \(\backslash\)}}
+\DoxyCodeLine{01095\ \textcolor{preprocessor}{\ \ \ \ \ \ false;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01096\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01097\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{01098\ }
+\DoxyCodeLine{01109\ \textcolor{preprocessor}{\#define\ dict\_get(lval\_result\_val\_ptr,\ k\_type,\ v\_type,\ dict\_ptr,\ k)\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01110\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01111\ \textcolor{preprocessor}{\ \ \ \ Dict(k\_type,\ v\_type)*\ dg\_dict\_ptr\ =\ (dict\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01112\ \textcolor{preprocessor}{\ \ \ \ k\_type\ dg\_k\ =\ (k);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01113\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01114\ \textcolor{preprocessor}{\ \ \ \ if\ (dg\_dict\_ptr-\/>b\_len\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01115\ \textcolor{preprocessor}{\ \ \ \ \ \ lval\_result\_val\_ptr\ =\ NULL;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01116\ \textcolor{preprocessor}{\ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01117\ \textcolor{preprocessor}{\ \ \ \ \ \ Bucket*\ b\ =\ snifex\_api\_find\_bucket(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01118\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>buckets,\ dg\_dict\_ptr-\/>b\_cap,\ \&dg\_k,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01119\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ hash\_num(\&dg\_k,\ sizeof(dg\_k),\ dg\_dict\_ptr-\/>key[0],\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01120\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>key[1]),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01121\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ dg\_dict\_ptr-\/>entries.ptr,\ sizeof(*(dg\_dict\_ptr-\/>entries.ptr)),\ \(\backslash\)}}
+\DoxyCodeLine{01122\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ sizeof(dg\_dict\_ptr-\/>entries.ptr-\/>key),\ false);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01123\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (b-\/>index\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01124\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ lval\_result\_val\_ptr\ =\ NULL;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01125\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01126\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ Entry(k\_type,\ v\_type)\ *\ e;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01127\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ vec\_idx(e,\ Entry(k\_type,\ v\_type),\ dg\_dict\_ptr-\/>entries,\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01128\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (b-\/>index\ -\/\ 2));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01129\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ lval\_result\_val\_ptr\ =\ \&e-\/>value;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01130\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01131\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01132\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{01133\ }
+\DoxyCodeLine{01147\ \textcolor{preprocessor}{\#define\ dict\_del(lval\_result\_bool,\ k\_type,\ v\_type,\ dict\_ptr,\ k)\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01148\ \textcolor{preprocessor}{\ \ (\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01149\ \textcolor{preprocessor}{\ \ \ \ Dict(k\_type,\ v\_type)*\ dd\_dict\_ptr\ =\ (dict\_ptr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01150\ \textcolor{preprocessor}{\ \ \ \ k\_type\ dd\_k\ =\ (k);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01151\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01152\ \textcolor{preprocessor}{\ \ \ \ if\ (dd\_dict\_ptr-\/>b\_len\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01153\ \textcolor{preprocessor}{\ \ \ \ \ \ lval\_result\_bool\ =\ false;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01154\ \textcolor{preprocessor}{\ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01155\ \textcolor{preprocessor}{\ \ \ \ \ \ Bucket*\ b\ =\ snifex\_api\_find\_bucket(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01156\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>buckets,\ dd\_dict\_ptr-\/>b\_cap,\ \&dd\_k,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01157\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ hash\_num(\&dd\_k,\ sizeof(dd\_k),\ dd\_dict\_ptr-\/>key[0],\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01158\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>key[1]),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01159\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ dd\_dict\_ptr-\/>entries.ptr,\ sizeof(*(dd\_dict\_ptr-\/>entries.ptr)),\ \(\backslash\)}}
+\DoxyCodeLine{01160\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ sizeof(dd\_dict\_ptr-\/>entries.ptr-\/>key),\ false);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01161\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (b-\/>index\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01162\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ lval\_result\_bool\ =\ false;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01163\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ else\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01164\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ }\textcolor{comment}{/*\ Remove\ and\ place\ tombstone\ */}\textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01165\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ vec\_swap\_remove(Entry(k\_type,\ v\_type),\ \&dd\_dict\_ptr-\/>entries,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01166\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ b-\/>index\ -\/\ 2);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01167\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ b-\/>index\ =\ 1;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01168\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ lval\_result\_bool\ =\ true;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01169\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01170\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01171\ \textcolor{preprocessor}{\ \ \})}}
+\DoxyCodeLine{01172\ }
+\DoxyCodeLine{01179\ \textcolor{preprocessor}{\#define\ dict\_free(k\_type,\ v\_type,\ dict\_ptr)\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01180\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01181\ \textcolor{preprocessor}{\ \ \ \ Dict(k\_type,\ v\_type)*\ df\_dict\_ptr\ =\ (dict\_ptr);\ \(\backslash\)}}
+\DoxyCodeLine{01182\ \textcolor{preprocessor}{\ \ \ \ free(df\_dict\_ptr-\/>buckets);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01183\ \textcolor{preprocessor}{\ \ \ \ vec\_free(\&df\_dict\_ptr-\/>entries);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01184\ \textcolor{preprocessor}{\ \ \}\ while\ (0)}}
+\DoxyCodeLine{01185\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{01186\ }
+\DoxyCodeLine{01188\ }
+\DoxyCodeLine{01189\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ SNIFEX\_API\_H}}
+\DoxyCodeLine{01190\ }
+\DoxyCodeLine{01191\ \textcolor{comment}{//\ IMPLEMENTATION}}
+\DoxyCodeLine{01192\ }
+\DoxyCodeLine{01193\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_IMPLEMENTATION}}
+\DoxyCodeLine{01194\ }
+\DoxyCodeLine{01195\ \textcolor{preprocessor}{\#ifndef\ SNIFEX\_API\_NO\_ASSERT}}
+\DoxyCodeLine{01196\ \textcolor{keywordtype}{void}\ \_\_snifex\_api\_assert\_fail(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ expr,}
+\DoxyCodeLine{01197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,}
+\DoxyCodeLine{01198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{01199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ func)\ \{}
+\DoxyCodeLine{01200\ \ \ fprintf(stderr,}
+\DoxyCodeLine{01201\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)33[0;31m\%s\(\backslash\)33[0m:\(\backslash\)33[0;33m\%d\(\backslash\)33[0m\ in\ func\ "{}}}
+\DoxyCodeLine{01202\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)33[0;32m\%s\(\backslash\)33[0m():\(\backslash\)n\(\backslash\)t\(\backslash\)33[0;91mAssert\ failed\(\backslash\)33[0m\ -\/>\ \%s\(\backslash\)n"{}},}
+\DoxyCodeLine{01203\ \ \ \ \ \ \ \ \ \ \ file,\ line,\ func,\ expr);}
+\DoxyCodeLine{01204\ \textcolor{preprocessor}{\#ifdef\ OS\_LINUX}}
+\DoxyCodeLine{01205\ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}\(\backslash\)33[38;5;124mStacktrace:\(\backslash\)33[0m\(\backslash\)n"{}});}
+\DoxyCodeLine{01206\ \ \ \textcolor{keywordtype}{char}**\ strings;}
+\DoxyCodeLine{01207\ \ \ \textcolor{keywordtype}{size\_t}\ size;}
+\DoxyCodeLine{01208\ \ \ \textcolor{keywordtype}{void}*\ array[1024];}
+\DoxyCodeLine{01209\ \ \ size\ =\ backtrace(array,\ 1024);}
+\DoxyCodeLine{01210\ \ \ strings\ =\ backtrace\_symbols(array,\ size);}
+\DoxyCodeLine{01211\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ size;\ i++)\ printf(\textcolor{stringliteral}{"{}\(\backslash\)33[0;37m\%s\(\backslash\)n"{}},\ strings[i]);}
+\DoxyCodeLine{01212\ \ \ printf(\textcolor{stringliteral}{"{}\(\backslash\)33[0m\(\backslash\)n"{}});}
+\DoxyCodeLine{01213\ \ \ free(strings);}
+\DoxyCodeLine{01214\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01215\ \textcolor{preprocessor}{\#ifdef\ OS\_WIN}}
+\DoxyCodeLine{01216\ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}\(\backslash\)33[38;5;124mStacktrace:\(\backslash\)33[0m\(\backslash\)n"{}});}
+\DoxyCodeLine{01217\ }
+\DoxyCodeLine{01218\ \ \ \textcolor{keyword}{const}\ DWORD\ options\ =\ SymGetOptions();}
+\DoxyCodeLine{01219\ \ \ SymSetOptions(options\ |\ SYMOPT\_LOAD\_LINES);}
+\DoxyCodeLine{01220\ \ \ SymInitialize(GetCurrentProcess(),\ NULL,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{01221\ }
+\DoxyCodeLine{01222\ \ \ \textcolor{keywordtype}{void}*\ array[48];}
+\DoxyCodeLine{01223\ \ \ \textcolor{keywordtype}{size\_t}\ size\ =\ CaptureStackBackTrace(0,\ 48,\ array,\ NULL);}
+\DoxyCodeLine{01224\ }
+\DoxyCodeLine{01225\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ size;\ i++)\ \{}
+\DoxyCodeLine{01226\ \ \ \ \ DWORD64\ address\ =\ (DWORD64)(array[i]);}
+\DoxyCodeLine{01227\ \ \ \ \ CHAR\ buffer[\textcolor{keyword}{sizeof}(SYMBOL\_INFO)\ +\ MAX\_SYM\_NAME\ *\ \textcolor{keyword}{sizeof}(CHAR)];}
+\DoxyCodeLine{01228\ \ \ \ \ PSYMBOL\_INFO\ symbol\ =\ (PSYMBOL\_INFO)buffer;}
+\DoxyCodeLine{01229\ \ \ \ \ symbol-\/>SizeOfStruct\ =\ \textcolor{keyword}{sizeof}(SYMBOL\_INFO);}
+\DoxyCodeLine{01230\ \ \ \ \ symbol-\/>MaxNameLen\ =\ MAX\_SYM\_NAME;}
+\DoxyCodeLine{01231\ }
+\DoxyCodeLine{01232\ \ \ \ \ \textcolor{keywordflow}{if}\ (SymFromAddr(GetCurrentProcess(),\ address,\ 0,\ symbol))\ \{}
+\DoxyCodeLine{01233\ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}\(\backslash\)33[0;37mFrame\ \%u:\ \%s\(\backslash\)n"{}},\ i,\ symbol-\/>Name);}
+\DoxyCodeLine{01234\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01235\ \ \ \ \ \ \ fprintf(stderr,}
+\DoxyCodeLine{01236\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)33[0;37mFrame\ \%u:\ Address\ =\ 0x\%p\ (No\ debug\ info,\ if\ using\ MSVC\ "{}}}
+\DoxyCodeLine{01237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}remember\ the\ /Zi\ flag)\(\backslash\)n"{}},}
+\DoxyCodeLine{01238\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ i,\ (\textcolor{keywordtype}{void}*)address);}
+\DoxyCodeLine{01239\ \ \ \ \ \}}
+\DoxyCodeLine{01240\ \ \ \}}
+\DoxyCodeLine{01241\ \ \ printf(\textcolor{stringliteral}{"{}\(\backslash\)33[0m\(\backslash\)n"{}});}
+\DoxyCodeLine{01242\ \ \ SymCleanup(GetCurrentProcess());}
+\DoxyCodeLine{01243\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ OS\_WIN}}
+\DoxyCodeLine{01244\ \ \ exit(1);}
+\DoxyCodeLine{01245\ \}}
+\DoxyCodeLine{01246\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ SNIFEX\_API\_NO\_ASSERT}}
+\DoxyCodeLine{01247\ }
+\DoxyCodeLine{01248\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ \_\_snifex\_api\_is\_power\_of\_two(\textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ x)\ \{}
+\DoxyCodeLine{01249\ \ \ \textcolor{keywordflow}{return}\ (x\ \&\ (x\ -\/\ 1))\ ==\ 0;}
+\DoxyCodeLine{01250\ \}}
+\DoxyCodeLine{01251\ }
+\DoxyCodeLine{01252\ \textcolor{comment}{//\ uint32\_t\ ceil\_powtwo(uint32\_t\ v)\ \{}}
+\DoxyCodeLine{01253\ \textcolor{comment}{//\ \ \ v-\/-\/;}}
+\DoxyCodeLine{01254\ \textcolor{comment}{//\ \ \ v\ |=\ v\ >>\ 1;}}
+\DoxyCodeLine{01255\ \textcolor{comment}{//\ \ \ v\ |=\ v\ >>\ 2;}}
+\DoxyCodeLine{01256\ \textcolor{comment}{//\ \ \ v\ |=\ v\ >>\ 4;}}
+\DoxyCodeLine{01257\ \textcolor{comment}{//\ \ \ v\ |=\ v\ >>\ 8;}}
+\DoxyCodeLine{01258\ \textcolor{comment}{//\ \ \ v\ |=\ v\ >>\ 16;}}
+\DoxyCodeLine{01259\ \textcolor{comment}{//\ \ \ return\ v\ +\ 1;}}
+\DoxyCodeLine{01260\ \textcolor{comment}{//\ \}}}
+\DoxyCodeLine{01261\ }
+\DoxyCodeLine{01262\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_ga4f2552f1f1916a66b9b668573b5f5da5}{dyn\_arena\_init}}(\mbox{\hyperlink{structdyn__arena}{DynArena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ init\_cap)\ \{}
+\DoxyCodeLine{01263\ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}}\ =\ (\textcolor{keywordtype}{char}*)malloc(init\_cap);}
+\DoxyCodeLine{01264\ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}}\ =\ init\_cap;}
+\DoxyCodeLine{01265\ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_af6a8621205a903f11819ce5a2471422c}{top}}\ =\ 0;}
+\DoxyCodeLine{01266\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}}\ !=\ NULL);}
+\DoxyCodeLine{01267\ \}}
+\DoxyCodeLine{01268\ }
+\DoxyCodeLine{01269\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_ga556fe6f44a864e923de34fbf4ec7ee99}{arena\_init}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ size)\ \{}
+\DoxyCodeLine{01270\ \ \ \mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_a257924809df1a067caa5a7c798b59913}{buf}}\ =\ (\textcolor{keywordtype}{char}*)malloc(size);}
+\DoxyCodeLine{01271\ \ \ \mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_ad43326ab5c17ca16d59b5eeb34a25303}{size}}\ =\ size;}
+\DoxyCodeLine{01272\ \ \ \mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_ade1712c9e2266607fac772eb4140815e}{top}}\ =\ 0;}
+\DoxyCodeLine{01273\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_a257924809df1a067caa5a7c798b59913}{buf}}\ !=\ NULL);}
+\DoxyCodeLine{01274\ \}}
+\DoxyCodeLine{01275\ }
+\DoxyCodeLine{01276\ \mbox{\hyperlink{structdyn__arena}{DynArena}}\ \mbox{\hyperlink{group__arena_ga5cf19a838d5dca54e91d85cf1a316a35}{dyn\_arena\_create}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ init\_cap)\ \{}
+\DoxyCodeLine{01277\ \ \ \mbox{\hyperlink{structdyn__arena}{DynArena}}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}\ =\ \{0\};}
+\DoxyCodeLine{01278\ \ \ \mbox{\hyperlink{group__arena_ga4f2552f1f1916a66b9b668573b5f5da5}{dyn\_arena\_init}}(\&\mbox{\hyperlink{structdyn__arena}{dyn\_arena}},\ init\_cap);}
+\DoxyCodeLine{01279\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}};}
+\DoxyCodeLine{01280\ \}}
+\DoxyCodeLine{01281\ }
+\DoxyCodeLine{01282\ \mbox{\hyperlink{structarena}{Arena}}\ \mbox{\hyperlink{group__arena_gab0573670aaeee0a29decae478d241cdb}{arena\_create}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ init\_cap)\ \{}
+\DoxyCodeLine{01283\ \ \ \mbox{\hyperlink{structarena}{Arena}}\ \mbox{\hyperlink{structarena}{arena}}\ =\ \{0\};}
+\DoxyCodeLine{01284\ \ \ \mbox{\hyperlink{group__arena_ga556fe6f44a864e923de34fbf4ec7ee99}{arena\_init}}(\&\mbox{\hyperlink{structarena}{arena}},\ init\_cap);}
+\DoxyCodeLine{01285\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structarena}{arena}};}
+\DoxyCodeLine{01286\ \}}
+\DoxyCodeLine{01287\ }
+\DoxyCodeLine{01288\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\_arena\_alloc}}(\mbox{\hyperlink{structdyn__arena}{DynArena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}},}
+\DoxyCodeLine{01289\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ size,}
+\DoxyCodeLine{01290\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ alignment)\ \{}
+\DoxyCodeLine{01291\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(!(size\ ==\ 0\ ||\ alignment\ ==\ 0\ ||}
+\DoxyCodeLine{01292\ \ \ \ \ \ \ \ \ \ \ \ (alignment\ !=\ 1\ \&\&\ !\_\_snifex\_api\_is\_power\_of\_two(alignment))\ ||}
+\DoxyCodeLine{01293\ \ \ \ \ \ \ \ \ \ \ \ size\ \%\ alignment\ !=\ 0));}
+\DoxyCodeLine{01294\ }
+\DoxyCodeLine{01295\ \ \ \textcolor{keywordtype}{size\_t}\ top\ =\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_af6a8621205a903f11819ce5a2471422c}{top}};}
+\DoxyCodeLine{01296\ \ \ \textcolor{keywordtype}{size\_t}\ padding\ =\ (top\ +\ alignment\ -\/\ 1)\ \&\ \string~(alignment\ -\/\ 1);}
+\DoxyCodeLine{01297\ }
+\DoxyCodeLine{01298\ \ \ \textcolor{keywordflow}{if}\ (top\ +\ padding\ +\ size\ >\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}})\ \{}
+\DoxyCodeLine{01299\ \ \ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}}\ +=\ top\ +\ padding\ +\ size;}
+\DoxyCodeLine{01300\ \ \ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}}\ *=\ 2;}
+\DoxyCodeLine{01301\ \ \ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}}\ =\ (\textcolor{keywordtype}{char}*)realloc(\mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}},\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}});}
+\DoxyCodeLine{01302\ \ \ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}}\ !=\ NULL);}
+\DoxyCodeLine{01303\ \ \ \}}
+\DoxyCodeLine{01304\ }
+\DoxyCodeLine{01305\ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_af6a8621205a903f11819ce5a2471422c}{top}}\ +=\ size\ +\ padding;}
+\DoxyCodeLine{01306\ \ \ \textcolor{keywordflow}{return}\ top;}
+\DoxyCodeLine{01307\ \}}
+\DoxyCodeLine{01308\ }
+\DoxyCodeLine{01309\ \textcolor{keywordtype}{void}*\ \mbox{\hyperlink{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}{arena\_alloc}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},}
+\DoxyCodeLine{01310\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ size,}
+\DoxyCodeLine{01311\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ alignment)\ \{}
+\DoxyCodeLine{01312\ \ \ \textcolor{keywordflow}{if}\ (size\ ==\ 0)\ \{\ \textcolor{keywordflow}{return}\ NULL;\ \}}
+\DoxyCodeLine{01313\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(!(alignment\ ==\ 0\ ||}
+\DoxyCodeLine{01314\ \ \ \ \ \ \ \ \ \ \ \ (alignment\ !=\ 1\ \&\&\ !\_\_snifex\_api\_is\_power\_of\_two(alignment))\ ||}
+\DoxyCodeLine{01315\ \ \ \ \ \ \ \ \ \ \ \ size\ \%\ alignment\ !=\ 0));}
+\DoxyCodeLine{01316\ }
+\DoxyCodeLine{01317\ \ \ \textcolor{keywordtype}{size\_t}\ top\ =\ \mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_ade1712c9e2266607fac772eb4140815e}{top}};}
+\DoxyCodeLine{01318\ \ \ \textcolor{keywordtype}{size\_t}\ padding\ =\ (top\ +\ alignment\ -\/\ 1)\ \&\ \string~(alignment\ -\/\ 1);}
+\DoxyCodeLine{01319\ }
+\DoxyCodeLine{01320\ \ \ \textcolor{keywordflow}{if}\ (top\ +\ padding\ +\ size\ >\ \mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_ad43326ab5c17ca16d59b5eeb34a25303}{size}})\ \{\ \textcolor{keywordflow}{return}\ NULL;\ \}}
+\DoxyCodeLine{01321\ }
+\DoxyCodeLine{01322\ \ \ \textcolor{keywordtype}{void}*\ ret\ =\ \&\mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_a257924809df1a067caa5a7c798b59913}{buf}}[top];}
+\DoxyCodeLine{01323\ \ \ \mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_ade1712c9e2266607fac772eb4140815e}{top}}\ +=\ size\ +\ padding;}
+\DoxyCodeLine{01324\ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{01325\ \}}
+\DoxyCodeLine{01326\ }
+\DoxyCodeLine{01327\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_gaf897e892410e5f2d2a89d78bc7e062c4}{dyn\_arena\_reserve}}(\mbox{\hyperlink{structdyn__arena}{DynArena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ min\_cap)\ \{}
+\DoxyCodeLine{01328\ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}}\ <\ min\_cap)\ \{}
+\DoxyCodeLine{01329\ \ \ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}}\ *=\ min\_cap;}
+\DoxyCodeLine{01330\ \ \ \ \ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}}\ =\ (\textcolor{keywordtype}{char}*)realloc(\mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}},\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_a8e97819310fee8f247c5b88e9af71cd7}{cap}});}
+\DoxyCodeLine{01331\ \ \ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}}\ !=\ NULL);}
+\DoxyCodeLine{01332\ \ \ \}}
+\DoxyCodeLine{01333\ \}}
+\DoxyCodeLine{01334\ }
+\DoxyCodeLine{01335\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_ga86be5730f0ea3d9f5c512e97c05eca97}{dyn\_arena\_free}}(\mbox{\hyperlink{structdyn__arena}{DynArena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structdyn__arena}{dyn\_arena}})\ \{\ free(\mbox{\hyperlink{structdyn__arena}{dyn\_arena}}-\/>\mbox{\hyperlink{structdyn__arena_abd5862cba1a3aed4a53ec38eeb97d1a5}{buf}});\ \}}
+\DoxyCodeLine{01336\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__arena_gace2ac8edeb4f508d4086ec658911f854}{arena\_free}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}})\ \{\ free(\mbox{\hyperlink{structarena}{arena}}-\/>\mbox{\hyperlink{structarena_a257924809df1a067caa5a7c798b59913}{buf}});\ \}}
+\DoxyCodeLine{01337\ }
+\DoxyCodeLine{01338\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga22cf0f5934dd718b3b38529740b17571}{strlit}}(\textcolor{keywordtype}{char}\ \textcolor{keyword}{const}*\ s)\ \{}
+\DoxyCodeLine{01339\ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keywordtype}{string})\{.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}}\ =\ (\textcolor{keywordtype}{char}*)s,\ .len\ =\ strlen(s)\};}
+\DoxyCodeLine{01340\ \}}
+\DoxyCodeLine{01341\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{group__string_gaa056a9531cde5296d71c6065501aae12}{str\_is\_empty}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str)\ \{}
+\DoxyCodeLine{01342\ \ \ \textcolor{keywordflow}{return}\ (str.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}}\ ==\ NULL\ ||\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ ==\ 0);}
+\DoxyCodeLine{01343\ \}}
+\DoxyCodeLine{01344\ }
+\DoxyCodeLine{01345\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_gadc27d8af78d1abfe47308d740d1ac552}{str\_alloc}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ len)\ \{}
+\DoxyCodeLine{01346\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structarena}{arena}}\ !=\ NULL);}
+\DoxyCodeLine{01347\ }
+\DoxyCodeLine{01348\ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keywordtype}{string})\{}
+\DoxyCodeLine{01349\ \ \ \ \ \ \ .ptr\ =\ (\textcolor{keywordtype}{char}*)\mbox{\hyperlink{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}{arena\_alloc}}(\mbox{\hyperlink{structarena}{arena}},\ len,\ 1),}
+\DoxyCodeLine{01350\ \ \ \ \ \ \ .len\ =\ len,}
+\DoxyCodeLine{01351\ \ \ \};}
+\DoxyCodeLine{01352\ \}}
+\DoxyCodeLine{01353\ }
+\DoxyCodeLine{01354\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga8c7ecc1d2a88f9327e727b1def4002ad}{str\_copy}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str)\ \{}
+\DoxyCodeLine{01355\ \ \ \textcolor{keywordflow}{if}\ (str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ ==\ 0)\ \{\ \textcolor{keywordflow}{return}\ str;\ \}}
+\DoxyCodeLine{01356\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structarena}{arena}}\ !=\ NULL);}
+\DoxyCodeLine{01357\ }
+\DoxyCodeLine{01358\ \ \ \textcolor{keywordtype}{char}*\ dest\ =\ (\textcolor{keywordtype}{char}*)\mbox{\hyperlink{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}{arena\_alloc}}(\mbox{\hyperlink{structarena}{arena}},\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}},\ 1);}
+\DoxyCodeLine{01359\ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keywordtype}{string})\{}
+\DoxyCodeLine{01360\ \ \ \ \ \ \ .ptr\ =\ (\textcolor{keywordtype}{char}*)memcpy(dest,\ str.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}},\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}),}
+\DoxyCodeLine{01361\ \ \ \ \ \ \ .len\ =\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}},}
+\DoxyCodeLine{01362\ \ \ \};}
+\DoxyCodeLine{01363\ \}}
+\DoxyCodeLine{01364\ }
+\DoxyCodeLine{01365\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{group__string_ga02ab529ec0eede2732f7e0bf824a6645}{str\_idx}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ i)\ \{}
+\DoxyCodeLine{01366\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(i\ <\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ \&\&\ str.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}}\ !=\ NULL);}
+\DoxyCodeLine{01367\ \ \ \textcolor{keywordflow}{return}\ \&str.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}}[i];}
+\DoxyCodeLine{01368\ \}}
+\DoxyCodeLine{01369\ }
+\DoxyCodeLine{01370\ \textcolor{comment}{//\ Short-\/circuing\ if\ the\ length\ is\ equal\ and\ is\ 0\ is\ because\ memcmp\ with\ NULL}}
+\DoxyCodeLine{01371\ \textcolor{comment}{//\ pointers\ is\ U.B.\ in\ c99,\ even\ if\ the\ number\ of\ bytes\ copied\ is\ 0,\ and\ in\ this}}
+\DoxyCodeLine{01372\ \textcolor{comment}{//\ library\ empty\ strings\ can\ have\ a\ NULL\ pointer.}}
+\DoxyCodeLine{01373\ \textcolor{comment}{//}}
+\DoxyCodeLine{01374\ \textcolor{comment}{//\ See\ \`{}str\_join`\ for\ more\ info}}
+\DoxyCodeLine{01375\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{group__string_ga5724c9294f7d8aeb114b4dc901333a11}{str\_eq}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ a,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ b)\ \{}
+\DoxyCodeLine{01376\ \ \ \textcolor{keywordflow}{return}\ a.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ ==\ b.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ \&\&\ (a.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ ==\ 0\ ||\ memcmp(a.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}},\ b.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}},\ a.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}})\ ==\ 0);}
+\DoxyCodeLine{01377\ \}}
+\DoxyCodeLine{01378\ }
+\DoxyCodeLine{01379\ \textcolor{comment}{//\ Note!\ Can\ execute\ memcpy(ptr,\ NULL,\ 0),\ where\ ptr\ is\ guaranteed\ not\ to\ be}}
+\DoxyCodeLine{01380\ \textcolor{comment}{//\ NULL,\ which\ is\ U.B.\ before\ c2y.\ Clang\ and\ GCC\ apparently\ handle\ this}}
+\DoxyCodeLine{01381\ \textcolor{comment}{//\ gratefully\ while\ MSVC\ does\ not\ so,\ to\ conform\ to\ c99\ we\ check\ for\ 0-\/len}}
+\DoxyCodeLine{01382\ \textcolor{comment}{//\ before\ memcpy-\/ing.\ This\ isn't\ not\ really\ a\ performance\ issue\ in\ release\ mode}}
+\DoxyCodeLine{01383\ \textcolor{comment}{//\ as\ it\ should\ just\ be\ optimised\ out\ (and\ gcc/clang\ with\ -\/O1\ surely\ does)}}
+\DoxyCodeLine{01384\ \textcolor{comment}{//}}
+\DoxyCodeLine{01385\ \textcolor{comment}{//\ See}}
+\DoxyCodeLine{01386\ \textcolor{comment}{//\ https://stackoverflow.com/questions/5243012/is-\/it-\/guaranteed-\/to-\/be-\/safe-\/to-\/perform-\/memcpy0-\/0-\/0}}
+\DoxyCodeLine{01387\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_gacc342cc4cb474215ada342b9b2d65b8a}{str\_concat}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ a,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ b)\ \{}
+\DoxyCodeLine{01388\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structarena}{arena}}\ !=\ NULL);}
+\DoxyCodeLine{01389\ }
+\DoxyCodeLine{01390\ \ \ \textcolor{keywordtype}{size\_t}\ new\_len\ =\ a.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ +\ b.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}};}
+\DoxyCodeLine{01391\ \ \ \textcolor{keywordtype}{string}\ buf\ =\ \mbox{\hyperlink{group__string_gadc27d8af78d1abfe47308d740d1ac552}{str\_alloc}}(\mbox{\hyperlink{structarena}{arena}},\ new\_len);}
+\DoxyCodeLine{01392\ \ \ \textcolor{keywordflow}{if}\ (a.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ !=\ 0)\ \{\ memcpy(buf.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}},\ a.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}},\ a.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}});\ \}}
+\DoxyCodeLine{01393\ \ \ \textcolor{keywordflow}{if}\ (b.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ !=\ 0)\ \{\ memcpy(buf.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}}\ +\ a.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}},\ b.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}},\ b.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}});\ \}}
+\DoxyCodeLine{01394\ \ \ \textcolor{keywordflow}{return}\ buf;}
+\DoxyCodeLine{01395\ \}}
+\DoxyCodeLine{01396\ }
+\DoxyCodeLine{01397\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga9e2729b7029bf2407d722c8acbe5a45e}{str\_join}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(\textcolor{keywordtype}{string})\ to\_join)\ \{}
+\DoxyCodeLine{01398\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structarena}{arena}}\ !=\ NULL);}
+\DoxyCodeLine{01399\ }
+\DoxyCodeLine{01400\ \ \ \textcolor{keywordtype}{size\_t}\ new\_len\ =\ 0;}
+\DoxyCodeLine{01401\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ to\_join.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}};\ i++)\ \{}
+\DoxyCodeLine{01402\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{01403\ \ \ \ \ new\_len\ +=\ \mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(to\_join,\ i)-\/>len;}
+\DoxyCodeLine{01404\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01405\ \ \ \ \ \textcolor{keywordtype}{string}*\ str;}
+\DoxyCodeLine{01406\ \ \ \ \ \mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(str,\ \textcolor{keywordtype}{string},\ to\_join,\ i);}
+\DoxyCodeLine{01407\ \ \ \ \ new\_len\ +=\ str-\/>\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}};}
+\DoxyCodeLine{01408\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01409\ \ \ \}}
+\DoxyCodeLine{01410\ \ \ \textcolor{keywordtype}{string}\ buf\ =\ \mbox{\hyperlink{group__string_gadc27d8af78d1abfe47308d740d1ac552}{str\_alloc}}(\mbox{\hyperlink{structarena}{arena}},\ new\_len);}
+\DoxyCodeLine{01411\ }
+\DoxyCodeLine{01412\ \ \ \textcolor{keywordtype}{char}*\ dest\ =\ buf.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}};}
+\DoxyCodeLine{01413\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ to\_join.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}};\ i++)\ \{}
+\DoxyCodeLine{01414\ \textcolor{preprocessor}{\#ifdef\ SNIFEX\_API\_GNU\_EXTENSIONS}}
+\DoxyCodeLine{01415\ \ \ \ \ \textcolor{keywordtype}{string}\ str\ =\ *\mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(to\_join,\ i);}
+\DoxyCodeLine{01416\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01417\ \ \ \ \ \textcolor{keywordtype}{string}*\ str\_ptr;}
+\DoxyCodeLine{01418\ \ \ \ \ \mbox{\hyperlink{group__vector_gaa85f3533c2232edfd7fcc899bd5f6378}{vec\_idx}}(str\_ptr,\ \textcolor{keywordtype}{string},\ to\_join,\ i);}
+\DoxyCodeLine{01419\ \ \ \ \ \textcolor{keywordtype}{string}\ str\ =\ *str\_ptr;}
+\DoxyCodeLine{01420\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01421\ \ \ \ \ memcpy(dest,\ str.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}},\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}});}
+\DoxyCodeLine{01422\ \ \ \ \ dest\ +=\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}};}
+\DoxyCodeLine{01423\ \ \ \}}
+\DoxyCodeLine{01424\ \ \ \textcolor{keywordflow}{return}\ buf;}
+\DoxyCodeLine{01425\ \}}
+\DoxyCodeLine{01426\ }
+\DoxyCodeLine{01427\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_gaa3b530e0395a6c05d9e7fe641a007001}{str\_fmt}}(\mbox{\hyperlink{structarena}{Arena}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structarena}{arena}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ fmt,\ ...)\ \{}
+\DoxyCodeLine{01428\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(\mbox{\hyperlink{structarena}{arena}}\ !=\ NULL\ \&\&\ fmt\ !=\ NULL);}
+\DoxyCodeLine{01429\ }
+\DoxyCodeLine{01430\ \ \ va\_list\ args;}
+\DoxyCodeLine{01431\ \ \ va\_start(args,\ fmt);}
+\DoxyCodeLine{01432\ }
+\DoxyCodeLine{01433\ \ \ va\_list\ args\_temp;}
+\DoxyCodeLine{01434\ \ \ va\_copy(args\_temp,\ args);}
+\DoxyCodeLine{01435\ \ \ \textcolor{keywordtype}{size\_t}\ needed\ =\ vsnprintf(NULL,\ 0,\ fmt,\ args\_temp);}
+\DoxyCodeLine{01436\ \ \ va\_end(args\_temp);}
+\DoxyCodeLine{01437\ }
+\DoxyCodeLine{01438\ \ \ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ buf\ =\ (\textcolor{keywordtype}{char}*)malloc(needed\ +\ 1);}
+\DoxyCodeLine{01439\ \ \ vsprintf(buf,\ fmt,\ args);}
+\DoxyCodeLine{01440\ \ \ \textcolor{keywordtype}{string}\ str\ =\ \mbox{\hyperlink{group__string_ga8c7ecc1d2a88f9327e727b1def4002ad}{str\_copy}}(\mbox{\hyperlink{structarena}{arena}},\ \mbox{\hyperlink{group__string_ga22cf0f5934dd718b3b38529740b17571}{strlit}}(buf));}
+\DoxyCodeLine{01441\ \ \ memcpy(str.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}},\ buf,\ needed);}
+\DoxyCodeLine{01442\ \ \ va\_end(args);}
+\DoxyCodeLine{01443\ \ \ free(buf);}
+\DoxyCodeLine{01444\ \ \ \textcolor{keywordflow}{return}\ str;}
+\DoxyCodeLine{01445\ \}}
+\DoxyCodeLine{01446\ }
+\DoxyCodeLine{01447\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga4a8505f75a2b6d26de673670a08b1c10}{str\_slice}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ start,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ end)\ \{}
+\DoxyCodeLine{01448\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(start\ <\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ \&\&\ end\ <=\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}}\ \&\&\ start\ <=\ end);}
+\DoxyCodeLine{01449\ }
+\DoxyCodeLine{01450\ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keywordtype}{string})\{}
+\DoxyCodeLine{01451\ \ \ \ \ \ \ .ptr\ =\ str.\mbox{\hyperlink{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}{ptr}}\ +\ start,}
+\DoxyCodeLine{01452\ \ \ \ \ \ \ .len\ =\ end\ -\/\ start,}
+\DoxyCodeLine{01453\ \ \ \};}
+\DoxyCodeLine{01454\ \}}
+\DoxyCodeLine{01455\ }
+\DoxyCodeLine{01456\ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{group__string_ga6b29d7c310951916aa4a75be0cf85b96}{str\_trim}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ str)\ \{}
+\DoxyCodeLine{01457\ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0;}
+\DoxyCodeLine{01458\ \ \ \textcolor{keywordtype}{size\_t}\ end\ =\ str.\mbox{\hyperlink{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}{len}};}
+\DoxyCodeLine{01459\ }
+\DoxyCodeLine{01460\ \ \ \textcolor{keywordflow}{while}\ (start\ <\ end\ \&\&\ isspace(*\mbox{\hyperlink{group__string_ga02ab529ec0eede2732f7e0bf824a6645}{str\_idx}}(str,\ start)))\ \{\ start++;\ \}}
+\DoxyCodeLine{01461\ \ \ \textcolor{keywordflow}{if}\ (start\ ==\ end)\ \{\ \textcolor{keywordflow}{return}\ (\textcolor{keywordtype}{string})\{0\};\ \}}
+\DoxyCodeLine{01462\ \ \ \textcolor{keywordflow}{while}\ (end\ >\ start\ \&\&\ isspace(*\mbox{\hyperlink{group__string_ga02ab529ec0eede2732f7e0bf824a6645}{str\_idx}}(str,\ end\ -\/\ 1)))\ \{\ end-\/-\/;\ \}}
+\DoxyCodeLine{01463\ }
+\DoxyCodeLine{01464\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{group__string_ga4a8505f75a2b6d26de673670a08b1c10}{str\_slice}}(str,\ start,\ end);}
+\DoxyCodeLine{01465\ \}}
+\DoxyCodeLine{01466\ }
+\DoxyCodeLine{01467\ Bucket*\ snifex\_api\_find\_bucket(Bucket*\ buckets,}
+\DoxyCodeLine{01468\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ bucket\_cap,}
+\DoxyCodeLine{01469\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}*\ key,}
+\DoxyCodeLine{01470\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint64\_t\ hashed\_key,}
+\DoxyCodeLine{01471\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}*\ entries,}
+\DoxyCodeLine{01472\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ entry\_size,}
+\DoxyCodeLine{01473\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ key\_size,}
+\DoxyCodeLine{01474\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ include\_tombs)\ \{}
+\DoxyCodeLine{01475\ \ \ \textcolor{comment}{/*\ find\ spot\ (either\ empty\ or\ entry\ itself)\ */}}
+\DoxyCodeLine{01476\ \ \ \textcolor{keywordtype}{size\_t}\ index\ =\ hashed\_key\ \%\ bucket\_cap;}
+\DoxyCodeLine{01477\ \ \ Bucket*\ b;}
+\DoxyCodeLine{01478\ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{01479\ \ \ \ \ b\ =\ \&buckets[index];}
+\DoxyCodeLine{01480\ \ \ \ \ \textcolor{keywordtype}{bool}\ replaced;}
+\DoxyCodeLine{01481\ \ \ \ \ \textcolor{keywordflow}{if}\ (b-\/>index\ ==\ 0\ ||\ (b-\/>index\ ==\ 1\ \&\&\ include\_tombs)\ ||}
+\DoxyCodeLine{01482\ \ \ \ \ \ \ \ \ (replaced\ =\ (b-\/>index\ >\ 1\ \&\&\ b-\/>hash\ ==\ hashed\_key\ \&\&}
+\DoxyCodeLine{01483\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ memcmp(((\textcolor{keywordtype}{char}*)entries\ +\ (b-\/>index\ -\/\ 2)\ *\ entry\_size),\ key,}
+\DoxyCodeLine{01484\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ key\_size)\ ==\ 0)))\ \{}
+\DoxyCodeLine{01485\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ b;}
+\DoxyCodeLine{01486\ \ \ \ \ \}}
+\DoxyCodeLine{01487\ }
+\DoxyCodeLine{01488\ \ \ \ \ index\ =\ (index\ +\ 1)\ \%\ bucket\_cap;}
+\DoxyCodeLine{01489\ \ \ \}}
+\DoxyCodeLine{01490\ \}}
+\DoxyCodeLine{01491\ }
+\DoxyCodeLine{01492\ \textcolor{keywordtype}{void}\ snifex\_api\_dict\_grow(Bucket**\ buckets,}
+\DoxyCodeLine{01493\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}*\ bucket\_cap,}
+\DoxyCodeLine{01494\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}*\ bucket\_len)\ \{}
+\DoxyCodeLine{01495\ \ \ \textcolor{keywordtype}{size\_t}\ old\_cap\ =\ *bucket\_cap;}
+\DoxyCodeLine{01496\ \ \ \textcolor{keywordtype}{size\_t}\ new\_cap\ =\ (*bucket\_cap\ *=\ 2);}
+\DoxyCodeLine{01497\ }
+\DoxyCodeLine{01498\ \ \ Bucket*\ new\_bucks\ =\ calloc(new\_cap,\ \textcolor{keyword}{sizeof}(Bucket));}
+\DoxyCodeLine{01499\ \ \ \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(new\_bucks\ !=\ NULL);}
+\DoxyCodeLine{01500\ }
+\DoxyCodeLine{01501\ \ \ *bucket\_len\ =\ 0;}
+\DoxyCodeLine{01502\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ old\_cap;\ i++)\ \{}
+\DoxyCodeLine{01503\ \ \ \ \ Bucket\ to\_put\ =\ (*buckets)[i];}
+\DoxyCodeLine{01504\ \ \ \ \ \textcolor{keywordflow}{if}\ (to\_put.index\ ==\ 0)\ \{\ \textcolor{keywordflow}{continue};\ \}}
+\DoxyCodeLine{01505\ }
+\DoxyCodeLine{01506\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ index\ =\ to\_put.hash\ \%\ new\_cap;}
+\DoxyCodeLine{01507\ \ \ \ \ Bucket*\ b;}
+\DoxyCodeLine{01508\ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{01509\ \ \ \ \ \ \ b\ =\ \&new\_bucks[index];}
+\DoxyCodeLine{01510\ }
+\DoxyCodeLine{01511\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (b-\/>index\ ==\ 0)\ \{}
+\DoxyCodeLine{01512\ \ \ \ \ \ \ \ \ *b\ =\ to\_put;}
+\DoxyCodeLine{01513\ \ \ \ \ \ \ \ \ *bucket\_len\ +=\ 1;}
+\DoxyCodeLine{01514\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01515\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01516\ }
+\DoxyCodeLine{01517\ \ \ \ \ \ \ index\ =\ (index\ +\ 1)\ \%\ new\_cap;}
+\DoxyCodeLine{01518\ \ \ \ \ \}}
+\DoxyCodeLine{01519\ \ \ \}}
+\DoxyCodeLine{01520\ \ \ free(*buckets);}
+\DoxyCodeLine{01521\ \ \ *buckets\ =\ new\_bucks;}
+\DoxyCodeLine{01522\ \}}
+\DoxyCodeLine{01523\ }
+\DoxyCodeLine{01524\ uint64\_t\ snifex\_api\_hash\_num\_func(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ in,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ inlen)\ \{}
+\DoxyCodeLine{01525\ \textcolor{preprocessor}{\#define\ ROTL(a,\ b)\ (((a)\ <<\ (b))\ |\ ((a)\ >>\ (8\ -\/\ (b))))}}
+\DoxyCodeLine{01526\ \ \ \textcolor{keyword}{const}\ uint8\_t*\ v\ =\ (\textcolor{keyword}{const}\ uint8\_t*)in;}
+\DoxyCodeLine{01527\ }
+\DoxyCodeLine{01528\ \ \ \textcolor{keywordtype}{size\_t}\ i\ =\ 0;}
+\DoxyCodeLine{01529\ \ \ uint64\_t\ ret\ =\ 0;}
+\DoxyCodeLine{01530\ }
+\DoxyCodeLine{01531\ \ \ \textcolor{keywordflow}{for}\ (;\ i\ +\ 8\ <=\ inlen;\ i\ +=\ 8)\ \{}
+\DoxyCodeLine{01532\ \ \ \ \ uint8\_t\ a\ =\ v[i\ +\ 0];}
+\DoxyCodeLine{01533\ \ \ \ \ uint8\_t\ b\ =\ v[i\ +\ 1];}
+\DoxyCodeLine{01534\ \ \ \ \ uint8\_t\ c\ =\ v[i\ +\ 2];}
+\DoxyCodeLine{01535\ \ \ \ \ uint8\_t\ d\ =\ v[i\ +\ 3];}
+\DoxyCodeLine{01536\ }
+\DoxyCodeLine{01537\ \ \ \ \ uint8\_t\ e\ =\ v[i\ +\ 4];}
+\DoxyCodeLine{01538\ \ \ \ \ uint8\_t\ f\ =\ v[i\ +\ 5];}
+\DoxyCodeLine{01539\ \ \ \ \ uint8\_t\ g\ =\ v[i\ +\ 6];}
+\DoxyCodeLine{01540\ \ \ \ \ uint8\_t\ h\ =\ v[i\ +\ 7];}
+\DoxyCodeLine{01541\ \ \ \ \ a\ +=\ b,\ d\ \string^=\ a,\ d\ =\ ROTL(d,\ 4);}
+\DoxyCodeLine{01542\ \ \ \ \ c\ +=\ d,\ b\ \string^=\ c,\ b\ =\ ROTL(b,\ 4);}
+\DoxyCodeLine{01543\ \ \ \ \ e\ +=\ f,\ h\ \string^=\ e,\ h\ =\ ROTL(h,\ 4);}
+\DoxyCodeLine{01544\ \ \ \ \ g\ +=\ h,\ f\ \string^=\ g,\ f\ =\ ROTL(f,\ 4);}
+\DoxyCodeLine{01545\ \ \ \ \ ret\ \string^=\ ((uint64\_t)a\ <<\ 56\ |\ (uint64\_t)b\ <<\ 48\ |\ (uint64\_t)c\ <<\ 40\ |}
+\DoxyCodeLine{01546\ \ \ \ \ \ \ \ \ \ \ \ \ (uint64\_t)d\ <<\ 32\ |\ (uint64\_t)e\ <<\ 24\ |\ (uint64\_t)f\ <<\ 16\ |}
+\DoxyCodeLine{01547\ \ \ \ \ \ \ \ \ \ \ \ \ (uint64\_t)g\ <<\ 8\ |\ (uint64\_t)h);}
+\DoxyCodeLine{01548\ \ \ \}}
+\DoxyCodeLine{01549\ \ \ \textcolor{keywordflow}{for}\ (;\ i\ <\ inlen;\ i++)\ \{}
+\DoxyCodeLine{01550\ \ \ \ \ ret\ +=\ v[i];}
+\DoxyCodeLine{01551\ \ \ \ \ ret\ \string^=\ v[i];}
+\DoxyCodeLine{01552\ \ \ \ \ ret\ =\ ROTL(ret,\ 8);}
+\DoxyCodeLine{01553\ \ \ \}}
+\DoxyCodeLine{01554\ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{01555\ \textcolor{preprocessor}{\#undef\ ROTL}}
+\DoxyCodeLine{01556\ \}}
+\DoxyCodeLine{01557\ }
+\DoxyCodeLine{01558\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ SNIFEX\_API\_IMPLEMENTATION}}
+
+\end{DoxyCode}

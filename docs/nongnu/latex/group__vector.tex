@@ -1,0 +1,319 @@
+\doxysection{Vector}
+\hypertarget{group__vector}{}\label{group__vector}\index{Vector@{Vector}}
+
+
+General type dynamically-\/growing arrays.  
+
+
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{Define\+Vec}}(t)
+\begin{DoxyCompactList}\small\item\em Macro to declare a specifically typed Vector. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(t)~Vec\+\_\+\#\#t
+\begin{DoxyCompactList}\small\item\em Macro to get the struct type of a vector of {\ttfamily t}s. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_gaf9fe084ed81987e135bb09f2e3179fbb}{vec\+\_\+create}}(lval\+\_\+result\+\_\+vec,  t,  init\+\_\+cap)
+\begin{DoxyCompactList}\small\item\em Create a vector of {\ttfamily t}s with an initial capacity of {\ttfamily init\+\_\+cap} \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga9f032ff8f2b7ec2165db1563fd65ba84}{vec\+\_\+from}}(lval\+\_\+result\+\_\+vec,  t,  item1, ...)
+\begin{DoxyCompactList}\small\item\em Create a vector from a list of initial elements. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga34057adbd9b0356ce0a766607286dbb9}{vec\+\_\+idx}}(lval\+\_\+result\+\_\+elem\+\_\+ptr,  t,  vec,  i)
+\begin{DoxyCompactList}\small\item\em Get pointer to element of vector at specific index. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga80aa2e68426868fad938dae1349138d1}{vec\+\_\+last}}(lval\+\_\+result\+\_\+elem\+\_\+ptr,  t,  vec)
+\begin{DoxyCompactList}\small\item\em Get pointer to last element of vector. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga7584cabf1cdae1b93c7e1ccdf465ca0e}{vec\+\_\+push}}(t,  vec\+\_\+ptr,  val)
+\begin{DoxyCompactList}\small\item\em Pushes value to the end of the vector. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_gaae6aa5a0abd0316eb0054c9ad528f11e}{vec\+\_\+pop}}(t,  vec\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Pops value from the end of the vector, reducing it\textquotesingle{}s length by 1 (if possible) \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga79c2425d873d0991780a4052606a1d63}{vec\+\_\+append}}(t,  front\+\_\+ptr,  back)
+\begin{DoxyCompactList}\small\item\em Appends items from a vector to the back of another vector. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__vector_ga3758b6852e3caea88dc02f8f1d618539}{vec\+\_\+swap\+\_\+remove}}(t,  vec\+\_\+ptr,  idx)
+\begin{DoxyCompactList}\small\item\em Perform a \textquotesingle{}swap remove\textquotesingle{} on vector. \end{DoxyCompactList}\item 
+\Hypertarget{group__vector_ga8abddb0def71d192a4cafdca99a71729}\label{group__vector_ga8abddb0def71d192a4cafdca99a71729} 
+\#define {\bfseries vec\+\_\+free}(vec\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Frees the vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+General type dynamically-\/growing arrays. 
+
+Data structure that owns its own data. Basically... my implementation of a dynamically-\/growing array, Array\+List, Vector or however you might call it.
+
+All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}} 
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}\label{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef} 
+\index{Vector@{Vector}!DefineVec@{DefineVec}}
+\index{DefineVec@{DefineVec}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{DefineVec}{DefineVec}}
+{\footnotesize\ttfamily \#define Define\+Vec(\begin{DoxyParamCaption}\item[{}]{t }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{\ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ t*\ ptr;\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ cap;\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ len;\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}\ Vec\_\#\#t}
+
+\end{DoxyCode}
+
+
+Macro to declare a specifically typed Vector. 
+
+The way I implemented generic vectors is by having macro work on vectors instead of functions. Instead of the stb-\/db approach of having hidden metadata, I prefer packing the metadata with the data itself, so that using different allocating strategies is easier, E.\+G. \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}.
+
+The downside is having to declare all the vector types used in the project. This macro makes that process stupid simple. Take a look at this example\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{DefineVec}}(\textcolor{keywordtype}{int});}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int}\ main()\ \{}
+\DoxyCodeLine{\ \ \mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(\textcolor{keywordtype}{int})\ vector;}
+\DoxyCodeLine{\ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+This is a general documentation for the structs generated by this macro\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{\ \ t*\ ptr;\ \ \ \ \ \textcolor{comment}{//\ Pointer\ to\ the\ buffer\ of\ the\ internal\ C\ array}}
+\DoxyCodeLine{\ \ \textcolor{keywordtype}{size\_t}\ cap;\ \textcolor{comment}{//\ Capacity\ of\ the\ vector,\ I.E.\ size\ of\ the\ internal\ C\ array}}
+\DoxyCodeLine{\ \ \textcolor{keywordtype}{size\_t}\ len;\ \textcolor{comment}{//\ Actual\ length\ of\ the\ vector,\ I.E.\ amount\ of\ elements\ in\ the}}
+\DoxyCodeLine{\ \ vector}
+\DoxyCodeLine{\}\ Vec\_t;\ \textcolor{comment}{//\ Where\ \`{}t`\ is\ any\ type\ passed\ to\ the\ macro}}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+-\/ \doxylink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec} 
+\end{DoxySeeAlso}
+\Hypertarget{group__vector_ga21ec81b33f2746d76b94b77c7f990379}\label{group__vector_ga21ec81b33f2746d76b94b77c7f990379} 
+\index{Vector@{Vector}!Vec@{Vec}}
+\index{Vec@{Vec}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{Vec}{Vec}}
+{\footnotesize\ttfamily \#define Vec(\begin{DoxyParamCaption}\item[{}]{t }\end{DoxyParamCaption})~Vec\+\_\+\#\#t}
+
+
+
+Macro to get the struct type of a vector of {\ttfamily t}s. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxylink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{Define\+Vec} for more info 
+\end{DoxySeeAlso}
+\Hypertarget{group__vector_ga79c2425d873d0991780a4052606a1d63}\label{group__vector_ga79c2425d873d0991780a4052606a1d63} 
+\index{Vector@{Vector}!vec\_append@{vec\_append}}
+\index{vec\_append@{vec\_append}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_append}{vec\_append}}
+{\footnotesize\ttfamily \#define vec\+\_\+append(\begin{DoxyParamCaption}\item[{}]{t,  }\item[{}]{front\+\_\+ptr,  }\item[{}]{back }\end{DoxyParamCaption})}
+
+
+
+Appends items from a vector to the back of another vector. 
+
+\begin{DoxyNote}{Note}
+Could trigger reallocation
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em front\+\_\+ptr} & Pointer to the vector we\textquotesingle{}re appending to. \\
+\hline
+{\em back} & Vector we\textquotesingle{}re taking the items from. The items will be copied. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily front\+\_\+ptr != NULL} 
+\end{DoxyPrecond}
+\begin{DoxyPostcond}{Postcondition}
+{\ttfamily front\+\_\+ptr-\/\texorpdfstring{$>$}{>}ptr != NULL} if {\ttfamily realloc} did not fail 
+\end{DoxyPostcond}
+\Hypertarget{group__vector_gaf9fe084ed81987e135bb09f2e3179fbb}\label{group__vector_gaf9fe084ed81987e135bb09f2e3179fbb} 
+\index{Vector@{Vector}!vec\_create@{vec\_create}}
+\index{vec\_create@{vec\_create}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_create}{vec\_create}}
+{\footnotesize\ttfamily \#define vec\+\_\+create(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+vec,  }\item[{}]{t,  }\item[{}]{init\+\_\+cap }\end{DoxyParamCaption})}
+
+
+
+Create a vector of {\ttfamily t}s with an initial capacity of {\ttfamily init\+\_\+cap} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+vec} & An lvalue of type {\ttfamily \doxylink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec(t)}} to which the result is going to be set \\
+\hline
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em init\+\_\+cap} & The initial capacity of the vector \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__vector_ga9f032ff8f2b7ec2165db1563fd65ba84}\label{group__vector_ga9f032ff8f2b7ec2165db1563fd65ba84} 
+\index{Vector@{Vector}!vec\_from@{vec\_from}}
+\index{vec\_from@{vec\_from}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_from}{vec\_from}}
+{\footnotesize\ttfamily \#define vec\+\_\+from(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+vec,  }\item[{}]{t,  }\item[{}]{item1,  }\item[{}]{... }\end{DoxyParamCaption})}
+
+
+
+Create a vector from a list of initial elements. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+vec} & An lvalue of type {\ttfamily \doxylink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec(t)}} to which the result is going to be set \\
+\hline
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em item1} & The first element of the vector. Must be of type {\ttfamily t} \\
+\hline
+{\em ...} & More following optional elements. All must be of type {\ttfamily t} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily item1} and varargs {\ttfamily ...} must be of type {\ttfamily t} 
+\end{DoxyPrecond}
+\Hypertarget{group__vector_ga34057adbd9b0356ce0a766607286dbb9}\label{group__vector_ga34057adbd9b0356ce0a766607286dbb9} 
+\index{Vector@{Vector}!vec\_idx@{vec\_idx}}
+\index{vec\_idx@{vec\_idx}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_idx}{vec\_idx}}
+{\footnotesize\ttfamily \#define vec\+\_\+idx(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+elem\+\_\+ptr,  }\item[{}]{t,  }\item[{}]{vec,  }\item[{}]{i }\end{DoxyParamCaption})}
+
+
+
+Get pointer to element of vector at specific index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+elem\+\_\+ptr} & An lvalue of type {\ttfamily t\texorpdfstring{$\ast$}{*}} to which the result is going to be set \\
+\hline
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em vec} & The vector we\textquotesingle{}re indexing \\
+\hline
+{\em i} & The index of the element \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the indexed element 
+\end{DoxyReturn}
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily i \texorpdfstring{$>$}{>}= 0} (since it\textquotesingle{}s of type {\ttfamily size\+\_\+t}) 
+
+{\ttfamily vec.\+len \texorpdfstring{$>$}{>} 0} 
+
+{\ttfamily i \texorpdfstring{$<$}{<} vec.\+len} 
+
+{\ttfamily vec.\+ptr != NULL} (which should be true if the user did not mess with the {\ttfamily ptr} directly) 
+\end{DoxyPrecond}
+\Hypertarget{group__vector_ga80aa2e68426868fad938dae1349138d1}\label{group__vector_ga80aa2e68426868fad938dae1349138d1} 
+\index{Vector@{Vector}!vec\_last@{vec\_last}}
+\index{vec\_last@{vec\_last}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_last}{vec\_last}}
+{\footnotesize\ttfamily \#define vec\+\_\+last(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+elem\+\_\+ptr,  }\item[{}]{t,  }\item[{}]{vec }\end{DoxyParamCaption})}
+
+
+
+Get pointer to last element of vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+elem\+\_\+ptr} & An lvalue of type {\ttfamily t\texorpdfstring{$\ast$}{*}} to which the result is going to be set \\
+\hline
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em vec} & The vector we\textquotesingle{}re taking the element from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the last element 
+\end{DoxyReturn}
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily vec.\+ptr != NULL} (which should be true if the user did not mess with the {\ttfamily ptr} directly) 
+\end{DoxyPrecond}
+\Hypertarget{group__vector_gaae6aa5a0abd0316eb0054c9ad528f11e}\label{group__vector_gaae6aa5a0abd0316eb0054c9ad528f11e} 
+\index{Vector@{Vector}!vec\_pop@{vec\_pop}}
+\index{vec\_pop@{vec\_pop}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_pop}{vec\_pop}}
+{\footnotesize\ttfamily \#define vec\+\_\+pop(\begin{DoxyParamCaption}\item[{}]{t,  }\item[{}]{vec\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Pops value from the end of the vector, reducing it\textquotesingle{}s length by 1 (if possible) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em vec\+\_\+ptr} & Pointer to the vector we\textquotesingle{}re popping from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily vec\+\_\+ptr != NULL} 
+\end{DoxyPrecond}
+\Hypertarget{group__vector_ga7584cabf1cdae1b93c7e1ccdf465ca0e}\label{group__vector_ga7584cabf1cdae1b93c7e1ccdf465ca0e} 
+\index{Vector@{Vector}!vec\_push@{vec\_push}}
+\index{vec\_push@{vec\_push}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_push}{vec\_push}}
+{\footnotesize\ttfamily \#define vec\+\_\+push(\begin{DoxyParamCaption}\item[{}]{t,  }\item[{}]{vec\+\_\+ptr,  }\item[{}]{val }\end{DoxyParamCaption})}
+
+
+
+Pushes value to the end of the vector. 
+
+\begin{DoxyNote}{Note}
+Could trigger reallocation
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em vec\+\_\+ptr} & Pointer to the vector we\textquotesingle{}re pushing to \\
+\hline
+{\em val} & Value to push \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily val} must be the same type of the vector elements 
+
+{\ttfamily vec\+\_\+ptr != NULL} 
+\end{DoxyPrecond}
+\begin{DoxyPostcond}{Postcondition}
+{\ttfamily vec\+\_\+ptr-\/\texorpdfstring{$>$}{>}ptr != NULL} if {\ttfamily realloc} did not fail 
+\end{DoxyPostcond}
+\Hypertarget{group__vector_ga3758b6852e3caea88dc02f8f1d618539}\label{group__vector_ga3758b6852e3caea88dc02f8f1d618539} 
+\index{Vector@{Vector}!vec\_swap\_remove@{vec\_swap\_remove}}
+\index{vec\_swap\_remove@{vec\_swap\_remove}!Vector@{Vector}}
+\doxysubsubsection{\texorpdfstring{vec\_swap\_remove}{vec\_swap\_remove}}
+{\footnotesize\ttfamily \#define vec\+\_\+swap\+\_\+remove(\begin{DoxyParamCaption}\item[{}]{t,  }\item[{}]{vec\+\_\+ptr,  }\item[{}]{idx }\end{DoxyParamCaption})}
+
+
+
+Perform a \textquotesingle{}swap remove\textquotesingle{} on vector. 
+
+A \textquotesingle{}swap remove\textquotesingle{} is a specific type of deletion on arrays that is constant time. It consists of moving the last element into the slot of the element we\textquotesingle{}re removing, and then decreasing the vector length by one. As you probably have noticed, it does NOT maintain the elements\textquotesingle{} order
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+{\em vec\+\_\+ptr} & Pointer to the vector we\textquotesingle{}re working with \\
+\hline
+{\em idx} & Index of the element to remove \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily vec\+\_\+ptr != NULL} 
+
+{\ttfamily vec\+\_\+ptr-\/\texorpdfstring{$>$}{>}len \texorpdfstring{$>$}{>} 0} 
+\end{DoxyPrecond}

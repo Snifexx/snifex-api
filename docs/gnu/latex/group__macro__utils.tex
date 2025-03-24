@@ -1,0 +1,50 @@
+\doxysection{Macro utils}
+\hypertarget{group__macro__utils}{}\label{group__macro__utils}\index{Macro utils@{Macro utils}}
+
+
+Macro Utilities.  
+
+
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{group__macro__utils_ga29fc9426c101405cd66e5b6085d99a11}\label{group__macro__utils_ga29fc9426c101405cd66e5b6085d99a11} 
+\#define {\bfseries SNIFEX\+\_\+\+API\+\_\+\+GNU\+\_\+\+EXTENSIONS}
+\item 
+\#define \mbox{\hyperlink{group__macro__utils_ga53022762464514790477ba81ce0ab36a}{assert}}(expr)
+\begin{DoxyCompactList}\small\item\em Snifex API assert. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Macro Utilities. 
+
+All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}}
+
+These include\+:
+\begin{DoxyItemize}
+\item The OS\+\_\+\texorpdfstring{$\ast$}{*} utility macros, for identifying OSs and platforms
+\item The asserting macros 
+\end{DoxyItemize}
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{group__macro__utils_ga53022762464514790477ba81ce0ab36a}\label{group__macro__utils_ga53022762464514790477ba81ce0ab36a} 
+\index{Macro utils@{Macro utils}!assert@{assert}}
+\index{assert@{assert}!Macro utils@{Macro utils}}
+\doxysubsubsection{\texorpdfstring{assert}{assert}}
+{\footnotesize\ttfamily \#define assert(\begin{DoxyParamCaption}\item[{}]{expr }\end{DoxyParamCaption})}
+
+
+
+Snifex API assert. 
+
+Custom implementation of an assert. The fundamental changes are the following\+:
+\begin{DoxyItemize}
+\item Persists in release mode
+\item Prints stack trace when possible
+\item Is just generally cleaner 
+\begin{DoxyParams}{Parameters}
+{\em expr} & Any {\ttfamily bool} expression that must be true \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}

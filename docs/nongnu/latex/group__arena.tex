@@ -1,0 +1,200 @@
+\doxysection{Arena}
+\hypertarget{group__arena}{}\label{group__arena}\index{Arena@{Arena}}
+
+
+Fixed-\/sized and growing arenas.  
+
+
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}}
+\begin{DoxyCompactList}\small\item\em A dinamically growing arena. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structarena}{arena}}
+\begin{DoxyCompactList}\small\item\em A fixed-\/sized arena. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group__arena_ga42cd5df57e48132617fffea48005b8b0}{dyn\+\_\+arena\+\_\+get}}(lval\+\_\+result\+\_\+t\+\_\+ptr,  t,  \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}},  rel\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Get a temporary pointer from relative pointer of a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}} \mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}}
+\begin{DoxyCompactList}\small\item\em A dinamically growing arena. \end{DoxyCompactList}\item 
+typedef struct \mbox{\hyperlink{structarena}{arena}} \mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}}
+\begin{DoxyCompactList}\small\item\em A fixed-\/sized arena. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__arena_ga4f2552f1f1916a66b9b668573b5f5da5}{dyn\+\_\+arena\+\_\+init}} (\mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}}, const size\+\_\+t init\+\_\+cap)
+\begin{DoxyCompactList}\small\item\em Initializes a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__arena_ga556fe6f44a864e923de34fbf4ec7ee99}{arena\+\_\+init}} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}}, const size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Initializes an \doxylink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} \mbox{\hyperlink{group__arena_ga5cf19a838d5dca54e91d85cf1a316a35}{dyn\+\_\+arena\+\_\+create}} (const size\+\_\+t init\+\_\+cap)
+\begin{DoxyCompactList}\small\item\em Creates a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \mbox{\hyperlink{group__arena_gab0573670aaeee0a29decae478d241cdb}{arena\+\_\+create}} (const size\+\_\+t init\+\_\+cap)
+\begin{DoxyCompactList}\small\item\em Creates an \doxylink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\+\_\+arena\+\_\+alloc}} (\mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}}, const size\+\_\+t size, const size\+\_\+t alignment)
+\begin{DoxyCompactList}\small\item\em Allocates an object into a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. \end{DoxyCompactList}\item 
+void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}{arena\+\_\+alloc}} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}}, const size\+\_\+t size, const size\+\_\+t alignment)
+\begin{DoxyCompactList}\small\item\em Allocates an object into an \doxylink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__arena_gaf897e892410e5f2d2a89d78bc7e062c4}{dyn\+\_\+arena\+\_\+reserve}} (\mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}}, const size\+\_\+t min\+\_\+cap)
+\begin{DoxyCompactList}\small\item\em Reserves at least {\ttfamily min\+\_\+cap} bytes in the arena. \end{DoxyCompactList}\item 
+\Hypertarget{group__arena_ga86be5730f0ea3d9f5c512e97c05eca97}\label{group__arena_ga86be5730f0ea3d9f5c512e97c05eca97} 
+void {\bfseries dyn\+\_\+arena\+\_\+free} (\mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}})
+\begin{DoxyCompactList}\small\item\em Frees a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. \end{DoxyCompactList}\item 
+\Hypertarget{group__arena_gace2ac8edeb4f508d4086ec658911f854}\label{group__arena_gace2ac8edeb4f508d4086ec658911f854} 
+void {\bfseries arena\+\_\+free} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}})
+\begin{DoxyCompactList}\small\item\em Frees an \doxylink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Fixed-\/sized and growing arenas. 
+
+My implementation of an Arena allocator. I\textquotesingle{}ve implemented both a fixed size Arena, and a dynamically growing one.
+
+All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}} 
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{group__arena_ga42cd5df57e48132617fffea48005b8b0}\label{group__arena_ga42cd5df57e48132617fffea48005b8b0} 
+\index{Arena@{Arena}!dyn\_arena\_get@{dyn\_arena\_get}}
+\index{dyn\_arena\_get@{dyn\_arena\_get}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{dyn\_arena\_get}{dyn\_arena\_get}}
+{\footnotesize\ttfamily \#define dyn\+\_\+arena\+\_\+get(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+t\+\_\+ptr,  }\item[{}]{t,  }\item[{}]{\mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}},  }\item[{}]{rel\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Get a temporary pointer from relative pointer of a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. 
+
+Get a pointer to the object at from {\ttfamily rel\+\_\+ptr}. The returning pointer should not be stored or reused after a \doxylink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\+\_\+arena\+\_\+alloc} allocation, because an allocation could trigger a resizing rendering that pointer dangerous. Instead, store, pass and work with the relative pointer retuned from \doxylink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\+\_\+arena\+\_\+alloc} and then, when working on the object in the \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}, get a temporary "{}absolute"{} pointer with this macro
+
+
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+t\+\_\+ptr} & An lvalue of type {\ttfamily t\texorpdfstring{$\ast$}{*}} to which the result is going to be set \\
+\hline
+{\em t} & The type of the item we\textquotesingle{}re casting the pointer to \\
+\hline
+{\em rel\+\_\+ptr} & The relative pointer to the object in the \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An "{}absolute"{} pointer to the object of type {\ttfamily t} allocated in the \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena} at offset {\ttfamily rel\+\_\+ptr} 
+\end{DoxyReturn}
+
+
+\doxysubsection{Typedef Documentation}
+\Hypertarget{group__arena_gaa3c04ba804275765a4e49c9872d46a25}\label{group__arena_gaa3c04ba804275765a4e49c9872d46a25} 
+\index{Arena@{Arena}!Arena@{Arena}}
+\index{Arena@{Arena}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{Arena}{Arena}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structarena}{arena}} \mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}}}
+
+
+
+A fixed-\/sized arena. 
+
+A fixed-\/sized arena, that allocates a certain amount of memory when initialized and never gets reallocated again. Because of this allocations can fail when there is not enough memory allocated. Since reallocations never happen, \doxylink{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}{arena\+\_\+alloc} return pointers, which is VERY useful for strings or scratch arenas \Hypertarget{group__arena_ga87592162b834e5e3424de774f8cb8eb3}\label{group__arena_ga87592162b834e5e3424de774f8cb8eb3} 
+\index{Arena@{Arena}!DynArena@{DynArena}}
+\index{DynArena@{DynArena}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{DynArena}{DynArena}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}} \mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}}}
+
+
+
+A dinamically growing arena. 
+
+An arena that is not fixed-\/sized, and dynamically grows. Because of this property, \doxylink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\+\_\+arena\+\_\+alloc} does not return a pointer, it returns an index with which we can access the pointer temporarily (with \doxylink{group__arena_ga42cd5df57e48132617fffea48005b8b0}{dyn\+\_\+arena\+\_\+get}) 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}\label{group__arena_gafa4a34eff8578b37c7fa9a3e12188959} 
+\index{Arena@{Arena}!arena\_alloc@{arena\_alloc}}
+\index{arena\_alloc@{arena\_alloc}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{arena\_alloc()}{arena\_alloc()}}
+{\footnotesize\ttfamily void \texorpdfstring{$\ast$}{*} arena\+\_\+alloc (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const size\+\_\+t}]{size,  }\item[{const size\+\_\+t}]{alignment }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Allocates an object into an \doxylink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}. 
+
+Allocates object of size \textquotesingle{}{\ttfamily size}\textquotesingle{} aligned to \textquotesingle{}{\ttfamily alignment}\textquotesingle{}. If unsure of what to use as {\ttfamily alignment}, just use the {\ttfamily size} \begin{DoxyReturn}{Returns}
+Returns an pointer to the object that can be used directly 
+\end{DoxyReturn}
+\Hypertarget{group__arena_gab0573670aaeee0a29decae478d241cdb}\label{group__arena_gab0573670aaeee0a29decae478d241cdb} 
+\index{Arena@{Arena}!arena\_create@{arena\_create}}
+\index{arena\_create@{arena\_create}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{arena\_create()}{arena\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} arena\+\_\+create (\begin{DoxyParamCaption}\item[{const size\+\_\+t}]{init\+\_\+cap }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Creates an \doxylink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}. 
+
+\begin{DoxyPostcond}{Postcondition}
+{\ttfamily arena-\/\texorpdfstring{$>$}{>}buf != NULL} if {\ttfamily malloc} did not fail 
+\end{DoxyPostcond}
+\Hypertarget{group__arena_ga556fe6f44a864e923de34fbf4ec7ee99}\label{group__arena_ga556fe6f44a864e923de34fbf4ec7ee99} 
+\index{Arena@{Arena}!arena\_init@{arena\_init}}
+\index{arena\_init@{arena\_init}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{arena\_init()}{arena\_init()}}
+{\footnotesize\ttfamily void arena\+\_\+init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const size\+\_\+t}]{size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Initializes an \doxylink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}. 
+
+\begin{DoxyPostcond}{Postcondition}
+{\ttfamily arena-\/\texorpdfstring{$>$}{>}buf != NULL} if {\ttfamily malloc} did not fail 
+\end{DoxyPostcond}
+\Hypertarget{group__arena_gaf51416939c44395d6d982750c464ab44}\label{group__arena_gaf51416939c44395d6d982750c464ab44} 
+\index{Arena@{Arena}!dyn\_arena\_alloc@{dyn\_arena\_alloc}}
+\index{dyn\_arena\_alloc@{dyn\_arena\_alloc}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{dyn\_arena\_alloc()}{dyn\_arena\_alloc()}}
+{\footnotesize\ttfamily size\+\_\+t dyn\+\_\+arena\+\_\+alloc (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} \texorpdfstring{$\ast$}{*}const}]{dyn\+\_\+arena,  }\item[{const size\+\_\+t}]{size,  }\item[{const size\+\_\+t}]{alignment }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Allocates an object into a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. 
+
+Allocates object of size \textquotesingle{}{\ttfamily size}\textquotesingle{} aligned to \textquotesingle{}{\ttfamily alignment}\textquotesingle{}. If unsure of what to use as {\ttfamily alignment}, just use the {\ttfamily size} \begin{DoxyReturn}{Returns}
+Returns an index from {\ttfamily dyn\+\_\+arena-\/\texorpdfstring{$>$}{>}buf}. To get the obect at that index refer to \doxylink{group__arena_ga42cd5df57e48132617fffea48005b8b0}{dyn\+\_\+arena\+\_\+get} 
+\end{DoxyReturn}
+\Hypertarget{group__arena_ga5cf19a838d5dca54e91d85cf1a316a35}\label{group__arena_ga5cf19a838d5dca54e91d85cf1a316a35} 
+\index{Arena@{Arena}!dyn\_arena\_create@{dyn\_arena\_create}}
+\index{dyn\_arena\_create@{dyn\_arena\_create}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{dyn\_arena\_create()}{dyn\_arena\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} dyn\+\_\+arena\+\_\+create (\begin{DoxyParamCaption}\item[{const size\+\_\+t}]{init\+\_\+cap }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Creates a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. 
+
+\begin{DoxyPostcond}{Postcondition}
+{\ttfamily dyn\+\_\+arena-\/\texorpdfstring{$>$}{>}buf != NULL} if {\ttfamily malloc} did not fail 
+\end{DoxyPostcond}
+\Hypertarget{group__arena_ga4f2552f1f1916a66b9b668573b5f5da5}\label{group__arena_ga4f2552f1f1916a66b9b668573b5f5da5} 
+\index{Arena@{Arena}!dyn\_arena\_init@{dyn\_arena\_init}}
+\index{dyn\_arena\_init@{dyn\_arena\_init}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{dyn\_arena\_init()}{dyn\_arena\_init()}}
+{\footnotesize\ttfamily void dyn\+\_\+arena\+\_\+init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} \texorpdfstring{$\ast$}{*}const}]{dyn\+\_\+arena,  }\item[{const size\+\_\+t}]{init\+\_\+cap }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Initializes a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. 
+
+\begin{DoxyPostcond}{Postcondition}
+{\ttfamily dyn\+\_\+arena-\/\texorpdfstring{$>$}{>}buf != NULL} if {\ttfamily malloc} did not fail 
+\end{DoxyPostcond}
+\Hypertarget{group__arena_gaf897e892410e5f2d2a89d78bc7e062c4}\label{group__arena_gaf897e892410e5f2d2a89d78bc7e062c4} 
+\index{Arena@{Arena}!dyn\_arena\_reserve@{dyn\_arena\_reserve}}
+\index{dyn\_arena\_reserve@{dyn\_arena\_reserve}!Arena@{Arena}}
+\doxysubsubsection{\texorpdfstring{dyn\_arena\_reserve()}{dyn\_arena\_reserve()}}
+{\footnotesize\ttfamily void dyn\+\_\+arena\+\_\+reserve (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}} \texorpdfstring{$\ast$}{*}const}]{dyn\+\_\+arena,  }\item[{const size\+\_\+t}]{min\+\_\+cap }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Reserves at least {\ttfamily min\+\_\+cap} bytes in the arena. 
+
+Allocates enough bytes of memory for the \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena} capacity to be at least {\ttfamily min\+\_\+cap}. It is not a guaranteed realloc\+: it COULD trigger one, but only if {\ttfamily dyn\+\_\+arena-\/\texorpdfstring{$>$}{>}cap \texorpdfstring{$<$}{<} min\+\_\+cap}. \begin{DoxyPostcond}{Postcondition}
+{\ttfamily dyn\+\_\+arena-\/\texorpdfstring{$>$}{>}buf != NULL} if {\ttfamily malloc} did not fail 
+\end{DoxyPostcond}

@@ -14,7 +14,7 @@ It's an [stb single file header library](https://github.com/nothings/stb).
 I wrote documentation and generated it with [Doxygen](https://www.doxygen.nl).
 Github page available:
   - [Here](https://snifexx.github.io/snifex-api/) for GCC/Clang or any compiler with Gnu Extensions and `__GNUC__`,
-  - or [here](https://snifexx.github.io/snifex-api/nongnu) for any other non gnu compiler
+  - or [here](https://snifexx.github.io/snifex-api/nongnu) for any other non gnu compiler, or if `NO_GNU_SNIFEX_API_TESTS` macro is defined.
 
 ## Usage
 Since this is an stb file header it packs the header file with the implementations all in one. What does that mean?
@@ -105,17 +105,16 @@ to stick to these as much as I can (ideally always).
 
 - Some naming conventions:
     - When naming functions that operate on a type, that could 'feel' method-like, prefix the name with the type,
-    maybe abbreviating it. Examples: `str_trim`, `arena_alloc`
+    maybe abbreviating it. Examples: `str_trim`, `arena_alloc`.
 
 - Good practise:
     - Practise Defensive Programming, I.E. spam asserts a lot.
     - When making macros for non GCC/Clang compilers use the classical do {} while (0) and when replicating GNU's expression statements,
-    have an argument named `result` that is set at the end of the macro
-    - When making macros for GCC or Clang that are NOT expression statements, still use the do {} while (0) hack
+    have an argument named `lval_result_t` (where t is the type of the lvalue) that is set at the end of the macro.
+    - When making macros for GCC or Clang that are NOT expression statements, still use the do {} while (0) hack.
 
 ## TODO
 
-- ***IMPORTANT!*** Add Doxygen banners and documentation
 - ***IMPORTANT!*** Add alignment in powers of two to capacities
 - Arena allocations for Vectors
 - *USEFUL* Debug API to replace malloc, realloc, etc... with macro hooks to check that all allocations are deallocated

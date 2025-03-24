@@ -1,0 +1,39 @@
+\doxysection{string Struct Reference}
+\hypertarget{structstring}{}\label{structstring}\index{string@{string}}
+
+
+A sized string view.  
+
+
+
+
+{\ttfamily \#include $<$snifex-\/api.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93}\label{structstring_aa1b2f3a2ddd1ed38245b8d4590aadf93} 
+char \texorpdfstring{$\ast$}{*} {\bfseries ptr}
+\begin{DoxyCompactList}\small\item\em Internal string buffer. \end{DoxyCompactList}\item 
+\Hypertarget{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a}\label{structstring_aa6bcf0353fd5cf2f374a9b1dd0e4a73a} 
+size\+\_\+t {\bfseries len}
+\begin{DoxyCompactList}\small\item\em Length of string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A sized string view. 
+
+This a simple sized string view... Nothing else. For the uninitiated\+:
+\begin{DoxyItemize}
+\item \textquotesingle{}sized\textquotesingle{} means that we carry the length of the data with the data (the char\texorpdfstring{$\ast$}{*})
+\item \textquotesingle{}view\textquotesingle{} because the memory is not owned. That means that it is the user responsibility to manage the memory the string view is pointing to. The recommended way is using an arena.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+These strings are NOT zero tailing (since they\textquotesingle{}re string-\/views anyways) 
+\end{DoxyNote}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/snifex-\/api.\+h\end{DoxyCompactItemize}

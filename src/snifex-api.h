@@ -15,6 +15,9 @@
 /// @defgroup macro_utils Macro utils
 /// @brief Macro Utilities.
 ///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+///
 /// These include:
 ///   - The OS_* utility macros, for identifying OSs and platforms
 ///   - The asserting macros
@@ -82,6 +85,7 @@ void __snifex_api_assert_fail(const char* expr,
 ///   - Prints stack trace when possible
 ///   - Is just generally cleaner
 /// @param expr Any `bool` expression that must be true
+/// @hideinitializer
 #define assert(expr)  \
   ((expr) ? ((void)0) \
           : __snifex_api_assert_fail(#expr, __FILE__, __LINE__, __func__))
@@ -92,6 +96,9 @@ void __snifex_api_assert_fail(const char* expr,
 
 /// @defgroup number Numbers
 /// @brief Utilities for numbers
+///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
 ///
 /// All numerical functions and macros
 /// @{
@@ -105,6 +112,7 @@ void __snifex_api_assert_fail(const char* expr,
 /// Get the normalized sign of any numerical type or 0
 /// @param num Any numerical type value
 /// @return -1 if `num` is negative, 1 if it's positive, 0 if `num` is 0
+/// @hideinitializer
 #define sign(num)                             \
   ({                                          \
     __auto_type s_num = num;                  \
@@ -115,10 +123,12 @@ void __snifex_api_assert_fail(const char* expr,
 /// @brief Get the sign of a number
 ///
 /// Get the normalized sign of any numerical type or 0
-/// @param result An lvalue of type `t` to which the result is going to be set
+/// @param lval_result_t An lvalue of type `t` to which the result is going to
+/// be set
 /// @param t The type of the `num` parameter
 /// @param num Any numerical type value of type `t`
 /// @return -1 if `num` is negative, 1 if it's positive, 0 if `num` is 0
+/// @hideinitializer
 #define sign(lval_result_t, t, num)                           \
   do {                                                        \
     t s_num = num;                                            \
@@ -132,8 +142,14 @@ static inline bool __snifex_api_is_power_of_two(const size_t x);
 
 /// @}
 
-/// @defgroup arena Arenas
+/// @defgroup arena Arena
 /// @brief Fixed-sized and growing arenas
+///
+/// My implementation of an Arena allocator.
+/// I've implemented both a fixed size Arena, and a dynamically growing one.
+///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
 ///
 /// @{
 
@@ -144,9 +160,11 @@ static inline bool __snifex_api_is_power_of_two(const size_t x);
 /// returns an index with which we can access the pointer temporarily (with @ref
 /// dyn_arena_get)
 typedef struct dyn_arena {
-  char* buf;
-  size_t cap;
-  size_t top;
+  char* buf;   ///< @brief The arena buffer
+  size_t cap;  ///< @brief The capacity of the arena, I.E. the amount of memory
+               /// allocated
+  size_t top;  ///< @brief The amount of bytes used by allocated objects, so the
+               /// offset at which the newly allocated objects will start
 } DynArena;
 
 /// @brief A fixed-sized arena
@@ -157,22 +175,23 @@ typedef struct dyn_arena {
 /// Since reallocations never happen, @ref arena_alloc return pointers, which is
 /// VERY useful for strings or scratch arenas
 typedef struct arena {
-  char* buf;
-  size_t size;
-  size_t top;
+  char* buf;    ///< @brief The arena buffer
+  size_t size;  ///< @brief The size of the arena
+  size_t top;  ///< @brief The amount of allocated bytes, so the offset at which
+               /// the newly allocated objects will start
 } Arena;
 
 /// @brief Initializes a @ref DynArena
-/// @post `dyn_arena->buf` != NULL if `malloc` did not fail
+/// @post `dyn_arena->buf != NULL` if `malloc` did not fail
 extern void dyn_arena_init(DynArena* const dyn_arena, const size_t init_cap);
 /// @brief Initializes an @ref Arena
-/// @post `arena->buf` != NULL if `malloc` did not fail
+/// @post `arena->buf != NULL` if `malloc` did not fail
 extern void arena_init(Arena* const arena, const size_t size);
 /// @brief Creates a @ref DynArena
-/// @post `dyn_arena->buf` != NULL if `malloc` did not fail
+/// @post `dyn_arena->buf != NULL` if `malloc` did not fail
 extern DynArena dyn_arena_create(const size_t init_cap);
 /// @brief Creates an @ref Arena
-/// @post `arena->buf` != NULL if `malloc` did not fail
+/// @post `arena->buf != NULL` if `malloc` did not fail
 extern Arena arena_create(const size_t init_cap);
 /// @brief Allocates an object into a @ref DynArena
 ///
@@ -194,6 +213,20 @@ extern void* arena_alloc(Arena* const arena,
                          const size_t alignment);
 
 #ifdef SNIFEX_API_GNU_EXTENSIONS
+/// @brief Get a temporary pointer from relative pointer of a @ref DynArena
+///
+/// Get a pointer to the object at from `rel_ptr`. The returning pointer should
+/// not be stored or reused after a @ref dyn_arena_alloc allocation, because an
+/// allocation could trigger a resizing rendering that pointer dangerous.
+/// Instead, store, pass and work with the relative pointer retuned from @ref
+/// dyn_arena_alloc and then, when working on the object in the @ref DynArena,
+/// get a temporary "absolute" pointer with this macro
+///
+/// @param t The type of the item we're casting the pointer to
+/// @param rel_ptr The relative pointer to the object in the @ref DynArena
+/// @return An "absolute" pointer to the object of type `t` allocated in the
+/// @ref DynArena at offset `rel_ptr`
+/// @hideinitializer
 #define dyn_arena_get(t, dyn_arena, rel_ptr)  \
   ({                                          \
     const DynArena dag_dyn_arena = dyn_arena; \
@@ -201,29 +234,86 @@ extern void* arena_alloc(Arena* const arena,
     (t*)&dag_dyn_arena.buf[dag_rel_ptr];      \
   })
 #else
-#define dyn_arena_get(result, t, dyn_arena, rel_ptr) \
-  do {                                               \
-    const DynArena dag_dyn_arena = dyn_arena;        \
-    const size_t dag_rel_ptr = rel_ptr;              \
-    result = (t*)&dag_dyn_arena.buf[dag_rel_ptr];    \
+
+/// @brief Get a temporary pointer from relative pointer of a @ref DynArena
+///
+/// Get a pointer to the object at from `rel_ptr`. The returning pointer should
+/// not be stored or reused after a @ref dyn_arena_alloc allocation, because an
+/// allocation could trigger a resizing rendering that pointer dangerous.
+/// Instead, store, pass and work with the relative pointer retuned from @ref
+/// dyn_arena_alloc and then, when working on the object in the @ref DynArena,
+/// get a temporary "absolute" pointer with this macro
+///
+/// @param lval_result_t_ptr An lvalue of type `t*` to which the result is going
+/// to be set
+/// @param t The type of the item we're casting the pointer to
+/// @param rel_ptr The relative pointer to the object in the @ref DynArena
+/// @return An "absolute" pointer to the object of type `t` allocated in the
+/// @ref DynArena at offset `rel_ptr`
+/// @hideinitializer
+#define dyn_arena_get(lval_result_t_ptr, t, dyn_arena, rel_ptr) \
+  do {                                                          \
+    const DynArena dag_dyn_arena = dyn_arena;                   \
+    const size_t dag_rel_ptr = rel_ptr;                         \
+    lval_result_t_ptr = (t*)&dag_dyn_arena.buf[dag_rel_ptr];    \
   } while (0)
 #endif
 
+/// @brief Reserves at least `min_cap` bytes in the arena
+///
+/// Allocates enough bytes of memory for the @ref DynArena capacity to be at
+/// least `min_cap`. It is not a guaranteed realloc: it COULD trigger one, but
+/// only if `dyn_arena->cap < min_cap`.
+/// @post `dyn_arena->buf != NULL` if `malloc` did not fail
 extern void dyn_arena_reserve(DynArena* const dyn_arena, const size_t min_cap);
+/// @brief Frees a @ref DynArena
 extern void dyn_arena_free(DynArena* const dyn_arena);
+/// @brief Frees an @ref Arena
 extern void arena_free(Arena* const arena);
 
 /// @}
 
-//-
-//-  General type dynamic arrays:
-//-
+/// @defgroup vector Vector
+/// @brief General type dynamically-growing arrays.
+///
+/// Data structure that owns its own data.
+/// Basically... my implementation of a dynamically-growing array, ArrayList,
+/// Vector or however you might call it.
+///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+/// @{
 
-// Data structure that owns its own data (that is they just have to be freed).
-// They basically are an alternative `Arena`. In other words... my
-// implementation of a dynamically-growing array, I.E. ArrayList, Vector or
-// however you might call it.
-
+/// @brief Macro to declare a specifically typed Vector
+///
+/// The way I implemented generic vectors is by having macro work on vectors
+/// instead of functions. Instead of the stb-db approach of having hidden
+/// metadata, I prefer packing the metadata with the data itself, so that using
+/// different allocating strategies is easier, E.G. @ref DynArena.
+///
+/// The downside is having to declare all the vector types used in the project.
+/// This macro makes that process stupid simple. Take a look at this example:
+/// @code
+/// DefineVec(int);
+///
+/// int main() {
+///   Vec(int) vector;
+///   return 0;
+/// }
+/// @endcode
+///
+/// This is a general documentation for the structs generated by this macro:
+/// @code
+/// typedef struct {
+///   t* ptr;     // Pointer to the buffer of the internal C array
+///   size_t cap; // Capacity of the vector, I.E. size of the internal C array
+///   size_t len; // Actual length of the vector, I.E. amount of elements in the
+///   vector
+/// } Vec_t; // Where `t` is any type passed to the macro
+/// @endcode
+///
+/// @param t The type of the elements in the vector
+/// @see - @ref Vec
 #define DefineVec(t) \
   typedef struct {   \
     t* ptr;          \
@@ -231,9 +321,18 @@ extern void arena_free(Arena* const arena);
     size_t len;      \
   } Vec_##t
 
+/// @brief Macro to get the struct type of a vector of `t`s
+///
+/// @param t The type of the elements in the vector
+/// @see @ref DefineVec for more info
 #define Vec(t) Vec_##t
 
 #ifdef SNIFEX_API_GNU_EXTENSIONS
+/// @brief Create a vector of `t`s with an initial capacity of `init_cap`
+///
+/// @param t The type of the elements in the vector
+/// @param init_cap The initial capacity of the vector
+/// @hideinitializer
 #define vec_create(t, init_cap)                  \
   ({                                             \
     const size_t vecc_init_cap = (init_cap);     \
@@ -246,6 +345,13 @@ extern void arena_free(Arena* const arena);
     };                                           \
   })
 
+/// @brief Create a vector from a list of initial elements
+///
+/// @param t The type of the elements in the vector
+/// @param item1 The first element of the vector. Must be of type `t`
+/// @param ... More following optional elements. All must be of type `t`
+/// @pre `item1` and varargs `...` must be of type `t`
+/// @hideinitializer
 #define vec_from(t, item1, ...)               \
   ({                                          \
     t items[] = {(item1), __VA_ARGS__};       \
@@ -256,6 +362,17 @@ extern void arena_free(Arena* const arena);
     vec;                                      \
   })
 
+/// @brief Get pointer to element of vector at specific index
+///
+/// @param vec The vector we're indexing
+/// @param i The index of the element
+/// @return Pointer to the indexed element
+/// @pre `i >= 0` (since it's of type `size_t`)
+/// @pre `vec.len > 0`
+/// @pre `i < vec.len`
+/// @pre `vec.ptr != NULL` (which should be true if the user did not mess with
+/// the `ptr` directly)
+/// @hideinitializer
 #define vec_idx(vec, i)                                                        \
   ({                                                                           \
     __typeof(vec) veci_vec = (vec);                                            \
@@ -263,8 +380,27 @@ extern void arena_free(Arena* const arena);
     assert(veci_vec.len > 0 && veci_i < veci_vec.len && veci_vec.ptr != NULL); \
     &(veci_vec).ptr[veci_i];                                                   \
   })
+
+/// @brief Get pointer to last element of vector
+///
+/// @param vec The vector we're taking the element from
+/// @return Pointer to the last element
+/// @pre `vec.ptr != NULL` (which should be true if the user did not mess with
+/// the `ptr` directly)
+/// @hideinitializer
 #define vec_last(vec) vec_idx((vec), veci_vec.len - 1);
 
+/// @brief Pushes value to the end of the vector
+///
+/// @note
+/// Could trigger reallocation
+///
+/// @param vec_ptr Pointer to the vector we're pushing to
+/// @param val Value to push
+/// @pre `val` must be the same type of the vector elements
+/// @pre `vec_ptr != NULL`
+/// @post `vec_ptr->ptr != NULL` if `realloc` did not fail
+/// @hideinitializer
 #define vec_push(vec_ptr, val)                                              \
   do {                                                                      \
     const __typeof(*(vec_ptr)->ptr) vecp_val = (val);                       \
@@ -281,6 +417,12 @@ extern void arena_free(Arena* const arena);
     vecp_vec_ptr->len += 1;                                                 \
   } while (0)
 
+/// @brief Pops value from the end of the vector, reducing it's length by 1 (if
+/// possible)
+///
+/// @param vec_ptr Pointer to the vector we're popping from
+/// @pre `vec_ptr != NULL`
+/// @hideinitializer
 #define vec_pop(vec_ptr)                                   \
   do {                                                     \
     __typeof(vec_ptr) vecpop_vec_ptr = (vec_ptr);          \
@@ -288,6 +430,16 @@ extern void arena_free(Arena* const arena);
     if (vecpop_vec_ptr->len > 0) vecpop_vec_ptr->len -= 1; \
   } while (0)
 
+/// @brief Appends items from a vector to the back of another vector
+///
+/// @note
+/// Could trigger reallocation
+///
+/// @param front_ptr Pointer to the vector we're appending to.
+/// @param back Vector we're taking the items from. The items will be copied.
+/// @pre `front_ptr != NULL`
+/// @post `front_ptr->ptr != NULL` if `realloc` did not fail
+/// @hideinitializer
 #define vec_append(front_ptr, back)                                    \
   do {                                                                 \
     __typeof(front_ptr) veca_front_ptr = (front_ptr);                  \
@@ -307,6 +459,18 @@ extern void arena_free(Arena* const arena);
     veca_front_ptr->len += veca_back.len;                              \
   } while (0)
 
+/// @brief Perform a 'swap remove' on vector
+///
+/// A 'swap remove' is a specific type of deletion on arrays that is constant
+/// time. It consists of moving the last element into the slot of the element
+/// we're removing, and then decreasing the vector length by one.
+/// As you probably have noticed, it does NOT maintain the elements' order
+///
+/// @param vec_ptr Pointer to the vector we're working with
+/// @param idx Index of the element to remove
+/// @pre `vec_ptr != NULL`
+/// @pre `vec_ptr->len > 0`
+/// @hideinitializer
 #define vec_swap_remove(vec_ptr, idx)                           \
   do {                                                          \
     __auto_type vecsr_vec_ptr = (vec_ptr);                      \
@@ -321,6 +485,13 @@ extern void arena_free(Arena* const arena);
 
 #else  // NON SNIFEX_API_GNU_EXTENSIONS
 
+/// @brief Create a vector of `t`s with an initial capacity of `init_cap`
+///
+/// @param lval_result_vec An lvalue of type `Vec(t)` to which the result is
+/// going to be set
+/// @param t The type of the elements in the vector
+/// @param init_cap The initial capacity of the vector
+/// @hideinitializer
 #define vec_create(lval_result_vec, t, init_cap)  \
   do {                                            \
     const size_t vecc_init_cap = (init_cap);      \
@@ -333,6 +504,15 @@ extern void arena_free(Arena* const arena);
     };                                            \
   } while (0)
 
+/// @brief Create a vector from a list of initial elements
+///
+/// @param lval_result_vec An lvalue of type `Vec(t)` to which the result is
+/// going to be set
+/// @param t The type of the elements in the vector
+/// @param item1 The first element of the vector. Must be of type `t`
+/// @param ... More following optional elements. All must be of type `t`
+/// @pre `item1` and varargs `...` must be of type `t`
+/// @hideinitializer
 #define vec_from(lval_result_vec, t, item1, ...) \
   do {                                           \
     t items[] = {(item1), __VA_ARGS__};          \
@@ -344,6 +524,20 @@ extern void arena_free(Arena* const arena);
     lval_result_vec = vec;                       \
   } while (0)
 
+/// @brief Get pointer to element of vector at specific index
+///
+/// @param lval_result_elem_ptr An lvalue of type `t*` to which the result is
+/// going to be set
+/// @param t The type of the elements in the vector
+/// @param vec The vector we're indexing
+/// @param i The index of the element
+/// @return Pointer to the indexed element
+/// @pre `i >= 0` (since it's of type `size_t`)
+/// @pre `vec.len > 0`
+/// @pre `i < vec.len`
+/// @pre `vec.ptr != NULL` (which should be true if the user did not mess with
+/// the `ptr` directly)
+/// @hideinitializer
 #define vec_idx(lval_result_elem_ptr, t, vec, i)                               \
   do {                                                                         \
     Vec(t) veci_vec = (vec);                                                   \
@@ -351,9 +545,32 @@ extern void arena_free(Arena* const arena);
     assert(veci_vec.len > 0 && veci_i < veci_vec.len && veci_vec.ptr != NULL); \
     lval_result_elem_ptr = &(veci_vec).ptr[veci_i];                            \
   } while (0)
+
+/// @brief Get pointer to last element of vector
+///
+/// @param lval_result_elem_ptr An lvalue of type `t*` to which the result is
+/// going to be set
+/// @param t The type of the elements in the vector
+/// @param vec The vector we're taking the element from
+/// @return Pointer to the last element
+/// @pre `vec.ptr != NULL` (which should be true if the user did not mess with
+/// the `ptr` directly)
+/// @hideinitializer
 #define vec_last(lval_result_elem_ptr, t, vec) \
   vec_idx(lval_result_elem_ptr, t, (vec), veci_vec.len - 1);
 
+/// @brief Pushes value to the end of the vector
+///
+/// @note
+/// Could trigger reallocation
+///
+/// @param t The type of the elements in the vector
+/// @param vec_ptr Pointer to the vector we're pushing to
+/// @param val Value to push
+/// @pre `val` must be the same type of the vector elements
+/// @pre `vec_ptr != NULL`
+/// @post `vec_ptr->ptr != NULL` if `realloc` did not fail
+/// @hideinitializer
 #define vec_push(t, vec_ptr, val)                                    \
   do {                                                               \
     assert(vec_ptr != NULL);                                         \
@@ -370,6 +587,13 @@ extern void arena_free(Arena* const arena);
     vecp_vec_ptr->len += 1;                                          \
   } while (0)
 
+/// @brief Pops value from the end of the vector, reducing it's length by 1 (if
+/// possible)
+///
+/// @param t The type of the elements in the vector
+/// @param vec_ptr Pointer to the vector we're popping from
+/// @pre `vec_ptr != NULL`
+/// @hideinitializer
 #define vec_pop(t, vec_ptr)                                \
   do {                                                     \
     assert(vec_ptr != NULL);                               \
@@ -377,6 +601,17 @@ extern void arena_free(Arena* const arena);
     if (vecpop_vec_ptr->len > 0) vecpop_vec_ptr->len -= 1; \
   } while (0)
 
+/// @brief Appends items from a vector to the back of another vector
+///
+/// @note
+/// Could trigger reallocation
+///
+/// @param t The type of the elements in the vector
+/// @param front_ptr Pointer to the vector we're appending to.
+/// @param back Vector we're taking the items from. The items will be copied.
+/// @pre `front_ptr != NULL`
+/// @post `front_ptr->ptr != NULL` if `realloc` did not fail
+/// @hideinitializer
 #define vec_append(t, front_ptr, back)                                   \
   do {                                                                   \
     Vec(t)* veca_front_ptr = (front_ptr);                                \
@@ -394,6 +629,19 @@ extern void arena_free(Arena* const arena);
     veca_front_ptr->len += veca_back.len;                                \
   } while (0)
 
+/// @brief Perform a 'swap remove' on vector
+///
+/// A 'swap remove' is a specific type of deletion on arrays that is constant
+/// time. It consists of moving the last element into the slot of the element
+/// we're removing, and then decreasing the vector length by one.
+/// As you probably have noticed, it does NOT maintain the elements' order
+///
+/// @param t The type of the elements in the vector
+/// @param vec_ptr Pointer to the vector we're working with
+/// @param idx Index of the element to remove
+/// @pre `vec_ptr != NULL`
+/// @pre `vec_ptr->len > 0`
+/// @hideinitializer
 #define vec_swap_remove(t, vec_ptr, idx)                     \
   do {                                                       \
     Vec(t)* vecsr_vec_ptr = (vec_ptr);                       \
@@ -409,59 +657,192 @@ extern void arena_free(Arena* const arena);
   } while (0)
 #endif
 
+/// @brief Frees the vector
+/// @hideinitializer
 #define vec_free(vec_ptr) free((vec_ptr)->ptr)
 
-//-
-//-  Strings
-//-
+/// @}
 
+/// @defgroup string String
+/// @brief Just... Strings 🙂
+///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+/// @{
+
+/// @brief A sized string view.
+///
+/// This a simple sized string view... Nothing else.
+/// For the uninitiated:
+/// - 'sized' means that we carry the length of the data with the data (the
+/// char*)
+/// - 'view' because the memory is not owned. That means that it is the user
+/// responsibility to manage the memory the string view is pointing to. The
+/// recommended way is using an arena.
+///
+/// @note
+/// These strings are NOT zero tailing (since they're string-views anyways)
 typedef struct string {
-  char* ptr;
-  size_t len;
+  char* ptr;   ///< Internal string buffer
+  size_t len;  ///< Length of string
 } string;
 
 DefineVec(string);
 
+/// @brief Returns a string literal (char const*) to a @ref string format
 extern string strlit(char const* s);
+/// @brief Allocates a string of length `len` in an arena
+/// @pre `arena != NULL`
 extern string str_alloc(Arena* const arena, const size_t len);
-char* const str_idx(const string str, const size_t i);
+/// @brief Gets pointer to character at specific index
+///
+/// @pre `i >= 0` (since it's of type `size_t`)
+/// @pre `i < str.len`
+/// @pre `str.ptr != NULL` which should be true if the user did not mess with
+/// the `ptr` directly
+char* str_idx(const string str, const size_t i);
+/// @brief Returns whether the string is empty
+///
+/// An empty @ref string means that either the length is 0 or the internal `ptr`
+/// is NULL
 extern bool str_is_empty(const string str);
 
-// Short-circuing if the length is equal and is 0 is because memcmp with
-// NULL pointers is U.B. in c99, even if the number of bytes copied is 0,
-// and in this library empty strings can have a NULL pointer.
-//
-// See `str_join` for more info
+/// @brief Returns whether two @ref strings are equal
+///
+/// @par Implementation details
+/// Short-circuing if the length is equal and is 0. This is because memcmp with
+/// NULL pointers is U.B. in c99, even if the number of bytes copied is 0,
+/// and in this library empty strings can have a NULL pointer.
+///
+/// @see @ref str_join for more info
 extern bool str_eq(const string a, const string b);
 
-// Note! Can execute memcpy(ptr, NULL, 0), where ptr is guaranteed not to be
-// NULL, which is U.B. before c2y. Clang and GCC apparently handle this
-// gratefully while MSVC does not so, to conform to c99 we check for 0-len
-// before memcpy-ing. This isn't not really a performance issue in release mode
-// as it should just be optimised out (and gcc/clang with -O1 surely does)
-//
-// See
-// https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
+/// @brief Returns result of concatination of string `b` into `a`
+///
+/// @par Implementation details
+/// If we are not careful we could execute memcpy(ptr, NULL, 0), where ptr is
+/// guaranteed not to be NULL, which is U.B. before c2y. Clang and GCC
+/// apparently handle this gratefully while MSVC does not. So to conform to c99
+/// we check for 0-len before memcpy-ing. This isn't not really a performance
+/// issue in release mode as it should just be optimised out (and gcc/clang with
+/// -O1 surely does)
+///
+/// @pre `arena != NULL`
+/// @see
+/// https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
 extern string str_concat(Arena* const arena, const string a, const string b);
+/// @brief Returns copy of a string
+///
+/// @pre `arena != NULL`
 extern string str_copy(Arena* const arena, const string str);
+/// @brief Joins a list of strings together and returns the returning string
+///
+/// @pre `arena != NULL`
 extern string str_join(Arena* const arena, Vec(string) to_join);
+/// @brief Returns a formatted string
+///
+/// @pre `arena != NULL`
+/// @pre `fmt != NULL`
 extern string str_fmt(Arena* const arena, const char* fmt, ...);
+/// @brief Returns a string slice
+///
+/// @pre `start >= 0` (since it's of type `size_t`)
+/// @pre `end >= 0` (since it's of type `size_t`)
+/// @pre `start < str.len`
+/// @pre `end <= str.len`
+/// @pre `start <= end`
 extern string str_slice(const string str, const size_t start, const size_t end);
+/// @brief Returns a trimmed string
 extern string str_trim(const string str);
 
-//-
-//-  Dictionaries / Hashmaps
-//-
+/// @}
 
+/// @defgroup dict Dictionary
+/// @brief General type hashmaps
+///
+/// This implementation of hashmap is somewhat reminiscent of stb-db's one. The
+/// inner workings are the same: an hashmap that uses open addressing (or closed
+/// hashing) where buckets do not cointain the entries them self but contain an
+/// index to a vector where we store entries contigiously.
+/// Of course, since they mimic the generic-like feeling of my @ref Vec, we have
+/// a different way of implementing parametric polymorphism, but the core
+/// hashmap implementation details are pretty much the same.
+/// I also implemented a default very simplistic hashing function, but added a
+/// way for users to use a custom hashing algorithm, and I highly suggest you do
+/// so.
+///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+/// @{
+
+/// @cond EXCLUDE_DOC
 typedef struct bucket {
   uint64_t hash;
   size_t index;
 } Bucket;
+/// @endcond
 
+/// @brief Macro to get the entry type of a dictionary mapping `K`s to `V`s
+///
+/// @param K Type of keys of the dictionary
+/// @param V Type of values of the dictionary
+/// @see @ref DefineDict for more info
 #define Entry(K, V) Entry_##K##_##V
-#define Dictionary(K, V) Dictionary_##K##_##V
+/// @brief Macro to get the type of a dictionary mapping `K`s to `V`s
+///
+/// @param K Type of keys of the dictionary
+/// @param V Type of values of the dictionary
+/// @see @ref DefineDict for more info
+#define Dict(K, V) Dictionary_##K##_##V
+/// @brief Macro to get type of vector of entries from a dictionary mapping `K`s
+/// to `V`s
+///
+/// @param K Type of keys of the dictionary
+/// @param V Type of values of the dictionary
+/// @see @ref DefineDict for more info
 #define VecEntry(K, V) Vec_Entry_##K##_##V
 
+/// @brief Macro to declare a specifically typed dictionary
+///
+/// The way I implemented generic dictionary is similar to that of vectors:
+/// by having macros instead of functions.
+///
+/// This macro is the equivalent of @ref DefineVec for dictionaries.
+/// Take a look at this example:
+/// @code
+/// DefineDict(int, float);
+///
+/// int main() {
+///   Dict(int, float) dictionary;
+///   return 0;
+/// }
+/// @endcode
+///
+/// This is a general documentation for the structs generated by this macro:
+/// @code
+/// typedef struct {
+///   K key;
+///   V value;
+/// } Entry_K_V;
+///
+/// typedef struct {
+///   Vec_Entry_K_V entries; /* Vector of all entries in the dictionary. Order
+///                             of entries is not guaranteed to be stable */
+///   uint64_t key[2];       /* This key is used for hashing. When creating a
+///                             dictionary it gets set to {0, 0}.
+///                             It's a uint128_t where the first uint64_t in the
+///                             array is the least significant one.
+///                             Unless your hashing function depends on one
+///                             (which by default it does not), you can ignore
+///                             the key */
+///   ...                    // internal stuff
+/// } Dictionary_K_V; // Where `K` and `V` are the types of keys and values
+/// @endcode
+///
+/// @param t The type of the elements in the vector
+/// @see - @ref DefineVec
+/// @see - @ref Dict
+/// @hideinitializer
 #define DefineDict(K, V)      \
   typedef struct {            \
     K key;                    \
@@ -476,13 +857,16 @@ typedef struct bucket {
     size_t b_len;             \
     size_t b_cap;             \
     uint64_t key[2];          \
-  } Dictionary(K, V);
+  } Dict(K, V);
 
+// This is my way of implementing custom hashing algorithms. Honestly just
+// looking at the examples in the repo is the best way to see it in action
 #ifndef HASHFUNC
 #define hash_num(in_ptr, inlen, k0_u64, k1_u64) \
   (snifex_api_hash_num_func(in_ptr, inlen))
 #endif
 
+/// @cond EXCLUDE_DOC
 uint64_t snifex_api_hash_num_func(const void* in, const size_t inlen);
 
 Bucket* snifex_api_find_bucket(Bucket* buckets,
@@ -496,11 +880,20 @@ Bucket* snifex_api_find_bucket(Bucket* buckets,
 void snifex_api_dict_grow(Bucket** buckets,
                           size_t* bucket_cap,
                           size_t* bucket_len);
+/// @endcond
 
 #ifdef SNIFEX_API_GNU_EXTENSIONS
 
+/// @brief Create a dictionary of `K`s to `V`s
+///
+/// @par Implementation details
+/// The number of initial buckets is 8
+///
+/// @param K The type of the keys of dictionary's entries
+/// @param V The type of the values of dictionary's entries
+/// @hideinitializer
 #define dict_create(K, V)                    \
-  ((Dictionary(K, V)){                       \
+  ((Dict(K, V)){                             \
       .entries = vec_create(Entry(K, V), 8), \
       .buckets = calloc(8, sizeof(Bucket)),  \
       .b_cap = 8,                            \
@@ -508,6 +901,18 @@ void snifex_api_dict_grow(Bucket** buckets,
       .key = {0, 0},                         \
   })
 
+/// @brief Inserts an entry in the hashmap
+///
+/// @note
+/// Could trigger bucket resizing
+///
+/// @param dict_ptr Pointer to the dictionary
+/// @param k Key of the entry we're inserting
+/// @param v Value of the entry we're inserting
+/// @param old_value_ptr If it's non-null, the value of this pointer will be set
+/// to the old value associated with the key, if there was one. Otherwise
+/// nothing happens.
+/// @hideinitializer
 #define dict_put(dict_ptr, k, v, old_value_ptr)                               \
   ({                                                                          \
     __auto_type dp_dict_ptr = (dict_ptr);                                     \
@@ -541,6 +946,14 @@ void snifex_api_dict_grow(Bucket** buckets,
     }                                                                         \
   })
 
+/// @brief Searches key in the dictionary, and returns pointer to the entry if
+/// found
+///
+/// @param dict_ptr Pointer to the dictionary
+/// @param k Key of the entry we're searching
+/// @return `NULL` if there is no entry with associated key, entry pointer
+/// otherwise
+/// @hideinitializer
 #define dict_get(dict_ptr, k)                                            \
   ({                                                                     \
     __auto_type dg_dict_ptr = (dict_ptr);                                \
@@ -565,31 +978,54 @@ void snifex_api_dict_grow(Bucket** buckets,
     res;                                                                 \
   })
 
-#define dict_del(dict_ptr, k)                                            \
-  ({                                                                     \
-    __auto_type dd_dict_ptr = (dict_ptr);                                \
-    __typeof(dd_dict_ptr->entries.ptr->key) dd_k = (k);                  \
-                                                                         \
-    if (dd_dict_ptr->b_len == 0) {                                       \
-      false;                                                             \
-    } else {                                                             \
-      Bucket* b = snifex_api_find_bucket(                                \
-          dd_dict_ptr->buckets, dd_dict_ptr->b_cap, &dd_k,               \
-          hash_num(&dd_k, sizeof(dd_k), dd_dict_ptr->key[0],             \
-                   dd_dict_ptr->key[1]),                                 \
-          dd_dict_ptr->entries.ptr, sizeof(*(dd_dict_ptr->entries.ptr)), \
-          sizeof(dd_dict_ptr->entries.ptr->key), false);                 \
-      if (b->index == 0) {                                               \
-        false;                                                           \
-      } else {                                                           \
-        /* Remove and place tombstone */                                 \
-        vec_swap_remove(&dd_dict_ptr->entries, b->index - 2);            \
-        b->index = 1;                                                    \
-        true;                                                            \
-      }                                                                  \
-    }                                                                    \
+/// @brief Deletes entry from a dictionary
+///
+/// @par Implementation details
+/// It uses @ref vec_swap_remove to remove an entry. Because of that it does not
+/// guarantee order of the entry vector
+///
+/// @param dict_ptr Pointer to the dictionary
+/// @param k Key of the entry we're deleting
+/// @return Whether entry with associated key exists and was removed
+/// @hideinitializer
+#define dict_del(dict_ptr, k)                                              \
+  ({                                                                       \
+    __auto_type dd_dict_ptr = (dict_ptr);                                  \
+    __typeof(dd_dict_ptr->entries.ptr->key) dd_k = (k);                    \
+                                                                           \
+    if (dd_dict_ptr->b_len == 0) {                                         \
+      false;                                                               \
+    } else {                                                               \
+      Bucket* b = snifex_api_find_bucket(                                  \
+          dd_dict_ptr->buckets, dd_dict_ptr->b_cap, &dd_k,                 \
+          hash_num(&dd_k, sizeof(dd_k), dd_dict_ptr->key[0],               \
+                   dd_dict_ptr->key[1]),                                   \
+          dd_dict_ptr->entries.ptr, sizeof(*(dd_dict_ptr->entries.ptr)),   \
+          sizeof(dd_dict_ptr->entries.ptr->key), false);                   \
+      if (b->index == 0) {                                                 \
+        false;                                                             \
+      } else {                                                             \
+        __auto_type last_entry = *vec_last(dd_dict_ptr->entries);          \
+        __auto_type le_k = last_entry.key;                                 \
+        Bucket* last_b = snifex_api_find_bucket(                           \
+            dd_dict_ptr->buckets, dd_dict_ptr->b_cap, &le_k,               \
+            hash_num(&le_k, sizeof(le_k), dd_dict_ptr->key[0],             \
+                     dd_dict_ptr->key[1]),                                 \
+            dd_dict_ptr->entries.ptr, sizeof(*(dd_dict_ptr->entries.ptr)), \
+            sizeof(dd_dict_ptr->entries.ptr->key), false);                 \
+        last_b->index = b->index;                                          \
+        /* Remove and place tombstone */                                   \
+        vec_swap_remove(&dd_dict_ptr->entries, last_b->index - 2);         \
+        b->index = 1;                                                      \
+        true;                                                              \
+      }                                                                    \
+    }                                                                      \
   })
 
+/// @brief Frees the dictionary
+///
+/// @param dict_ptr Pointer to the dictionary
+/// @hideinitializer
 #define dict_free(dict_ptr)               \
   do {                                    \
     __auto_type df_dict_ptr = (dict_ptr); \
@@ -599,11 +1035,21 @@ void snifex_api_dict_grow(Bucket** buckets,
 
 #else  // !SNIFEX_API_GNU_EXTENSIONS
 
+/// @brief Create a dictionary of `K`s to `V`s
+///
+/// @par Implementation details
+/// The number of initial buckets is 8
+///
+/// @param lval_result_dict An lvalue of type `Dict(K, V)` to which the result
+/// is going to be set
+/// @param K The type of the keys of dictionary's entries
+/// @param V The type of the values of dictionary's entries
+/// @hideinitializer
 #define dict_create(lval_result_dict, K, V)   \
   do {                                        \
     Vec(Entry_##K##_##V) e;                   \
     vec_create(e, Entry(K, V), 8);            \
-    lval_result_dict = (Dictionary(K, V)){    \
+    lval_result_dict = (Dict(K, V)){          \
         .entries = e,                         \
         .buckets = calloc(8, sizeof(Bucket)), \
         .b_cap = 8,                           \
@@ -612,9 +1058,23 @@ void snifex_api_dict_grow(Bucket** buckets,
     };                                        \
   } while (0)
 
+/// @brief Inserts an entry in the hashmap
+///
+/// @note
+/// Could trigger bucket resizing
+///
+/// @param dict_ptr Pointer to the dictionary
+/// @param k_type The type of the keys in the dictionary
+/// @param v_type The type of the values in the dictionary
+/// @param k Key of the entry we're inserting
+/// @param v Value of the entry we're inserting
+/// @param old_value_ptr If it's non-null, the value of this pointer will be set
+/// to the old value associated with the key, if there was one. Otherwise
+/// nothing happens.
+/// @hideinitializer
 #define dict_put(k_type, v_type, dict_ptr, k, v, old_value_ptr)                \
   ({                                                                           \
-    Dictionary(k_type, v_type)* dp_dict_ptr = (dict_ptr);                      \
+    Dict(k_type, v_type)* dp_dict_ptr = (dict_ptr);                            \
     k_type dp_k = (k);                                                         \
     v_type dp_v = (v);                                                         \
     v_type* _old_value_ptr = (old_value_ptr);                                  \
@@ -645,9 +1105,19 @@ void snifex_api_dict_grow(Bucket** buckets,
     }                                                                          \
   })
 
+/// @brief Searches key in the dictionary, and returns pointer to the value if
+/// found
+///
+/// @param lval_result_val_ptr An lvalue of type `v_type*` to which the result
+/// is going to be set
+/// @param k_type The type of the keys in the dictionary
+/// @param v_type The type of the values in the dictionary
+/// @param dict_ptr Pointer to the dictionary
+/// @param k Key of the entry we're searching
+/// @hideinitializer
 #define dict_get(lval_result_val_ptr, k_type, v_type, dict_ptr, k)       \
   do {                                                                   \
-    Dictionary(k_type, v_type)* dg_dict_ptr = (dict_ptr);                \
+    Dict(k_type, v_type)* dg_dict_ptr = (dict_ptr);                      \
     k_type dg_k = (k);                                                   \
                                                                          \
     if (dg_dict_ptr->b_len == 0) {                                       \
@@ -670,9 +1140,22 @@ void snifex_api_dict_grow(Bucket** buckets,
     }                                                                    \
   } while (0)
 
+/// @brief Deletes entry from a dictionary
+///
+/// @par Implementation details
+/// It uses @ref vec_swap_remove to remove an entry. Because of that it does not
+/// guarantee order of the entry vector
+///
+/// @param lval_result_bool An lvalue of type `bool` to which the we set whether
+/// entry with associated key exists and was removed
+/// @param k_type The type of the keys in the dictionary
+/// @param v_type The type of the values in the dictionary
+/// @param dict_ptr Pointer to the dictionary
+/// @param k Key of the entry we're deleting
+/// @hideinitializer
 #define dict_del(lval_result_bool, k_type, v_type, dict_ptr, k)          \
   ({                                                                     \
-    Dictionary(k_type, v_type)* dd_dict_ptr = (dict_ptr);                \
+    Dict(k_type, v_type)* dd_dict_ptr = (dict_ptr);                      \
     k_type dd_k = (k);                                                   \
                                                                          \
     if (dd_dict_ptr->b_len == 0) {                                       \
@@ -696,13 +1179,21 @@ void snifex_api_dict_grow(Bucket** buckets,
     }                                                                    \
   })
 
-#define dict_free(k_type, v_type, dict_ptr)               \
-  do {                                                    \
-    Dictionary(k_type, v_type)* df_dict_ptr = (dict_ptr); \
-    free(df_dict_ptr->buckets);                           \
-    vec_free(&df_dict_ptr->entries);                      \
+/// @brief Frees the dictionary
+///
+/// @param k_type The type of the keys in the dictionary
+/// @param v_type The type of the values in the dictionary
+/// @param dict_ptr Pointer to the dictionary
+/// @hideinitializer
+#define dict_free(k_type, v_type, dict_ptr)         \
+  do {                                              \
+    Dict(k_type, v_type)* df_dict_ptr = (dict_ptr); \
+    free(df_dict_ptr->buckets);                     \
+    vec_free(&df_dict_ptr->entries);                \
   } while (0)
 #endif  // SNIFEX_API_GNU_EXTENSIONS
+
+/// @}
 
 #endif  // SNIFEX_API_H
 
@@ -880,7 +1371,7 @@ string str_copy(Arena* const arena, const string str) {
   };
 }
 
-char* const str_idx(const string str, const size_t i) {
+char* str_idx(const string str, const size_t i) {
   assert(i < str.len && str.ptr != NULL);
   return &str.ptr[i];
 }

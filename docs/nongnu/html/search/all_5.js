@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['sign_0',['sign',['../group__number.html#gab0edffd7b718be24b88cd29f560268ab',1,'snifex-api.h']]],
-  ['string_1',['string',['../structstring.html',1,'']]]
+  ['len_0',['len',['../structstring.html#aa6bcf0353fd5cf2f374a9b1dd0e4a73a',1,'string']]]
 ];

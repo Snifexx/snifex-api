@@ -1,0 +1,276 @@
+\doxysection{Dictionary}
+\hypertarget{group__dict}{}\label{group__dict}\index{Dictionary@{Dictionary}}
+
+
+General type hashmaps.  
+
+
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group__dict_ga7c51d2eb1ed17eba744aa6f43b8b2d5e}{Entry}}(K,  V)~Entry\+\_\+\#\#K\#\#\+\_\+\#\#V
+\begin{DoxyCompactList}\small\item\em Macro to get the entry type of a dictionary mapping {\ttfamily K}s to {\ttfamily V}s. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__dict_ga616c6adaaa7cae0b564c99e6110542d5}{Dict}}(K,  V)~Dictionary\+\_\+\#\#K\#\#\+\_\+\#\#V
+\begin{DoxyCompactList}\small\item\em Macro to get the type of a dictionary mapping {\ttfamily K}s to {\ttfamily V}s. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__dict_ga74f90b242defcb0f85906f2ae2e34e5a}{Vec\+Entry}}(K,  V)~Vec\+\_\+\+Entry\+\_\+\#\#K\#\#\+\_\+\#\#V
+\begin{DoxyCompactList}\small\item\em Macro to get type of vector of entries from a dictionary mapping {\ttfamily K}s to {\ttfamily V}s. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__dict_ga54109dc4f962d4329973b14d22e3632b}{Define\+Dict}}(K,  V)
+\begin{DoxyCompactList}\small\item\em Macro to declare a specifically typed dictionary. \end{DoxyCompactList}\item 
+\Hypertarget{group__dict_ga0f9e75b044e5378c50d25b65fd7f58c7}\label{group__dict_ga0f9e75b044e5378c50d25b65fd7f58c7} 
+\#define {\bfseries hash\+\_\+num}(in\+\_\+ptr,  inlen,  k0\+\_\+u64,  k1\+\_\+u64)~  (snifex\+\_\+api\+\_\+hash\+\_\+num\+\_\+func(in\+\_\+ptr, inlen))
+\item 
+\#define \mbox{\hyperlink{group__dict_ga545c5aeacfa635661edc37a4aaddfe92}{dict\+\_\+create}}(lval\+\_\+result\+\_\+dict,  K,  V)
+\begin{DoxyCompactList}\small\item\em Create a dictionary of {\ttfamily K}s to {\ttfamily V}s. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__dict_gaf03c4eba2776f528666099dc8db2dde2}{dict\+\_\+put}}(k\+\_\+type,  v\+\_\+type,  dict\+\_\+ptr,  k,  v,  old\+\_\+value\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Inserts an entry in the hashmap. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__dict_ga938b7dd6a3ffdfc61c545a2bdca84af1}{dict\+\_\+get}}(lval\+\_\+result\+\_\+val\+\_\+ptr,  k\+\_\+type,  v\+\_\+type,  dict\+\_\+ptr,  k)
+\begin{DoxyCompactList}\small\item\em Searches key in the dictionary, and returns pointer to the value if found. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__dict_ga0cf15255f25e36ee50a10833c1e14763}{dict\+\_\+del}}(lval\+\_\+result\+\_\+bool,  k\+\_\+type,  v\+\_\+type,  dict\+\_\+ptr,  k)
+\begin{DoxyCompactList}\small\item\em Deletes entry from a dictionary. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__dict_gad1f114ca6a332d80eed3e10f93ed2094}{dict\+\_\+free}}(k\+\_\+type,  v\+\_\+type,  dict\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Frees the dictionary. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+General type hashmaps. 
+
+This implementation of hashmap is somewhat reminiscent of stb-\/db\textquotesingle{}s one. The inner workings are the same\+: an hashmap that uses open addressing (or closed hashing) where buckets do not cointain the entries them self but contain an index to a vector where we store entries contigiously. Of course, since they mimic the generic-\/like feeling of my \doxylink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}, we have a different way of implementing parametric polymorphism, but the core hashmap implementation details are pretty much the same. I also implemented a default very simplistic hashing function, but added a way for users to use a custom hashing algorithm, and I highly suggest you do so.
+
+All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}} 
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{group__dict_ga54109dc4f962d4329973b14d22e3632b}\label{group__dict_ga54109dc4f962d4329973b14d22e3632b} 
+\index{Dictionary@{Dictionary}!DefineDict@{DefineDict}}
+\index{DefineDict@{DefineDict}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{DefineDict}{DefineDict}}
+{\footnotesize\ttfamily \#define Define\+Dict(\begin{DoxyParamCaption}\item[{}]{K,  }\item[{}]{V }\end{DoxyParamCaption})}
+
+
+
+Macro to declare a specifically typed dictionary. 
+
+The way I implemented generic dictionary is similar to that of vectors\+: by having macros instead of functions.
+
+This macro is the equivalent of \doxylink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{Define\+Vec} for dictionaries. Take a look at this example\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{group__dict_ga54109dc4f962d4329973b14d22e3632b}{DefineDict}}(\textcolor{keywordtype}{int},\ \textcolor{keywordtype}{float});}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int}\ main()\ \{}
+\DoxyCodeLine{\ \ \mbox{\hyperlink{group__dict_ga616c6adaaa7cae0b564c99e6110542d5}{Dict}}(\textcolor{keywordtype}{int},\ \textcolor{keywordtype}{float})\ dictionary;}
+\DoxyCodeLine{\ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+This is a general documentation for the structs generated by this macro\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{\ \ \ \ \ K\ key;}
+\DoxyCodeLine{\ \ \ \ \ V\ value;}
+\DoxyCodeLine{\ \ \ \}\ Entry\_K\_V;}
+\DoxyCodeLine{\ \ }
+\DoxyCodeLine{\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{\ \ \ \ \ Vec\_Entry\_K\_V\ entries;\ \textcolor{comment}{/*\ Vector\ of\ all\ entries\ in\ the\ dictionary.\ Order}}
+\DoxyCodeLine{\textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ of\ entries\ is\ not\ guaranteed\ to\ be\ stable\ */}}
+\DoxyCodeLine{\ \ \ \ \ uint64\_t\ key[2];\ \ \ \ \ \ \ \textcolor{comment}{/*\ This\ key\ is\ used\ for\ hashing.\ When\ creating\ a}}
+\DoxyCodeLine{\textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dictionary\ it\ gets\ set\ to\ \{0,\ 0\}.}}
+\DoxyCodeLine{\textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ It's\ a\ uint128\_t\ where\ the\ first\ uint64\_t\ in\ the}}
+\DoxyCodeLine{\textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ array\ is\ the\ least\ significant\ one.}}
+\DoxyCodeLine{\textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Unless\ your\ hashing\ function\ depends\ on\ one}}
+\DoxyCodeLine{\textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (which\ by\ default\ it\ does\ not),\ you\ can\ ignore}}
+\DoxyCodeLine{\textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ the\ key\ */}}
+\DoxyCodeLine{\ \ \ \ \ ...\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ internal\ stuff}}
+\DoxyCodeLine{\ \ \ \}\ Dictionary\_K\_V;\ \textcolor{comment}{//\ Where\ \`{}K`\ and\ \`{}V`\ are\ the\ types\ of\ keys\ and\ values}}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The type of the elements in the vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+-\/ \doxylink{group__vector_gac69846d6bf7de13c7eb8cdf3351a92ef}{Define\+Vec} 
+
+-\/ \doxylink{group__dict_ga616c6adaaa7cae0b564c99e6110542d5}{Dict} 
+\end{DoxySeeAlso}
+\Hypertarget{group__dict_ga616c6adaaa7cae0b564c99e6110542d5}\label{group__dict_ga616c6adaaa7cae0b564c99e6110542d5} 
+\index{Dictionary@{Dictionary}!Dict@{Dict}}
+\index{Dict@{Dict}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{Dict}{Dict}}
+{\footnotesize\ttfamily \#define Dict(\begin{DoxyParamCaption}\item[{}]{K,  }\item[{}]{V }\end{DoxyParamCaption})~Dictionary\+\_\+\#\#K\#\#\+\_\+\#\#V}
+
+
+
+Macro to get the type of a dictionary mapping {\ttfamily K}s to {\ttfamily V}s. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em K} & Type of keys of the dictionary \\
+\hline
+{\em V} & Type of values of the dictionary \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxylink{group__dict_ga54109dc4f962d4329973b14d22e3632b}{Define\+Dict} for more info 
+\end{DoxySeeAlso}
+\Hypertarget{group__dict_ga545c5aeacfa635661edc37a4aaddfe92}\label{group__dict_ga545c5aeacfa635661edc37a4aaddfe92} 
+\index{Dictionary@{Dictionary}!dict\_create@{dict\_create}}
+\index{dict\_create@{dict\_create}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_create}{dict\_create}}
+{\footnotesize\ttfamily \#define dict\+\_\+create(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+dict,  }\item[{}]{K,  }\item[{}]{V }\end{DoxyParamCaption})}
+
+
+
+Create a dictionary of {\ttfamily K}s to {\ttfamily V}s. 
+
+\begin{DoxyParagraph}{Implementation details}
+The number of initial buckets is 8
+\end{DoxyParagraph}
+
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+dict} & An lvalue of type {\ttfamily \doxylink{group__dict_ga616c6adaaa7cae0b564c99e6110542d5}{Dict(\+K, V)}} to which the result is going to be set \\
+\hline
+{\em K} & The type of the keys of dictionary\textquotesingle{}s entries \\
+\hline
+{\em V} & The type of the values of dictionary\textquotesingle{}s entries \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__dict_ga0cf15255f25e36ee50a10833c1e14763}\label{group__dict_ga0cf15255f25e36ee50a10833c1e14763} 
+\index{Dictionary@{Dictionary}!dict\_del@{dict\_del}}
+\index{dict\_del@{dict\_del}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_del}{dict\_del}}
+{\footnotesize\ttfamily \#define dict\+\_\+del(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+bool,  }\item[{}]{k\+\_\+type,  }\item[{}]{v\+\_\+type,  }\item[{}]{dict\+\_\+ptr,  }\item[{}]{k }\end{DoxyParamCaption})}
+
+
+
+Deletes entry from a dictionary. 
+
+\begin{DoxyParagraph}{Implementation details}
+It uses \doxylink{group__vector_ga3758b6852e3caea88dc02f8f1d618539}{vec\+\_\+swap\+\_\+remove} to remove an entry. Because of that it does not guarantee order of the entry vector
+\end{DoxyParagraph}
+
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+bool} & An lvalue of type {\ttfamily bool} to which the we set whether entry with associated key exists and was removed \\
+\hline
+{\em k\+\_\+type} & The type of the keys in the dictionary \\
+\hline
+{\em v\+\_\+type} & The type of the values in the dictionary \\
+\hline
+{\em dict\+\_\+ptr} & Pointer to the dictionary \\
+\hline
+{\em k} & Key of the entry we\textquotesingle{}re deleting \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__dict_gad1f114ca6a332d80eed3e10f93ed2094}\label{group__dict_gad1f114ca6a332d80eed3e10f93ed2094} 
+\index{Dictionary@{Dictionary}!dict\_free@{dict\_free}}
+\index{dict\_free@{dict\_free}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_free}{dict\_free}}
+{\footnotesize\ttfamily \#define dict\+\_\+free(\begin{DoxyParamCaption}\item[{}]{k\+\_\+type,  }\item[{}]{v\+\_\+type,  }\item[{}]{dict\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Frees the dictionary. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em k\+\_\+type} & The type of the keys in the dictionary \\
+\hline
+{\em v\+\_\+type} & The type of the values in the dictionary \\
+\hline
+{\em dict\+\_\+ptr} & Pointer to the dictionary \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__dict_ga938b7dd6a3ffdfc61c545a2bdca84af1}\label{group__dict_ga938b7dd6a3ffdfc61c545a2bdca84af1} 
+\index{Dictionary@{Dictionary}!dict\_get@{dict\_get}}
+\index{dict\_get@{dict\_get}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_get}{dict\_get}}
+{\footnotesize\ttfamily \#define dict\+\_\+get(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+val\+\_\+ptr,  }\item[{}]{k\+\_\+type,  }\item[{}]{v\+\_\+type,  }\item[{}]{dict\+\_\+ptr,  }\item[{}]{k }\end{DoxyParamCaption})}
+
+
+
+Searches key in the dictionary, and returns pointer to the value if found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lval\+\_\+result\+\_\+val\+\_\+ptr} & An lvalue of type {\ttfamily v\+\_\+type\texorpdfstring{$\ast$}{*}} to which the result is going to be set \\
+\hline
+{\em k\+\_\+type} & The type of the keys in the dictionary \\
+\hline
+{\em v\+\_\+type} & The type of the values in the dictionary \\
+\hline
+{\em dict\+\_\+ptr} & Pointer to the dictionary \\
+\hline
+{\em k} & Key of the entry we\textquotesingle{}re searching \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__dict_gaf03c4eba2776f528666099dc8db2dde2}\label{group__dict_gaf03c4eba2776f528666099dc8db2dde2} 
+\index{Dictionary@{Dictionary}!dict\_put@{dict\_put}}
+\index{dict\_put@{dict\_put}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{dict\_put}{dict\_put}}
+{\footnotesize\ttfamily \#define dict\+\_\+put(\begin{DoxyParamCaption}\item[{}]{k\+\_\+type,  }\item[{}]{v\+\_\+type,  }\item[{}]{dict\+\_\+ptr,  }\item[{}]{k,  }\item[{}]{v,  }\item[{}]{old\+\_\+value\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Inserts an entry in the hashmap. 
+
+\begin{DoxyNote}{Note}
+Could trigger bucket resizing
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em dict\+\_\+ptr} & Pointer to the dictionary \\
+\hline
+{\em k\+\_\+type} & The type of the keys in the dictionary \\
+\hline
+{\em v\+\_\+type} & The type of the values in the dictionary \\
+\hline
+{\em k} & Key of the entry we\textquotesingle{}re inserting \\
+\hline
+{\em v} & Value of the entry we\textquotesingle{}re inserting \\
+\hline
+{\em old\+\_\+value\+\_\+ptr} & If it\textquotesingle{}s non-\/null, the value of this pointer will be set to the old value associated with the key, if there was one. Otherwise nothing happens. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__dict_ga7c51d2eb1ed17eba744aa6f43b8b2d5e}\label{group__dict_ga7c51d2eb1ed17eba744aa6f43b8b2d5e} 
+\index{Dictionary@{Dictionary}!Entry@{Entry}}
+\index{Entry@{Entry}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{Entry}{Entry}}
+{\footnotesize\ttfamily \#define Entry(\begin{DoxyParamCaption}\item[{}]{K,  }\item[{}]{V }\end{DoxyParamCaption})~Entry\+\_\+\#\#K\#\#\+\_\+\#\#V}
+
+
+
+Macro to get the entry type of a dictionary mapping {\ttfamily K}s to {\ttfamily V}s. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em K} & Type of keys of the dictionary \\
+\hline
+{\em V} & Type of values of the dictionary \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxylink{group__dict_ga54109dc4f962d4329973b14d22e3632b}{Define\+Dict} for more info 
+\end{DoxySeeAlso}
+\Hypertarget{group__dict_ga74f90b242defcb0f85906f2ae2e34e5a}\label{group__dict_ga74f90b242defcb0f85906f2ae2e34e5a} 
+\index{Dictionary@{Dictionary}!VecEntry@{VecEntry}}
+\index{VecEntry@{VecEntry}!Dictionary@{Dictionary}}
+\doxysubsubsection{\texorpdfstring{VecEntry}{VecEntry}}
+{\footnotesize\ttfamily \#define Vec\+Entry(\begin{DoxyParamCaption}\item[{}]{K,  }\item[{}]{V }\end{DoxyParamCaption})~Vec\+\_\+\+Entry\+\_\+\#\#K\#\#\+\_\+\#\#V}
+
+
+
+Macro to get type of vector of entries from a dictionary mapping {\ttfamily K}s to {\ttfamily V}s. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em K} & Type of keys of the dictionary \\
+\hline
+{\em V} & Type of values of the dictionary \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxylink{group__dict_ga54109dc4f962d4329973b14d22e3632b}{Define\+Dict} for more info 
+\end{DoxySeeAlso}
