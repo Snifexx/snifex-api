@@ -4,6 +4,7 @@ var group__vector =
     [ "Vec", "group__vector.html#ga21ec81b33f2746d76b94b77c7f990379", null ],
     [ "vec_append", "group__vector.html#ga06b74abb56b0226f908d1157353176e3", null ],
     [ "vec_create", "group__vector.html#ga85377c64c46343c4dbf05a73724db8a6", null ],
+    [ "vec_free", "group__vector.html#ga8abddb0def71d192a4cafdca99a71729", null ],
     [ "vec_from", "group__vector.html#ga98ce1bacc1d60cd65f2c0ba9f61840d3", null ],
     [ "vec_idx", "group__vector.html#gaa85f3533c2232edfd7fcc899bd5f6378", null ],
     [ "vec_last", "group__vector.html#ga8658b8a80e25d259520ed4cd4adf1729", null ],

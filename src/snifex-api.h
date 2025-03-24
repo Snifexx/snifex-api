@@ -15,6 +15,9 @@
 /// @defgroup macro_utils Macro utils
 /// @brief Macro Utilities.
 ///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+///
 /// These include:
 ///   - The OS_* utility macros, for identifying OSs and platforms
 ///   - The asserting macros
@@ -94,6 +97,9 @@ void __snifex_api_assert_fail(const char* expr,
 /// @defgroup number Numbers
 /// @brief Utilities for numbers
 ///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+///
 /// All numerical functions and macros
 /// @{
 
@@ -117,7 +123,8 @@ void __snifex_api_assert_fail(const char* expr,
 /// @brief Get the sign of a number
 ///
 /// Get the normalized sign of any numerical type or 0
-/// @param result An lvalue of type `t` to which the result is going to be set
+/// @param lval_result_t An lvalue of type `t` to which the result is going to
+/// be set
 /// @param t The type of the `num` parameter
 /// @param num Any numerical type value of type `t`
 /// @return -1 if `num` is negative, 1 if it's positive, 0 if `num` is 0
@@ -137,6 +144,12 @@ static inline bool __snifex_api_is_power_of_two(const size_t x);
 
 /// @defgroup arena Arenas
 /// @brief Fixed-sized and growing arenas
+///
+/// My implementation of an Arena allocator.
+/// I've implemented both a fixed size Arena, and a dynamically growing one.
+///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
 ///
 /// @{
 
@@ -403,7 +416,8 @@ extern void arena_free(Arena* const arena);
     vecp_vec_ptr->len += 1;                                                 \
   } while (0)
 
-/// @brief Pops value from the end of the vector, reducing it's length by 1 (if possible)
+/// @brief Pops value from the end of the vector, reducing it's length by 1 (if
+/// possible)
 ///
 /// @param vec_ptr Pointer to the vector we're popping from
 /// @pre `vec_ptr != NULL`
@@ -470,6 +484,13 @@ extern void arena_free(Arena* const arena);
 
 #else  // NON SNIFEX_API_GNU_EXTENSIONS
 
+/// @brief Create a vector of `t`s with an initial capacity of `init_cap`
+///
+/// @param lval_result_vec An lvalue of type `Vec(t)` to which the result is
+/// going to be set
+/// @param t The type of the elements in the vector
+/// @param init_cap The initial capacity of the vector
+/// @hideinitializer
 #define vec_create(lval_result_vec, t, init_cap)  \
   do {                                            \
     const size_t vecc_init_cap = (init_cap);      \
@@ -482,6 +503,15 @@ extern void arena_free(Arena* const arena);
     };                                            \
   } while (0)
 
+/// @brief Create a vector from a list of initial elements
+///
+/// @param lval_result_vec An lvalue of type `Vec(t)` to which the result is
+/// going to be set
+/// @param t The type of the elements in the vector
+/// @param item1 The first element of the vector. Must be of type `t`
+/// @param ... More following optional elements. All must be of type `t`
+/// @pre `item1` and varargs `...` must be of type `t`
+/// @hideinitializer
 #define vec_from(lval_result_vec, t, item1, ...) \
   do {                                           \
     t items[] = {(item1), __VA_ARGS__};          \
@@ -493,6 +523,20 @@ extern void arena_free(Arena* const arena);
     lval_result_vec = vec;                       \
   } while (0)
 
+/// @brief Get pointer to element of vector at specific index
+///
+/// @param lval_result_elem_ptr An lvalue of type `t*` to which the result is
+/// going to be set
+/// @param t The type of the elements in the vector
+/// @param vec The vector we're indexing
+/// @param i The index of the element
+/// @return Pointer to the indexed element
+/// @pre `i > 0` (since it's of type `size_t`)
+/// @pre `vec.len > 0`
+/// @pre `i < vec.len`
+/// @pre `vec.ptr != NULL` (which should be true if the user did not mess with
+/// the `ptr` directly)
+/// @hideinitializer
 #define vec_idx(lval_result_elem_ptr, t, vec, i)                               \
   do {                                                                         \
     Vec(t) veci_vec = (vec);                                                   \
@@ -500,9 +544,32 @@ extern void arena_free(Arena* const arena);
     assert(veci_vec.len > 0 && veci_i < veci_vec.len && veci_vec.ptr != NULL); \
     lval_result_elem_ptr = &(veci_vec).ptr[veci_i];                            \
   } while (0)
+
+/// @brief Get pointer to last element of vector
+///
+/// @param lval_result_elem_ptr An lvalue of type `t*` to which the result is
+/// going to be set
+/// @param t The type of the elements in the vector
+/// @param vec The vector we're taking the element from
+/// @return Pointer to the last element
+/// @pre `vec.ptr != NULL` (which should be true if the user did not mess with
+/// the `ptr` directly)
+/// @hideinitializer
 #define vec_last(lval_result_elem_ptr, t, vec) \
   vec_idx(lval_result_elem_ptr, t, (vec), veci_vec.len - 1);
 
+/// @brief Pushes value to the end of the vector
+///
+/// @note
+/// Could trigger reallocation
+///
+/// @param t The type of the elements in the vector
+/// @param vec_ptr Pointer to the vector we're pushing to
+/// @param val Value to push
+/// @pre `val` must be the same type of the vector elements
+/// @pre `vec_ptr != NULL`
+/// @post `vec_ptr->ptr != NULL` if `realloc` did not fail
+/// @hideinitializer
 #define vec_push(t, vec_ptr, val)                                    \
   do {                                                               \
     assert(vec_ptr != NULL);                                         \
@@ -519,6 +586,13 @@ extern void arena_free(Arena* const arena);
     vecp_vec_ptr->len += 1;                                          \
   } while (0)
 
+/// @brief Pops value from the end of the vector, reducing it's length by 1 (if
+/// possible)
+///
+/// @param t The type of the elements in the vector
+/// @param vec_ptr Pointer to the vector we're popping from
+/// @pre `vec_ptr != NULL`
+/// @hideinitializer
 #define vec_pop(t, vec_ptr)                                \
   do {                                                     \
     assert(vec_ptr != NULL);                               \
@@ -526,6 +600,17 @@ extern void arena_free(Arena* const arena);
     if (vecpop_vec_ptr->len > 0) vecpop_vec_ptr->len -= 1; \
   } while (0)
 
+/// @brief Appends items from a vector to the back of another vector
+///
+/// @note
+/// Could trigger reallocation
+///
+/// @param t The type of the elements in the vector
+/// @param front_ptr Pointer to the vector we're appending to.
+/// @param back Vector we're taking the items from. The items will be copied.
+/// @pre `front_ptr != NULL`
+/// @post `front_ptr->ptr != NULL` if `realloc` did not fail
+/// @hideinitializer
 #define vec_append(t, front_ptr, back)                                   \
   do {                                                                   \
     Vec(t)* veca_front_ptr = (front_ptr);                                \
@@ -543,6 +628,19 @@ extern void arena_free(Arena* const arena);
     veca_front_ptr->len += veca_back.len;                                \
   } while (0)
 
+/// @brief Perform a 'swap remove' on vector
+///
+/// A 'swap remove' is a specific type of deletion on arrays that is constant
+/// time. It consists of moving the last element into the slot of the element
+/// we're removing, and then decreasing the vector length by one.
+/// As you probably have noticed, it does NOT maintain the elements' order
+///
+/// @param t The type of the elements in the vector
+/// @param vec_ptr Pointer to the vector we're working with
+/// @param idx Index of the element to remove
+/// @pre `vec_ptr != NULL`
+/// @pre `vec_ptr->len > 0`
+/// @hideinitializer
 #define vec_swap_remove(t, vec_ptr, idx)                     \
   do {                                                       \
     Vec(t)* vecsr_vec_ptr = (vec_ptr);                       \
@@ -558,6 +656,8 @@ extern void arena_free(Arena* const arena);
   } while (0)
 #endif
 
+/// @brief Frees the vector
+/// @hideinitializer
 #define vec_free(vec_ptr) free((vec_ptr)->ptr)
 
 /// @}
