@@ -121,19 +121,22 @@ Macros</h2></td></tr>
 <tr class="memdesc:ga21ec81b33f2746d76b94b77c7f990379"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to get the struct type of a vector of <code>t</code>s.  <br /></td></tr>
 <tr class="separator:ga21ec81b33f2746d76b94b77c7f990379"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga85377c64c46343c4dbf05a73724db8a6" id="r_ga85377c64c46343c4dbf05a73724db8a6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga85377c64c46343c4dbf05a73724db8a6">vec_create</a>(t,  init_cap)</td></tr>
-<tr class="memdesc:ga85377c64c46343c4dbf05a73724db8a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a vector.  <br /></td></tr>
+<tr class="memdesc:ga85377c64c46343c4dbf05a73724db8a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a vector of <code>t</code>s with an initial capacity of <code>init_cap</code>  <br /></td></tr>
 <tr class="separator:ga85377c64c46343c4dbf05a73724db8a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga98ce1bacc1d60cd65f2c0ba9f61840d3" id="r_ga98ce1bacc1d60cd65f2c0ba9f61840d3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga98ce1bacc1d60cd65f2c0ba9f61840d3">vec_from</a>(t,  item1, ...)</td></tr>
-<tr class="memdesc:ga98ce1bacc1d60cd65f2c0ba9f61840d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a vector.  <br /></td></tr>
+<tr class="memdesc:ga98ce1bacc1d60cd65f2c0ba9f61840d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a vector from a list of initial elements.  <br /></td></tr>
 <tr class="separator:ga98ce1bacc1d60cd65f2c0ba9f61840d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa85f3533c2232edfd7fcc899bd5f6378" id="r_gaa85f3533c2232edfd7fcc899bd5f6378"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaa85f3533c2232edfd7fcc899bd5f6378">vec_idx</a>(vec,  i)</td></tr>
+<tr class="memdesc:gaa85f3533c2232edfd7fcc899bd5f6378"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get pointer to element of vector at specific index.  <br /></td></tr>
 <tr class="separator:gaa85f3533c2232edfd7fcc899bd5f6378"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8658b8a80e25d259520ed4cd4adf1729" id="r_ga8658b8a80e25d259520ed4cd4adf1729"><td class="memItemLeft" align="right" valign="top"><a id="ga8658b8a80e25d259520ed4cd4adf1729" name="ga8658b8a80e25d259520ed4cd4adf1729"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>vec_last</b>(vec)&#160;&#160;&#160;vec_idx((vec), veci_vec.len - 1);</td></tr>
+<tr class="memitem:ga8658b8a80e25d259520ed4cd4adf1729" id="r_ga8658b8a80e25d259520ed4cd4adf1729"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga8658b8a80e25d259520ed4cd4adf1729">vec_last</a>(vec)</td></tr>
+<tr class="memdesc:ga8658b8a80e25d259520ed4cd4adf1729"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get pointer to last element of vector.  <br /></td></tr>
 <tr class="separator:ga8658b8a80e25d259520ed4cd4adf1729"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacf1c58bf560b4b89d60091e093bc5d88" id="r_gacf1c58bf560b4b89d60091e093bc5d88"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gacf1c58bf560b4b89d60091e093bc5d88">vec_push</a>(vec_ptr,  val)</td></tr>
+<tr class="memdesc:gacf1c58bf560b4b89d60091e093bc5d88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes value to the end of the vector.  <br /></td></tr>
 <tr class="separator:gacf1c58bf560b4b89d60091e093bc5d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga58a40fa5257bab64d1fd6f7046d30e0e" id="r_ga58a40fa5257bab64d1fd6f7046d30e0e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga58a40fa5257bab64d1fd6f7046d30e0e">vec_pop</a>(vec_ptr)</td></tr>
+<tr class="memdesc:ga58a40fa5257bab64d1fd6f7046d30e0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pops value from the end of the vector, reducing it's length by 1.  <br /></td></tr>
 <tr class="separator:ga58a40fa5257bab64d1fd6f7046d30e0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga06b74abb56b0226f908d1157353176e3" id="r_ga06b74abb56b0226f908d1157353176e3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga06b74abb56b0226f908d1157353176e3">vec_append</a>(front_ptr,  back)</td></tr>
 <tr class="separator:ga06b74abb56b0226f908d1157353176e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -176,8 +179,13 @@ Macros</h2></td></tr>
 <div class="line">  <a class="code hl_define" href="#ga21ec81b33f2746d76b94b77c7f990379">Vec</a>(<span class="keywordtype">int</span>) vector;</div>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__vector_html_ga21ec81b33f2746d76b94b77c7f990379"><div class="ttname"><a href="#ga21ec81b33f2746d76b94b77c7f990379">Vec</a></div><div class="ttdeci">#define Vec(t)</div><div class="ttdoc">Macro to get the struct type of a vector of ts.</div><div class="ttdef"><b>Definition</b> snifex-api.h:303</div></div>
-<div class="ttc" id="agroup__vector_html_gac69846d6bf7de13c7eb8cdf3351a92ef"><div class="ttname"><a href="#gac69846d6bf7de13c7eb8cdf3351a92ef">DefineVec</a></div><div class="ttdeci">#define DefineVec(t)</div><div class="ttdoc">Macro to declare a specifically typed Vector.</div><div class="ttdef"><b>Definition</b> snifex-api.h:292</div></div>
+<div class="ttc" id="agroup__vector_html_ga21ec81b33f2746d76b94b77c7f990379"><div class="ttname"><a href="#ga21ec81b33f2746d76b94b77c7f990379">Vec</a></div><div class="ttdeci">#define Vec(t)</div><div class="ttdoc">Macro to get the struct type of a vector of ts.</div><div class="ttdef"><b>Definition</b> snifex-api.h:312</div></div>
+<div class="ttc" id="agroup__vector_html_gac69846d6bf7de13c7eb8cdf3351a92ef"><div class="ttname"><a href="#gac69846d6bf7de13c7eb8cdf3351a92ef">DefineVec</a></div><div class="ttdeci">#define DefineVec(t)</div><div class="ttdoc">Macro to declare a specifically typed Vector.</div><div class="ttdef"><b>Definition</b> snifex-api.h:301</div></div>
+</div><!-- fragment --><p>This is a general documentation for the structs generated by this macro: </p><div class="fragment"><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line">  t* ptr;     </div>
+<div class="line">  <span class="keywordtype">size_t</span> cap; </div>
+<div class="line">  <span class="keywordtype">size_t</span> len; </div>
+<div class="line">} Vec_t; <span class="comment">// Where `t` is any type passed to the macro</span></div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>The type of the elements in the vector </td></tr>
@@ -271,8 +279,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a vector. </p>
-<p>Create a vector of <code>t</code>s with an initial capacity of <code>init_cap</code></p>
+<p>Create a vector of <code>t</code>s with an initial capacity of <code>init_cap</code> </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>The type of the elements in the vector </td></tr>
@@ -307,15 +314,16 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a vector. </p>
-<p>Create a vector of <code>t</code>s with an initial capacity of <code>init_cap</code></p>
+<p>Create a vector from a list of initial elements. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>The type of the elements in the vector </td></tr>
-    <tr><td class="paramname">init_cap</td><td>The initial capacity of the vector </td></tr>
+    <tr><td class="paramname">item1</td><td>The first element of the vector. Must be of type <code>t</code> </td></tr>
+    <tr><td class="paramname">...</td><td>More following optional elements. All must be of type <code>t</code> </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code>item1</code> and varargs <code>...</code> must be of type <code>t</code> </dd></dl>
 
 </div>
 </div>
@@ -337,13 +345,43 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">  ({                                                                           \</div>
-<div class="line">    __typeof(vec) veci_vec = (vec);                                            \</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">size_t</span> veci_i = (i);                                                 \</div>
-<div class="line">    assert(veci_vec.len &gt; 0 &amp;&amp; veci_i &lt; veci_vec.len &amp;&amp; veci_vec.ptr != NULL); \</div>
-<div class="line">    &amp;(veci_vec).ptr[veci_i];                                                   \</div>
-<div class="line">  })</div>
-</div><!-- fragment -->
+
+<p>Get pointer to element of vector at specific index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vec</td><td>The vector we're indexing </td></tr>
+    <tr><td class="paramname">i</td><td>The index of the element </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the indexed element </dd></dl>
+
+</div>
+</div>
+<a id="ga8658b8a80e25d259520ed4cd4adf1729" name="ga8658b8a80e25d259520ed4cd4adf1729"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8658b8a80e25d259520ed4cd4adf1729">&#9670;&#160;</a></span>vec_last</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define vec_last</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">vec</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get pointer to last element of vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vec</td><td>The vector we're taking the element from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the last element </dd></dl>
+
 </div>
 </div>
 <a id="ga58a40fa5257bab64d1fd6f7046d30e0e" name="ga58a40fa5257bab64d1fd6f7046d30e0e"></a>
@@ -360,12 +398,15 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">  <span class="keywordflow">do</span> {                                                     \</div>
-<div class="line">    __typeof(vec_ptr) vecpop_vec_ptr = (vec_ptr);          \</div>
-<div class="line">    assert(vecpop_vec_ptr != NULL);                        \</div>
-<div class="line">    if (vecpop_vec_ptr-&gt;len &gt; 0) vecpop_vec_ptr-&gt;len -= 1; \</div>
-<div class="line">  } while (0)</div>
-</div><!-- fragment -->
+
+<p>Pops value from the end of the vector, reducing it's length by 1. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vec_ptr</td><td>Pointer to the vector we're popping from </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="gacf1c58bf560b4b89d60091e093bc5d88" name="gacf1c58bf560b4b89d60091e093bc5d88"></a>
@@ -386,21 +427,17 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">  <span class="keywordflow">do</span> {                                                                      \</div>
-<div class="line">    <span class="keyword">const</span> __typeof(*(vec_ptr)-&gt;ptr) vecp_val = (val);                       \</div>
-<div class="line">    __typeof(vec_ptr) vecp_vec_ptr = (vec_ptr);                             \</div>
-<div class="line">    assert(vecp_vec_ptr != NULL);                                           \</div>
-<div class="line">    if (vecp_vec_ptr-&gt;len + 1 &gt; vecp_vec_ptr-&gt;cap) {                        \</div>
-<div class="line">      vecp_vec_ptr-&gt;cap += 1;                                               \</div>
-<div class="line">      vecp_vec_ptr-&gt;cap *= 2;                                               \</div>
-<div class="line">      vecp_vec_ptr-&gt;ptr =                                                   \</div>
-<div class="line">          realloc(vecp_vec_ptr-&gt;ptr, vecp_vec_ptr-&gt;cap * <span class="keyword">sizeof</span>(vecp_val)); \</div>
-<div class="line">      assert(vecp_vec_ptr-&gt;ptr != NULL);                                    \</div>
-<div class="line">    }                                                                       \</div>
-<div class="line">    *(vecp_vec_ptr-&gt;ptr + vecp_vec_ptr-&gt;len) = vecp_val;                    \</div>
-<div class="line">    vecp_vec_ptr-&gt;len += 1;                                                 \</div>
-<div class="line">  } <span class="keywordflow">while</span> (0)</div>
-</div><!-- fragment -->
+
+<p>Pushes value to the end of the vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vec_ptr</td><td>Pointer to the vector we're pushing to </td></tr>
+    <tr><td class="paramname">val</td><td>Value to push </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code>val</code> must be the same type of the vector elements </dd></dl>
+
 </div>
 </div>
 <a id="ga944fa232b956cf6561b3fc242da0d200" name="ga944fa232b956cf6561b3fc242da0d200"></a>
@@ -426,11 +463,13 @@ Macros</h2></td></tr>
 <div class="line">    <span class="keywordtype">size_t</span> vecsr_idx = (idx);                                   \</div>
 <div class="line">    assert(vecsr_vec_ptr != NULL &amp;&amp; vecsr_vec_ptr-&gt;len &gt; 0);    \</div>
 <div class="line">                                                                \</div>
-<div class="line">    __auto_type remove_at = vec_idx(*vecsr_vec_ptr, vecsr_idx); \</div>
-<div class="line">    __auto_type to_replace = *vec_last(*vecsr_vec_ptr);         \</div>
+<div class="line">    __auto_type remove_at = <a class="code hl_define" href="#gaa85f3533c2232edfd7fcc899bd5f6378">vec_idx</a>(*vecsr_vec_ptr, vecsr_idx); \</div>
+<div class="line">    __auto_type to_replace = *<a class="code hl_define" href="#ga8658b8a80e25d259520ed4cd4adf1729">vec_last</a>(*vecsr_vec_ptr);         \</div>
 <div class="line">    *remove_at = to_replace;                                    \</div>
 <div class="line">    vecsr_vec_ptr-&gt;len--;                                       \</div>
 <div class="line">  } <span class="keywordflow">while</span> (0)</div>
+<div class="ttc" id="agroup__vector_html_ga8658b8a80e25d259520ed4cd4adf1729"><div class="ttname"><a href="#ga8658b8a80e25d259520ed4cd4adf1729">vec_last</a></div><div class="ttdeci">#define vec_last(vec)</div><div class="ttdoc">Get pointer to last element of vector.</div><div class="ttdef"><b>Definition</b> snifex-api.h:368</div></div>
+<div class="ttc" id="agroup__vector_html_gaa85f3533c2232edfd7fcc899bd5f6378"><div class="ttname"><a href="#gaa85f3533c2232edfd7fcc899bd5f6378">vec_idx</a></div><div class="ttdeci">#define vec_idx(vec, i)</div><div class="ttdoc">Get pointer to element of vector at specific index.</div><div class="ttdef"><b>Definition</b> snifex-api.h:355</div></div>
 </div><!-- fragment -->
 </div>
 </div>
