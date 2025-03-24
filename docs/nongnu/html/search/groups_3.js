@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['utils_0',['Macro utils',['../group__macro__utils.html',1,'']]]
+  ['strings_0',['Strings',['../group__string.html',1,'']]]
 ];

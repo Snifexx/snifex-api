@@ -244,17 +244,18 @@ extern void* arena_alloc(Arena* const arena,
 /// dyn_arena_alloc and then, when working on the object in the @ref DynArena,
 /// get a temporary "absolute" pointer with this macro
 ///
-/// @param result An lvalue of type `t*` to which the result is going to be set
+/// @param lval_result_t_ptr An lvalue of type `t*` to which the result is going
+/// to be set
 /// @param t The type of the item we're casting the pointer to
 /// @param rel_ptr The relative pointer to the object in the @ref DynArena
 /// @return An "absolute" pointer to the object of type `t` allocated in the
 /// @ref DynArena at offset `rel_ptr`
 /// @hideinitializer
-#define dyn_arena_get(result, t, dyn_arena, rel_ptr) \
-  do {                                               \
-    const DynArena dag_dyn_arena = dyn_arena;        \
-    const size_t dag_rel_ptr = rel_ptr;              \
-    result = (t*)&dag_dyn_arena.buf[dag_rel_ptr];    \
+#define dyn_arena_get(lval_result_t_ptr, t, dyn_arena, rel_ptr) \
+  do {                                                          \
+    const DynArena dag_dyn_arena = dyn_arena;                   \
+    const size_t dag_rel_ptr = rel_ptr;                         \
+    lval_result_t_ptr = (t*)&dag_dyn_arena.buf[dag_rel_ptr];    \
   } while (0)
 #endif
 
@@ -366,7 +367,7 @@ extern void arena_free(Arena* const arena);
 /// @param vec The vector we're indexing
 /// @param i The index of the element
 /// @return Pointer to the indexed element
-/// @pre `i > 0` (since it's of type `size_t`)
+/// @pre `i >= 0` (since it's of type `size_t`)
 /// @pre `vec.len > 0`
 /// @pre `i < vec.len`
 /// @pre `vec.ptr != NULL` (which should be true if the user did not mess with
@@ -531,7 +532,7 @@ extern void arena_free(Arena* const arena);
 /// @param vec The vector we're indexing
 /// @param i The index of the element
 /// @return Pointer to the indexed element
-/// @pre `i > 0` (since it's of type `size_t`)
+/// @pre `i >= 0` (since it's of type `size_t`)
 /// @pre `vec.len > 0`
 /// @pre `i < vec.len`
 /// @pre `vec.ptr != NULL` (which should be true if the user did not mess with
@@ -662,43 +663,97 @@ extern void arena_free(Arena* const arena);
 
 /// @}
 
-//-
-//-  Strings
-//-
+/// @defgroup string Strings
+/// @brief Just... Strings 🙂
+///
+/// All examples are <a
+/// href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a>
+/// @{
 
+/// @brief A sized string view.
+///
+/// This a simple sized string view... Nothing else.
+/// For the uninitiated:
+/// - 'sized' means that we carry the length of the data with the data (the
+/// char*)
+/// - 'view' because the memory is not owned. That means that it is the user
+/// responsibility to manage the memory the string view is pointing to. The
+/// recommended way is using an arena.
+///
+/// @note
+/// @ref string are NOT zero tailing (since they're string-views anyways)
 typedef struct string {
-  char* ptr;
-  size_t len;
+  char* ptr; ///< Internal string buffer 
+  size_t len; ///< Length of string
 } string;
 
 DefineVec(string);
 
+/// @brief Returns a string literal (char const*) to a @ref string format
 extern string strlit(char const* s);
+/// @brief Allocates a string of length `len` in an arena
+/// @pre `arena != NULL`
 extern string str_alloc(Arena* const arena, const size_t len);
+/// @brief Gets pointer to character at specific index
+///
+/// @pre `i >= 0` (since it's of type `size_t`)
+/// @pre `i < str.len`
+/// @pre `str.ptr != NULL` which should be true if the user did not mess with
+/// the `ptr` directly
 char* const str_idx(const string str, const size_t i);
+/// @brief Returns whether the string is empty
+///
+/// An empty @ref string means that either the length is 0 or the internal `ptr`
+/// is NULL
 extern bool str_is_empty(const string str);
 
-// Short-circuing if the length is equal and is 0 is because memcmp with
-// NULL pointers is U.B. in c99, even if the number of bytes copied is 0,
-// and in this library empty strings can have a NULL pointer.
-//
-// See `str_join` for more info
+/// @brief Returns whether two @ref strings are equal
+///
+/// @par Implementation details
+/// Short-circuing if the length is equal and is 0. This is because memcmp with
+/// NULL pointers is U.B. in c99, even if the number of bytes copied is 0,
+/// and in this library empty strings can have a NULL pointer.
+///
+/// @see @ref str_join for more info
 extern bool str_eq(const string a, const string b);
 
-// Note! Can execute memcpy(ptr, NULL, 0), where ptr is guaranteed not to be
-// NULL, which is U.B. before c2y. Clang and GCC apparently handle this
-// gratefully while MSVC does not so, to conform to c99 we check for 0-len
-// before memcpy-ing. This isn't not really a performance issue in release mode
-// as it should just be optimised out (and gcc/clang with -O1 surely does)
-//
-// See
-// https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
+/// @brief Returns result of concatination of string `b` into `a`
+///
+/// @par Implementation details
+/// If we are not careful we could execute memcpy(ptr, NULL, 0), where ptr is guaranteed not to be
+/// NULL, which is U.B. before c2y. Clang and GCC apparently handle this
+/// gratefully while MSVC does not. So to conform to c99 we check for 0-len
+/// before memcpy-ing. This isn't not really a performance issue in release mode
+/// as it should just be optimised out (and gcc/clang with -O1 surely does)
+///
+/// @pre `arena != NULL`
+/// @see https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0
 extern string str_concat(Arena* const arena, const string a, const string b);
+/// @brief Returns copy of a string
+///
+/// @pre `arena != NULL`
 extern string str_copy(Arena* const arena, const string str);
+/// @brief Joins a list of strings together and returns the returning string
+///
+/// @pre `arena != NULL`
 extern string str_join(Arena* const arena, Vec(string) to_join);
+/// @brief Returns a formatted string
+///
+/// @pre `arena != NULL`
+/// @pre `fmt != NULL`
 extern string str_fmt(Arena* const arena, const char* fmt, ...);
+/// @brief Returns a string slice
+///
+/// @pre `start >= 0` (since it's of type `size_t`)
+/// @pre `end >= 0` (since it's of type `size_t`)
+/// @pre `start < str.len`
+/// @pre `end <= str.len`
+/// @pre `start <= end`
 extern string str_slice(const string str, const size_t start, const size_t end);
+/// @brief Returns a trimmed string
 extern string str_trim(const string str);
+
+/// @}
 
 //-
 //-  Dictionaries / Hashmaps

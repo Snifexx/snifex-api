@@ -126,9 +126,9 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga5a3b0935e32c026f2809642b813fc06c" id="r_ga5a3b0935e32c026f2809642b813fc06c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga5a3b0935e32c026f2809642b813fc06c">dyn_arena_get</a>(result,  t,  <a class="el" href="structdyn__arena.html">dyn_arena</a>,  rel_ptr)</td></tr>
-<tr class="memdesc:ga5a3b0935e32c026f2809642b813fc06c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a temporary pointer from relative pointer of a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>.  <br /></td></tr>
-<tr class="separator:ga5a3b0935e32c026f2809642b813fc06c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42cd5df57e48132617fffea48005b8b0" id="r_ga42cd5df57e48132617fffea48005b8b0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga42cd5df57e48132617fffea48005b8b0">dyn_arena_get</a>(lval_result_t_ptr,  t,  <a class="el" href="structdyn__arena.html">dyn_arena</a>,  rel_ptr)</td></tr>
+<tr class="memdesc:ga42cd5df57e48132617fffea48005b8b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a temporary pointer from relative pointer of a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>.  <br /></td></tr>
+<tr class="separator:ga42cd5df57e48132617fffea48005b8b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -176,8 +176,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 <p>My implementation of an Arena allocator. I've implemented both a fixed size Arena, and a dynamically growing one.</p>
 <p>All examples are <a href="https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests">here</a> </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ga5a3b0935e32c026f2809642b813fc06c" name="ga5a3b0935e32c026f2809642b813fc06c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5a3b0935e32c026f2809642b813fc06c">&#9670;&#160;</a></span>dyn_arena_get</h2>
+<a id="ga42cd5df57e48132617fffea48005b8b0" name="ga42cd5df57e48132617fffea48005b8b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga42cd5df57e48132617fffea48005b8b0">&#9670;&#160;</a></span>dyn_arena_get</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,7 +185,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
         <tr>
           <td class="memname">#define dyn_arena_get</td>
           <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">result, </span></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname">lval_result_t_ptr, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -209,7 +209,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 <p>Get a pointer to the object at from <code>rel_ptr</code>. The returning pointer should not be stored or reused after a <a class="el" href="#gaf51416939c44395d6d982750c464ab44">dyn_arena_alloc</a> allocation, because an allocation could trigger a resizing rendering that pointer dangerous. Instead, store, pass and work with the relative pointer retuned from <a class="el" href="#gaf51416939c44395d6d982750c464ab44">dyn_arena_alloc</a> and then, when working on the object in the <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>, get a temporary "absolute" pointer with this macro</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">result</td><td>An lvalue of type <code>t*</code> to which the result is going to be set </td></tr>
+    <tr><td class="paramname">lval_result_t_ptr</td><td>An lvalue of type <code>t*</code> to which the result is going to be set </td></tr>
     <tr><td class="paramname">t</td><td>The type of the item we're casting the pointer to </td></tr>
     <tr><td class="paramname">rel_ptr</td><td>The relative pointer to the object in the <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a> </td></tr>
   </table>
@@ -250,7 +250,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 </div><div class="memdoc">
 
 <p>A dinamically growing arena. </p>
-<p>An arena that is not fixed-sized, and dynamically grows. Because of this property, <a class="el" href="#gaf51416939c44395d6d982750c464ab44">dyn_arena_alloc</a> does not return a pointer, it returns an index with which we can access the pointer temporarily (with <a class="el" href="#ga5a3b0935e32c026f2809642b813fc06c">dyn_arena_get</a>) </p>
+<p>An arena that is not fixed-sized, and dynamically grows. Because of this property, <a class="el" href="#gaf51416939c44395d6d982750c464ab44">dyn_arena_alloc</a> does not return a pointer, it returns an index with which we can access the pointer temporarily (with <a class="el" href="#ga42cd5df57e48132617fffea48005b8b0">dyn_arena_get</a>) </p>
 
 </div>
 </div>
@@ -385,7 +385,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>arena_free</b> (<a cl
 </div><div class="memdoc">
 
 <p>Allocates an object into a <a class="el" href="#ga87592162b834e5e3424de774f8cb8eb3">DynArena</a>. </p>
-<p>Allocates object of size '<code>size</code>' aligned to '<code>alignment</code>'. If unsure of what to use as <code>alignment</code>, just use the <code>size</code> </p><dl class="section return"><dt>Returns</dt><dd>Returns an index from <code>dyn_arena-&gt;buf</code>. To get the obect at that index refer to <a class="el" href="#ga5a3b0935e32c026f2809642b813fc06c">dyn_arena_get</a> </dd></dl>
+<p>Allocates object of size '<code>size</code>' aligned to '<code>alignment</code>'. If unsure of what to use as <code>alignment</code>, just use the <code>size</code> </p><dl class="section return"><dt>Returns</dt><dd>Returns an index from <code>dyn_arena-&gt;buf</code>. To get the obect at that index refer to <a class="el" href="#ga42cd5df57e48132617fffea48005b8b0">dyn_arena_get</a> </dd></dl>
 
 </div>
 </div>

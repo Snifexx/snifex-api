@@ -10,7 +10,7 @@ var group__arena =
       [ "size", "structarena.html#ad43326ab5c17ca16d59b5eeb34a25303", null ],
       [ "top", "structarena.html#ade1712c9e2266607fac772eb4140815e", null ]
     ] ],
-    [ "dyn_arena_get", "group__arena.html#ga5a3b0935e32c026f2809642b813fc06c", null ],
+    [ "dyn_arena_get", "group__arena.html#ga42cd5df57e48132617fffea48005b8b0", null ],
     [ "Arena", "group__arena.html#gaa3c04ba804275765a4e49c9872d46a25", null ],
     [ "DynArena", "group__arena.html#ga87592162b834e5e3424de774f8cb8eb3", null ],
     [ "arena_alloc", "group__arena.html#gafa4a34eff8578b37c7fa9a3e12188959", null ],

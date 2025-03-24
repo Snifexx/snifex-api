@@ -15,7 +15,7 @@ struct \mbox{\hyperlink{structarena}{arena}}
 \doxysubsubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{group__arena_ga5a3b0935e32c026f2809642b813fc06c}{dyn\+\_\+arena\+\_\+get}}(result,  t,  \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}},  rel\+\_\+ptr)
+\#define \mbox{\hyperlink{group__arena_ga42cd5df57e48132617fffea48005b8b0}{dyn\+\_\+arena\+\_\+get}}(lval\+\_\+result\+\_\+t\+\_\+ptr,  t,  \mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}},  rel\+\_\+ptr)
 \begin{DoxyCompactList}\small\item\em Get a temporary pointer from relative pointer of a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Typedefs}
 \begin{DoxyCompactItemize}
@@ -57,11 +57,11 @@ My implementation of an Arena allocator. I\textquotesingle{}ve implemented both 
 All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}} 
 
 \doxysubsection{Macro Definition Documentation}
-\Hypertarget{group__arena_ga5a3b0935e32c026f2809642b813fc06c}\label{group__arena_ga5a3b0935e32c026f2809642b813fc06c} 
+\Hypertarget{group__arena_ga42cd5df57e48132617fffea48005b8b0}\label{group__arena_ga42cd5df57e48132617fffea48005b8b0} 
 \index{Arenas@{Arenas}!dyn\_arena\_get@{dyn\_arena\_get}}
 \index{dyn\_arena\_get@{dyn\_arena\_get}!Arenas@{Arenas}}
 \doxysubsubsection{\texorpdfstring{dyn\_arena\_get}{dyn\_arena\_get}}
-{\footnotesize\ttfamily \#define dyn\+\_\+arena\+\_\+get(\begin{DoxyParamCaption}\item[{}]{result,  }\item[{}]{t,  }\item[{}]{\mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}},  }\item[{}]{rel\+\_\+ptr }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \#define dyn\+\_\+arena\+\_\+get(\begin{DoxyParamCaption}\item[{}]{lval\+\_\+result\+\_\+t\+\_\+ptr,  }\item[{}]{t,  }\item[{}]{\mbox{\hyperlink{structdyn__arena}{dyn\+\_\+arena}},  }\item[{}]{rel\+\_\+ptr }\end{DoxyParamCaption})}
 
 
 
@@ -71,7 +71,7 @@ Get a pointer to the object at from {\ttfamily rel\+\_\+ptr}. The returning poin
 
 
 \begin{DoxyParams}{Parameters}
-{\em result} & An lvalue of type {\ttfamily t\texorpdfstring{$\ast$}{*}} to which the result is going to be set \\
+{\em lval\+\_\+result\+\_\+t\+\_\+ptr} & An lvalue of type {\ttfamily t\texorpdfstring{$\ast$}{*}} to which the result is going to be set \\
 \hline
 {\em t} & The type of the item we\textquotesingle{}re casting the pointer to \\
 \hline
@@ -104,7 +104,7 @@ A fixed-\/sized arena, that allocates a certain amount of memory when initialize
 
 A dinamically growing arena. 
 
-An arena that is not fixed-\/sized, and dynamically grows. Because of this property, \doxylink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\+\_\+arena\+\_\+alloc} does not return a pointer, it returns an index with which we can access the pointer temporarily (with \doxylink{group__arena_ga5a3b0935e32c026f2809642b813fc06c}{dyn\+\_\+arena\+\_\+get}) 
+An arena that is not fixed-\/sized, and dynamically grows. Because of this property, \doxylink{group__arena_gaf51416939c44395d6d982750c464ab44}{dyn\+\_\+arena\+\_\+alloc} does not return a pointer, it returns an index with which we can access the pointer temporarily (with \doxylink{group__arena_ga42cd5df57e48132617fffea48005b8b0}{dyn\+\_\+arena\+\_\+get}) 
 
 \doxysubsection{Function Documentation}
 \Hypertarget{group__arena_gafa4a34eff8578b37c7fa9a3e12188959}\label{group__arena_gafa4a34eff8578b37c7fa9a3e12188959} 
@@ -157,7 +157,7 @@ Initializes an \doxylink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}
 Allocates an object into a \doxylink{group__arena_ga87592162b834e5e3424de774f8cb8eb3}{Dyn\+Arena}. 
 
 Allocates object of size \textquotesingle{}{\ttfamily size}\textquotesingle{} aligned to \textquotesingle{}{\ttfamily alignment}\textquotesingle{}. If unsure of what to use as {\ttfamily alignment}, just use the {\ttfamily size} \begin{DoxyReturn}{Returns}
-Returns an index from {\ttfamily dyn\+\_\+arena-\/\texorpdfstring{$>$}{>}buf}. To get the obect at that index refer to \doxylink{group__arena_ga5a3b0935e32c026f2809642b813fc06c}{dyn\+\_\+arena\+\_\+get} 
+Returns an index from {\ttfamily dyn\+\_\+arena-\/\texorpdfstring{$>$}{>}buf}. To get the obect at that index refer to \doxylink{group__arena_ga42cd5df57e48132617fffea48005b8b0}{dyn\+\_\+arena\+\_\+get} 
 \end{DoxyReturn}
 \Hypertarget{group__arena_ga5cf19a838d5dca54e91d85cf1a316a35}\label{group__arena_ga5cf19a838d5dca54e91d85cf1a316a35} 
 \index{Arenas@{Arenas}!dyn\_arena\_create@{dyn\_arena\_create}}

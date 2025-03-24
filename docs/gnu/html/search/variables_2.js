@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['size_0',['size',['../structarena.html#ad43326ab5c17ca16d59b5eeb34a25303',1,'arena']]]
+  ['len_0',['len',['../structstring.html#aa6bcf0353fd5cf2f374a9b1dd0e4a73a',1,'string']]]
 ];

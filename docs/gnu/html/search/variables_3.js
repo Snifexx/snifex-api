@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['top_0',['top',['../structdyn__arena.html#af6a8621205a903f11819ce5a2471422c',1,'dyn_arena::top'],['../structarena.html#ade1712c9e2266607fac772eb4140815e',1,'arena::top']]]
+  ['ptr_0',['ptr',['../structstring.html#aa1b2f3a2ddd1ed38245b8d4590aadf93',1,'string']]]
 ];

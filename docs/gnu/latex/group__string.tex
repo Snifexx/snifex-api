@@ -1,0 +1,214 @@
+\doxysection{Strings}
+\hypertarget{group__string}{}\label{group__string}\index{Strings@{Strings}}
+
+
+Just... Strings 🙂  
+
+
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structstring}{string}}
+\begin{DoxyCompactList}\small\item\em A sized string view. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct string \mbox{\hyperlink{group__string_ga63e2e3ee7db5274c6a3929edfc07c6c9}{string}}
+\begin{DoxyCompactList}\small\item\em A sized string view. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{group__string_ga8ec26c913a7311acceb47bdb95785da1}\label{group__string_ga8ec26c913a7311acceb47bdb95785da1} 
+{\bfseries Define\+Vec} (\mbox{\hyperlink{structstring}{string}})
+\item 
+\Hypertarget{group__string_ga22cf0f5934dd718b3b38529740b17571}\label{group__string_ga22cf0f5934dd718b3b38529740b17571} 
+\mbox{\hyperlink{structstring}{string}} {\bfseries strlit} (char const \texorpdfstring{$\ast$}{*}s)
+\begin{DoxyCompactList}\small\item\em Returns a string literal (char const\texorpdfstring{$\ast$}{*}) to a \doxylink{group__string}{Strings} format. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structstring}{string}} \mbox{\hyperlink{group__string_gadc27d8af78d1abfe47308d740d1ac552}{str\+\_\+alloc}} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}}, const size\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Allocates a string of length {\ttfamily len} in an arena. \end{DoxyCompactList}\item 
+char \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{group__string_ga02ab529ec0eede2732f7e0bf824a6645}{str\+\_\+idx}} (const \mbox{\hyperlink{structstring}{string}} str, const size\+\_\+t i)
+\begin{DoxyCompactList}\small\item\em Gets pointer to character at specific index. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__string_gaa056a9531cde5296d71c6065501aae12}{str\+\_\+is\+\_\+empty}} (const \mbox{\hyperlink{structstring}{string}} str)
+\begin{DoxyCompactList}\small\item\em Returns whether the string is empty. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__string_ga5724c9294f7d8aeb114b4dc901333a11}{str\+\_\+eq}} (const \mbox{\hyperlink{structstring}{string}} a, const \mbox{\hyperlink{structstring}{string}} b)
+\begin{DoxyCompactList}\small\item\em Returns whether two strings are equal. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structstring}{string}} \mbox{\hyperlink{group__string_gacc342cc4cb474215ada342b9b2d65b8a}{str\+\_\+concat}} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}}, const \mbox{\hyperlink{structstring}{string}} a, const \mbox{\hyperlink{structstring}{string}} b)
+\begin{DoxyCompactList}\small\item\em Returns result of concatination of string {\ttfamily b} into {\ttfamily a} \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structstring}{string}} \mbox{\hyperlink{group__string_ga8c7ecc1d2a88f9327e727b1def4002ad}{str\+\_\+copy}} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}}, const \mbox{\hyperlink{structstring}{string}} str)
+\begin{DoxyCompactList}\small\item\em Returns copy of a string. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structstring}{string}} \mbox{\hyperlink{group__string_ga9e2729b7029bf2407d722c8acbe5a45e}{str\+\_\+join}} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}}, \mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(\mbox{\hyperlink{structstring}{string}}) to\+\_\+join)
+\begin{DoxyCompactList}\small\item\em Joins a list of strings together and returns the returning string. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structstring}{string}} \mbox{\hyperlink{group__string_gaa3b530e0395a6c05d9e7fe641a007001}{str\+\_\+fmt}} (\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{structarena}{arena}}, const char \texorpdfstring{$\ast$}{*}fmt,...)
+\begin{DoxyCompactList}\small\item\em Returns a formatted string. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structstring}{string}} \mbox{\hyperlink{group__string_ga4a8505f75a2b6d26de673670a08b1c10}{str\+\_\+slice}} (const \mbox{\hyperlink{structstring}{string}} str, const size\+\_\+t start, const size\+\_\+t end)
+\begin{DoxyCompactList}\small\item\em Returns a string slice. \end{DoxyCompactList}\item 
+\Hypertarget{group__string_ga6b29d7c310951916aa4a75be0cf85b96}\label{group__string_ga6b29d7c310951916aa4a75be0cf85b96} 
+\mbox{\hyperlink{structstring}{string}} {\bfseries str\+\_\+trim} (const \mbox{\hyperlink{structstring}{string}} str)
+\begin{DoxyCompactList}\small\item\em Returns a trimmed string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Just... Strings 🙂 
+
+All examples are \href{https://github.com/Snifexx/snifex-api/tree/docs/src/examples-and-tests}{\texttt{ here}} 
+
+\doxysubsection{Typedef Documentation}
+\Hypertarget{group__string_ga63e2e3ee7db5274c6a3929edfc07c6c9}\label{group__string_ga63e2e3ee7db5274c6a3929edfc07c6c9} 
+\index{Strings@{Strings}!string@{string}}
+\index{string@{string}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{string}{string}}
+{\footnotesize\ttfamily typedef struct string string}
+
+
+
+A sized string view. 
+
+This a simple sized string view... Nothing else. For the uninitiated\+:
+\begin{DoxyItemize}
+\item \textquotesingle{}sized\textquotesingle{} means that we carry the length of the data with the data (the char\texorpdfstring{$\ast$}{*})
+\item \textquotesingle{}view\textquotesingle{} because the memory is not owned. That means that it is the user responsibility to manage the memory the string view is pointing to. The recommended way is using an arena.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+\doxylink{group__string}{Strings} are NOT zero tailing (since they\textquotesingle{}re string-\/views anyways) 
+\end{DoxyNote}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{group__string_gadc27d8af78d1abfe47308d740d1ac552}\label{group__string_gadc27d8af78d1abfe47308d740d1ac552} 
+\index{Strings@{Strings}!str\_alloc@{str\_alloc}}
+\index{str\_alloc@{str\_alloc}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_alloc()}{str\_alloc()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+alloc (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const size\+\_\+t}]{len }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Allocates a string of length {\ttfamily len} in an arena. 
+
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily arena != NULL} 
+\end{DoxyPrecond}
+\Hypertarget{group__string_gacc342cc4cb474215ada342b9b2d65b8a}\label{group__string_gacc342cc4cb474215ada342b9b2d65b8a} 
+\index{Strings@{Strings}!str\_concat@{str\_concat}}
+\index{str\_concat@{str\_concat}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_concat()}{str\_concat()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+concat (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const \mbox{\hyperlink{structstring}{string}}}]{a,  }\item[{const \mbox{\hyperlink{structstring}{string}}}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Returns result of concatination of string {\ttfamily b} into {\ttfamily a} 
+
+\begin{DoxyParagraph}{Implementation details}
+If we are not careful we could execute memcpy(ptr, NULL, 0), where ptr is guaranteed not to be NULL, which is U.\+B. before c2y. Clang and GCC apparently handle this gratefully while MSVC does not. So to conform to c99 we check for 0-\/len before memcpy-\/ing. This isn\textquotesingle{}t not really a performance issue in release mode as it should just be optimised out (and gcc/clang with -\/O1 surely does)
+\end{DoxyParagraph}
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily arena != NULL} 
+\end{DoxyPrecond}
+\begin{DoxySeeAlso}{See also}
+\href{https://stackoverflow.com/questions/5243012/is-it-guaranteed-to-be-safe-to-perform-memcpy0-0-0}{\texttt{ https\+://stackoverflow.\+com/questions/5243012/is-\/it-\/guaranteed-\/to-\/be-\/safe-\/to-\/perform-\/memcpy0-\/0-\/0}} 
+\end{DoxySeeAlso}
+\Hypertarget{group__string_ga8c7ecc1d2a88f9327e727b1def4002ad}\label{group__string_ga8c7ecc1d2a88f9327e727b1def4002ad} 
+\index{Strings@{Strings}!str\_copy@{str\_copy}}
+\index{str\_copy@{str\_copy}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_copy()}{str\_copy()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+copy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const \mbox{\hyperlink{structstring}{string}}}]{str }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Returns copy of a string. 
+
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily arena != NULL} 
+\end{DoxyPrecond}
+\Hypertarget{group__string_ga5724c9294f7d8aeb114b4dc901333a11}\label{group__string_ga5724c9294f7d8aeb114b4dc901333a11} 
+\index{Strings@{Strings}!str\_eq@{str\_eq}}
+\index{str\_eq@{str\_eq}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_eq()}{str\_eq()}}
+{\footnotesize\ttfamily bool str\+\_\+eq (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structstring}{string}}}]{a,  }\item[{const \mbox{\hyperlink{structstring}{string}}}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Returns whether two strings are equal. 
+
+\begin{DoxyParagraph}{Implementation details}
+Short-\/circuing if the length is equal and is 0. This is because memcmp with NULL pointers is U.\+B. in c99, even if the number of bytes copied is 0, and in this library empty strings can have a NULL pointer.
+\end{DoxyParagraph}
+\begin{DoxySeeAlso}{See also}
+\doxylink{group__string_ga9e2729b7029bf2407d722c8acbe5a45e}{str\+\_\+join} for more info 
+\end{DoxySeeAlso}
+\Hypertarget{group__string_gaa3b530e0395a6c05d9e7fe641a007001}\label{group__string_gaa3b530e0395a6c05d9e7fe641a007001} 
+\index{Strings@{Strings}!str\_fmt@{str\_fmt}}
+\index{str\_fmt@{str\_fmt}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_fmt()}{str\_fmt()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+fmt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Returns a formatted string. 
+
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily arena != NULL} 
+
+{\ttfamily fmt != NULL} 
+\end{DoxyPrecond}
+\Hypertarget{group__string_ga02ab529ec0eede2732f7e0bf824a6645}\label{group__string_ga02ab529ec0eede2732f7e0bf824a6645} 
+\index{Strings@{Strings}!str\_idx@{str\_idx}}
+\index{str\_idx@{str\_idx}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_idx()}{str\_idx()}}
+{\footnotesize\ttfamily char \texorpdfstring{$\ast$}{*}const str\+\_\+idx (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structstring}{string}}}]{str,  }\item[{const size\+\_\+t}]{i }\end{DoxyParamCaption})}
+
+
+
+Gets pointer to character at specific index. 
+
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily i \texorpdfstring{$>$}{>}= 0} (since it\textquotesingle{}s of type {\ttfamily size\+\_\+t}) 
+
+{\ttfamily i \texorpdfstring{$<$}{<} str.\+len} 
+
+{\ttfamily str.\+ptr != NULL} which should be true if the user did not mess with the {\ttfamily ptr} directly 
+\end{DoxyPrecond}
+\Hypertarget{group__string_gaa056a9531cde5296d71c6065501aae12}\label{group__string_gaa056a9531cde5296d71c6065501aae12} 
+\index{Strings@{Strings}!str\_is\_empty@{str\_is\_empty}}
+\index{str\_is\_empty@{str\_is\_empty}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_is\_empty()}{str\_is\_empty()}}
+{\footnotesize\ttfamily bool str\+\_\+is\+\_\+empty (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structstring}{string}}}]{str }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Returns whether the string is empty. 
+
+An empty \doxylink{group__string}{Strings} means that either the length is 0 or the internal {\ttfamily ptr} is NULL \Hypertarget{group__string_ga9e2729b7029bf2407d722c8acbe5a45e}\label{group__string_ga9e2729b7029bf2407d722c8acbe5a45e} 
+\index{Strings@{Strings}!str\_join@{str\_join}}
+\index{str\_join@{str\_join}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_join()}{str\_join()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+join (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group__arena_gaa3c04ba804275765a4e49c9872d46a25}{Arena}} \texorpdfstring{$\ast$}{*}const}]{arena,  }\item[{\mbox{\hyperlink{group__vector_ga21ec81b33f2746d76b94b77c7f990379}{Vec}}(\mbox{\hyperlink{structstring}{string}})}]{to\+\_\+join }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Joins a list of strings together and returns the returning string. 
+
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily arena != NULL} 
+\end{DoxyPrecond}
+\Hypertarget{group__string_ga4a8505f75a2b6d26de673670a08b1c10}\label{group__string_ga4a8505f75a2b6d26de673670a08b1c10} 
+\index{Strings@{Strings}!str\_slice@{str\_slice}}
+\index{str\_slice@{str\_slice}!Strings@{Strings}}
+\doxysubsubsection{\texorpdfstring{str\_slice()}{str\_slice()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structstring}{string}} str\+\_\+slice (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structstring}{string}}}]{str,  }\item[{const size\+\_\+t}]{start,  }\item[{const size\+\_\+t}]{end }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Returns a string slice. 
+
+\begin{DoxyPrecond}{Precondition}
+{\ttfamily start \texorpdfstring{$>$}{>}= 0} (since it\textquotesingle{}s of type {\ttfamily size\+\_\+t}) 
+
+{\ttfamily end \texorpdfstring{$>$}{>}= 0} (since it\textquotesingle{}s of type {\ttfamily size\+\_\+t}) 
+
+{\ttfamily start \texorpdfstring{$<$}{<} str.\+len} 
+
+{\ttfamily end \texorpdfstring{$<$}{<}= str.\+len} 
+
+{\ttfamily start \texorpdfstring{$<$}{<}= end} 
+\end{DoxyPrecond}
