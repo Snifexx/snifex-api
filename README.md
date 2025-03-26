@@ -116,6 +116,7 @@ to stick to these as much as I can (ideally always).
 ## TODO
 
 - ***IMPORTANT!*** Add alignment in powers of two to capacities
+- ***IMPORTANT!*** Separate header to different submodules and have an all including. This mainly for when I have different std stuff.
 - Arena allocations for Vectors
 - *USEFUL* Debug API to replace malloc, realloc, etc... with macro hooks to check that all allocations are deallocated
 - Count substring occurrences
